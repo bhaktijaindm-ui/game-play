@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Light Theme Palette */
+  --color-bg: #FFF5F8;
+  --color-surface: #FFFFFF;
+  --color-card: #FFF0F5;
+  --color-primary: #E91E8C;
+  --color-primary-hover: #D8157D;
+  --color-secondary: #9B5DE5;
+  --color-accent: #F5B700;
+  --color-text: #2B1B2E;
+  --color-muted: #7E6382;
+  --color-success: #2FBF71;
+  --color-danger: #E5484D;
+  --color-border: #F5D6E3;
+}
+
+.dark {
+  /* Dark Theme Palette */
+  --color-bg: #17101C;
+  --color-surface: #241A2B;
+  --color-card: #302339;
+  --color-primary: #FF4DAF;
+  --color-primary-hover: #FF33A0;
+  --color-secondary: #B388FF;
+  --color-accent: #FFD166;
+  --color-text: #F6EAF7;
+  --color-muted: #B9A3BF;
+  --color-success: #3DD68C;
+  --color-danger: #FF6B6B;
+  --color-border: #3E2B47;
+}
+
+/* Safe area support for notch and gesture bar */
+.safe-top {
+  padding-top: max(env(safe-area-inset-top, 0px), 12px);
+}
+
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 16px);
+}
+
+.safe-area-inset {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* Base Body Styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: 'Fredoka', cursive, sans-serif;
+}
+
+/* Mobile Wrapper Container */
+.mobile-frame {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100dvh;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-color: var(--color-bg);
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.08);
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.dark .glass-panel {
+  background: rgba(36, 26, 43, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Custom Scrollbar for looks & shop */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 999px;
+}

@@ -1,0 +1,125 @@
+{
+  "app": {
+    "title": "Glam Blocks",
+    "subtitle": "Makeup Block Puzzle"
+  },
+  "nav": {
+    "home": "Home",
+    "play": "Play",
+    "looks": "Looks",
+    "shop": "Shop",
+    "daily": "Daily",
+    "leaderboard": "Leaderboard",
+    "settings": "Settings"
+  },
+  "home": {
+    "welcome": "Welcome back",
+    "bestScore": "Best Score",
+    "level": "Level",
+    "playNow": "PLAY NOW",
+    "dailyReward": "Daily Gift",
+    "looksCollection": "Looks Studio",
+    "shop": "Beauty Shop",
+    "leaderboard": "Rankings"
+  },
+  "game": {
+    "score": "Score",
+    "best": "Best",
+    "combo": "Combo",
+    "undo": "Undo",
+    "shuffle": "Shuffle",
+    "bomb": "Glam Bomb",
+    "paused": "Game Paused",
+    "resume": "Resume",
+    "restart": "Restart",
+    "quit": "Quit to Home"
+  },
+  "gameOver": {
+    "title": "Out of Space!",
+    "score": "Final Score",
+    "best": "High Score",
+    "newRecord": "New Personal Record!",
+    "coinsEarned": "Coins Earned",
+    "playAgain": "Play Again",
+    "continue": "Continue (50 Gems)",
+    "watchAd": "Continue with Ad",
+    "home": "Main Menu"
+  },
+  "looks": {
+    "title": "Looks Collection",
+    "subtitle": "Unlock glamorous cosmetic styles by earning points and leveling up",
+    "locked": "Locked",
+    "unlocked": "Unlocked",
+    "equipped": "Equipped",
+    "equip": "Equip Look",
+    "reqScore": "Score required",
+    "glamPassReq": "Requires Glam Pass VIP"
+  },
+  "shop": {
+    "title": "Glam Shop",
+    "tabs": {
+      "gems": "Gems",
+      "removeAds": "No Ads",
+      "glamPass": "Glam Pass",
+      "bundles": "Bundles"
+    },
+    "demoNotice": "Preview Mode: Demo purchases only. No real charges occur.",
+    "buy": "Buy",
+    "active": "Active",
+    "subscribed": "Subscribed"
+  },
+  "daily": {
+    "title": "Daily Beauty Rewards",
+    "subtitle": "Log in every day to claim sparkling coins, gems, and exclusive boosters!",
+    "streak": "Current Streak: {days} Days",
+    "claim": "Claim Reward",
+    "claimed": "Claimed Today",
+    "nextIn": "Next reward in: {time}"
+  },
+  "leaderboard": {
+    "title": "Weekly Hall of Glam",
+    "tabs": {
+      "global": "Top 50 Global",
+      "friends": "Friends"
+    },
+    "rank": "Rank",
+    "player": "Player",
+    "score": "Score",
+    "friendsComingSoon": "Friends leaderboard will be enabled in an upcoming season!"
+  },
+  "settings": {
+    "title": "Settings",
+    "theme": "Theme Appearance",
+    "sound": "Sound Effects",
+    "music": "Background Chimes",
+    "haptics": "Vibration & Haptics",
+    "reduceMotion": "Reduce Motion",
+    "language": "Language",
+    "account": "Account & Data",
+    "loggedInAs": "Signed in as",
+    "logout": "Log Out",
+    "deleteAccount": "Delete My Account & Data",
+    "deleteConfirmTitle": "Permanently Delete Account?",
+    "deleteConfirmText": "This will irreversibly erase your profile, best scores, saved looks, and currency.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "support": "Contact Support",
+    "version": "Version"
+  },
+  "auth": {
+    "title": "Welcome to Glam Blocks",
+    "subtitle": "Sign in to save your beauty collection, high scores, and climb the leaderboard",
+    "google": "Continue with Google",
+    "or": "OR",
+    "emailLabel": "Email address",
+    "passwordLabel": "Password",
+    "login": "Sign In",
+    "signup": "Create Account",
+    "guest": "Play as Guest (Progress saved locally only)",
+    "needAccount": "Don't have an account? Sign up",
+    "haveAccount": "Already have an account? Sign in",
+    "forgotPassword": "Forgot password?",
+    "termsConsent": "I agree to the Terms of Service and Privacy Policy (Required)",
+    "marketingConsent": "Send me special offers, beauty updates, and event news (Optional)"
+  }
+}

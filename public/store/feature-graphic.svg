@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 500" width="1024" height="500">
+  <defs>
+    <linearGradient id="storeBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#17101C" />
+      <stop offset="45%" stop-color="#2D1537" />
+      <stop offset="80%" stop-color="#4A0E4E" />
+      <stop offset="100%" stop-color="#E91E8C" />
+    </linearGradient>
+
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FFD166" />
+      <stop offset="100%" stop-color="#FF4DAF" />
+    </linearGradient>
+
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="1024" height="500" fill="url(#storeBg)" />
+
+  <!-- Glam Decorative Shimmer Grid Pattern -->
+  <g opacity="0.12" stroke="#FFFFFF" stroke-width="2">
+    <line x1="0" y1="100" x2="1024" y2="100" />
+    <line x1="0" y1="200" x2="1024" y2="200" />
+    <line x1="0" y1="300" x2="1024" y2="300" />
+    <line x1="0" y1="400" x2="1024" y2="400" />
+    <line x1="200" y1="0" x2="200" y2="500" />
+    <line x1="400" y1="0" x2="400" y2="500" />
+    <line x1="600" y1="0" x2="600" y2="500" />
+    <line x1="800" y1="0" x2="800" y2="500" />
+  </g>
+
+  <!-- Left: Stylized Emblem & Avatar -->
+  <g transform="translate(140, 100)">
+    <!-- Aura Ring -->
+    <circle cx="150" cy="150" r="140" fill="#E91E8C" opacity="0.3" filter="url(#glow)" />
+    <circle cx="150" cy="150" r="115" fill="#9B5DE5" opacity="0.4" />
+
+    <!-- 3D Block Stack -->
+    <rect x="70" y="70" width="75" height="75" rx="20" fill="#E91E8C" stroke="#FFFFFF" stroke-width="4" />
+    <rect x="155" y="70" width="75" height="75" rx="20" fill="#F5B700" stroke="#FFFFFF" stroke-width="4" />
+    <rect x="70" y="155" width="75" height="75" rx="20" fill="#2FBF71" stroke="#FFFFFF" stroke-width="4" />
+    <rect x="155" y="155" width="75" height="75" rx="20" fill="#7C4DFF" stroke="#FFFFFF" stroke-width="4" />
+
+    <!-- Floating Lipstick Centerpiece -->
+    <g transform="translate(100, 70)">
+      <path d="M 25 30 L 50 -30 L 75 30 Z" fill="#FF1744" stroke="#FFFFFF" stroke-width="4" />
+      <rect x="22" y="30" width="56" height="24" rx="6" fill="#FFD166" stroke="#FFFFFF" stroke-width="3" />
+      <rect x="18" y="54" width="64" height="75" rx="14" fill="#2B1B2E" stroke="#FFFFFF" stroke-width="4" />
+    </g>
+
+    <!-- Sparkles -->
+    <path d="M 50 40 Q 50 65 75 65 Q 50 65 50 90 Q 50 65 25 65 Q 50 65 50 40 Z" fill="#FFFFFF" />
+    <path d="M 260 220 Q 260 240 280 240 Q 260 240 260 260 Q 260 240 240 240 Q 260 240 260 220 Z" fill="#FFF9C4" />
+  </g>
+
+  <!-- Right: Typography & Badges -->
+  <g transform="translate(480, 160)">
+    <!-- Badge -->
+    <rect x="0" y="0" width="220" height="34" rx="17" fill="#FFD166" />
+    <text x="110" y="22" font-family="'Fredoka', system-ui, sans-serif" font-weight="bold" font-size="14" fill="#2B1B2E" text-anchor="middle" letter-spacing="1.5">
+      ★ THE CHIC BLOCK PUZZLE ★
+    </text>
+
+    <!-- Main Title -->
+    <text x="0" y="95" font-family="'Fredoka', system-ui, sans-serif" font-weight="bold" font-size="64" fill="url(#textGrad)" filter="url(#glow)">
+      Glam Blocks
+    </text>
+
+    <!-- Tagline -->
+    <text x="0" y="145" font-family="'Poppins', system-ui, sans-serif" font-size="22" font-weight="500" fill="#F6EAF7">
+      Match Cosmetics, Clear Lines &amp; Collect Iconic Looks!
+    </text>
+
+    <!-- Feature Pills -->
+    <g transform="translate(0, 180)">
+      <rect x="0" y="0" width="130" height="36" rx="18" fill="#FFFFFF" fill-opacity="0.15" stroke="#FFFFFF" stroke-width="1.5" />
+      <text x="65" y="23" font-family="'Poppins', sans-serif" font-weight="600" font-size="13" fill="#FFFFFF" text-anchor="middle">
+        💄 8x8 Board
+      </text>
+
+      <rect x="145" y="0" width="155" height="36" rx="18" fill="#FFFFFF" fill-opacity="0.15" stroke="#FFFFFF" stroke-width="1.5" />
+      <text x="222" y="23" font-family="'Poppins', sans-serif" font-weight="600" font-size="13" fill="#FFFFFF" text-anchor="middle">
+        ✨ Avatar Studio
+      </text>
+
+      <rect x="315" y="0" width="140" height="36" rx="18" fill="#FFFFFF" fill-opacity="0.15" stroke="#FFFFFF" stroke-width="1.5" />
+      <text x="385" y="23" font-family="'Poppins', sans-serif" font-weight="600" font-size="13" fill="#FFFFFF" text-anchor="middle">
+        📶 100% Offline
+      </text>
+    </g>
+  </g>
+</svg>
