@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#17101C" />
+      <stop offset="100%" stop-color="#31153D" />
+    </linearGradient>
+    <filter id="shadow2">
+      <feDropShadow dx="0" dy="20" stdDeviation="30" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <rect width="1080" height="1920" fill="url(#bg2)" />
+
+  <text x="540" y="220" font-family="'Fredoka', system-ui, sans-serif" font-weight="bold" font-size="64" fill="#FFD166" text-anchor="middle">
+    EXPLOSIVE COMBOS
+  </text>
+  <text x="540" y="300" font-family="'Poppins', system-ui, sans-serif" font-weight="600" font-size="36" fill="#F6EAF7" text-anchor="middle">
+    Score Multipliers &amp; 3x3 Glam Bombs!
+  </text>
+
+  <g transform="translate(190, 390)" filter="url(#shadow2)">
+    <rect width="700" height="1420" rx="64" fill="#241A2B" stroke="#3E2B47" stroke-width="12" />
+    <rect x="24" y="24" width="652" height="1372" rx="44" fill="#17101C" />
+
+    <!-- Big Combo Badge -->
+    <rect x="220" y="70" width="260" height="60" rx="30" fill="#E91E8C" />
+    <text x="350" y="112" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="32" fill="#FFFFFF" text-anchor="middle">
+      🔥 5X COMBO!
+    </text>
+
+    <!-- Board Area with Sparkles -->
+    <rect x="50" y="220" width="600" height="600" rx="36" fill="#241A2B" stroke="#3E2B47" stroke-width="4" />
+    <circle cx="350" cy="520" r="160" fill="#F5B700" fill-opacity="0.2" />
+
+    <!-- Exploding Sparkles / Glam Bomb effect -->
+    <circle cx="350" cy="520" r="50" fill="#FFE082" />
+    <text x="350" y="535" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="44" fill="#2B1B2E" text-anchor="middle">
+      💥
+    </text>
+
+    <!-- Power-Up Bar -->
+    <rect x="50" y="1150" width="600" height="120" rx="28" fill="#241A2B" stroke="#3E2B47" />
+    <text x="150" y="1220" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="24" fill="#FFFFFF" text-anchor="middle">
+      ↺ Undo
+    </text>
+    <text x="350" y="1220" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="24" fill="#FF4DAF" text-anchor="middle">
+      🔀 Shuffle
+    </text>
+    <text x="540" y="1220" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="24" fill="#FFD166" text-anchor="middle">
+      💣 Bomb
+    </text>
+  </g>
+</svg>
