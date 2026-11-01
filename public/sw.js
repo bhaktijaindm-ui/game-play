@@ -1,17 +1,19 @@
 /**
  * Glam Blocks - High-Performance Service Worker for 100% Offline Gameplay
+ * Supports subpath hosting (e.g. GitHub Pages) dynamically.
  */
 
-const CACHE_NAME = 'glam-blocks-v1';
+const CACHE_NAME = 'glam-blocks-v2';
+const BASE_PATH = self.location.pathname.replace(/\/sw\.js$/, '') || '';
 
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icons/logo.svg',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
-  '/favicon.png',
+  `${BASE_PATH}/`,
+  `${BASE_PATH}/index.html`,
+  `${BASE_PATH}/manifest.json`,
+  `${BASE_PATH}/icons/logo.svg`,
+  `${BASE_PATH}/icons/icon-192.png`,
+  `${BASE_PATH}/icons/icon-512.png`,
+  `${BASE_PATH}/favicon.png`,
 ];
 
 // Install: pre-cache critical shell assets
@@ -44,7 +46,6 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const request = event.request;
 
-  // Skip non-GET requests and browser extensions
   if (request.method !== 'GET' || !request.url.startsWith(self.location.origin)) {
     return;
   }
@@ -52,7 +53,7 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
       if (cachedResponse) {
-        // Fetch in background to update cache
+        // Background fetch to keep cache warm
         fetch(request)
           .then((networkResponse) => {
             if (networkResponse && networkResponse.status === 200) {
@@ -75,9 +76,8 @@ self.addEventListener('fetch', (event) => {
           return networkResponse;
         })
         .catch(() => {
-          // If offline and requesting navigation, serve cached index.html
           if (request.mode === 'navigate') {
-            return caches.match('/index.html') as Promise<Response>;
+            return caches.match(`${BASE_PATH}/index.html`) as Promise<Response>;
           }
           return new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
         });
