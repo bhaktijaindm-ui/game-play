@@ -103,7 +103,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ onComplete }
               {currentCard.icon}
             </div>
 
-            <h2 className="text-2xl font-heading font-bold text-game-text mb-1">
+            <h2 className="text-2xl font-display font-bold text-game-text mb-1">
               {currentCard.title}
             </h2>
             <p className="text-xs font-semibold text-game-primary mb-3">

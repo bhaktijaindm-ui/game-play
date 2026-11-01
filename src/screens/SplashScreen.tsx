@@ -52,7 +52,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.3, duration: 0.6 }}
-        className="text-4xl font-heading font-bold tracking-tight bg-gradient-to-r from-game-primary via-purple-500 to-amber-500 bg-clip-text text-transparent"
+        className="text-4xl font-display font-bold tracking-tight bg-gradient-to-r from-game-primary via-game-secondary to-amber-500 bg-clip-text text-transparent"
       >
         Glam Blocks
       </motion.h1>

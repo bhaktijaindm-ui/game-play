@@ -25,7 +25,7 @@ export interface UserProfile {
 }
 
 interface AuthContextType {
-  user: UserProfile | null;
+  user: UserProfile;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   signInWithEmail: (email: string, pass: string) => Promise<void>;
@@ -36,11 +36,12 @@ interface AuthContextType {
   updateProfile: (updates: Partial<UserProfile>) => void;
   claimDailyReward: (day: number, coins: number, gems: number) => boolean;
   spendCurrency: (coins: number, gems: number) => boolean;
-  addCurrency: (coins: number, gems: number) => void;
+  addCurrency: (coins: number, gems: number, source?: string) => void;
   equipLook: (lookId: string) => void;
   unlockLook: (lookId: string) => void;
   isGlamPassActive: () => boolean;
   isAdFree: () => boolean;
+  isDailyRewardAvailable: () => boolean;
 }
 
 const STORAGE_KEY_USER = 'glam_blocks_user_profile';
@@ -74,16 +75,25 @@ const createDefaultGuestProfile = (): UserProfile => {
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<UserProfile | null>(() => {
+  const [user, setUser] = useState<UserProfile>(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY_USER);
       if (stored) {
-        return JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        if (parsed && typeof parsed.coins === 'number') {
+          return parsed;
+        }
       }
     } catch {
       // ignore
     }
-    return null;
+    const defaultProfile = createDefaultGuestProfile();
+    try {
+      localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(defaultProfile));
+    } catch {
+      // ignore
+    }
+    return defaultProfile;
   });
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -96,19 +106,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } catch {
         // ignore
       }
-    } else {
-      try {
-        localStorage.removeItem(STORAGE_KEY_USER);
-      } catch {
-        // ignore
-      }
     }
   }, [user]);
 
   const updateProfile = (updates: Partial<UserProfile>) => {
     setUser((prev) => {
-      if (!prev) return null;
-      return { ...prev, ...updates };
+      const updated = { ...prev, ...updates };
+      try {
+        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(updated));
+      } catch {}
+      return updated;
     });
   };
 
@@ -122,10 +129,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return user.adsRemoved || isGlamPassActive();
   };
 
+  const isDailyRewardAvailable = (): boolean => {
+    try {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const storedDate = localStorage.getItem('glam_last_claimed_date');
+      if (storedDate === todayStr) return false;
+
+      if (!user.lastRewardClaimedAt) return true;
+      const lastClaimDateStr = new Date(user.lastRewardClaimedAt).toISOString().split('T')[0];
+      return lastClaimDateStr !== todayStr;
+    } catch {
+      return true;
+    }
+  };
+
   const signInAsGuest = () => {
+    try {
+      localStorage.setItem('glam_auth_dismissed', 'true');
+    } catch {}
     if (!user) {
       const guest = createDefaultGuestProfile();
       setUser(guest);
+      try {
+        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(guest));
+      } catch {}
     }
   };
 
@@ -197,7 +224,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 300));
-      setUser(null);
+      const freshGuest = createDefaultGuestProfile();
+      setUser(freshGuest);
+      try {
+        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(freshGuest));
+        localStorage.removeItem('glam_auth_dismissed');
+      } catch {}
     } finally {
       setLoading(false);
     }
@@ -207,70 +239,121 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 600));
-      setUser(null);
-      localStorage.clear();
+      try {
+        localStorage.clear();
+      } catch {}
+      const freshGuest = createDefaultGuestProfile();
+      setUser(freshGuest);
+      try {
+        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(freshGuest));
+      } catch {}
     } finally {
       setLoading(false);
     }
   };
 
   const claimDailyReward = (day: number, coins: number, gems: number): boolean => {
-    if (!user) return false;
+    const todayStr = new Date().toISOString().split('T')[0];
     const now = Date.now();
+    let claimed = false;
+
     setUser((prev) => {
-      if (!prev) return null;
-      return {
-        ...prev,
-        coins: prev.coins + coins,
-        gems: prev.gems + gems,
+      const base = prev || createDefaultGuestProfile();
+      const updated: UserProfile = {
+        ...base,
+        coins: Math.max(0, (base.coins || 0) + coins),
+        gems: Math.max(0, (base.gems || 0) + gems),
         streakDay: day,
         lastRewardClaimedAt: now,
       };
+      try {
+        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(updated));
+        localStorage.setItem('glam_last_claimed_date', todayStr);
+      } catch (err) {
+        console.error('Failed to save daily reward:', err);
+      }
+      claimed = true;
+      return updated;
     });
-    return true;
+
+    try {
+      window.dispatchEvent(
+        new CustomEvent('glam-coins-earned', {
+          detail: { coins, gems, source: 'daily_reward' },
+        })
+      );
+    } catch {}
+
+    return claimed;
   };
 
   const spendCurrency = (coins: number, gems: number): boolean => {
     if (!user) return false;
-    if (user.coins < coins || user.gems < gems) return false;
+    if ((user.coins || 0) < coins || (user.gems || 0) < gems) return false;
 
     setUser((prev) => {
-      if (!prev) return null;
-      return {
-        ...prev,
-        coins: prev.coins - coins,
-        gems: prev.gems - gems,
+      const base = prev || createDefaultGuestProfile();
+      const updated: UserProfile = {
+        ...base,
+        coins: Math.max(0, (base.coins || 0) - coins),
+        gems: Math.max(0, (base.gems || 0) - gems),
       };
+      try {
+        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(updated));
+      } catch {}
+      return updated;
     });
     return true;
   };
 
-  const addCurrency = (coins: number, gems: number) => {
+  const addCurrency = (coins: number, gems: number, source = 'reward') => {
     setUser((prev) => {
-      if (!prev) return null;
-      return {
-        ...prev,
-        coins: prev.coins + coins,
-        gems: prev.gems + gems,
+      const base = prev || createDefaultGuestProfile();
+      const updated: UserProfile = {
+        ...base,
+        coins: Math.max(0, (base.coins || 0) + coins),
+        gems: Math.max(0, (base.gems || 0) + gems),
       };
+      try {
+        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(updated));
+      } catch (err) {
+        console.error('Failed to save currency updates:', err);
+      }
+      return updated;
     });
+
+    if (coins > 0 || gems > 0) {
+      try {
+        window.dispatchEvent(
+          new CustomEvent('glam-coins-earned', {
+            detail: { coins, gems, source },
+          })
+        );
+      } catch {}
+    }
   };
 
   const equipLook = (lookId: string) => {
     setUser((prev) => {
-      if (!prev) return null;
-      return { ...prev, equippedLook: lookId };
+      const updated = { ...prev, equippedLook: lookId };
+      try {
+        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(updated));
+      } catch {}
+      return updated;
     });
   };
 
   const unlockLook = (lookId: string) => {
     setUser((prev) => {
-      if (!prev) return null;
       if (prev.unlockedLooks.includes(lookId)) return prev;
-      return {
+      const updated = {
         ...prev,
         unlockedLooks: [...prev.unlockedLooks, lookId],
       };
+      try {
+        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(updated));
+      } catch {}
+      return updated;
     });
   };
 
@@ -293,6 +376,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         unlockLook,
         isGlamPassActive,
         isAdFree,
+        isDailyRewardAvailable,
       }}
     >
       {children}

@@ -16,7 +16,7 @@ import { RenderMakeupIcon } from '../components/icons/MakeupIcons';
 import { soundSystem } from '../services/soundSystem';
 import { useAuth } from '../services/authContext';
 import { GAME_RULES } from '../config/product.config';
-import { Pause, Trophy, Flame } from 'lucide-react';
+import { Pause, Flame } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 interface GameScreenProps {
@@ -377,7 +377,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onGameOver, onHome }) =>
             <span className="block text-[10px] font-bold uppercase tracking-wider text-game-primary">
               Score
             </span>
-            <span className="font-heading font-bold text-xl text-game-text leading-none">
+            <span className="font-display font-bold text-2xl text-game-text leading-none">
               {score.toLocaleString()}
             </span>
           </div>
@@ -391,23 +391,15 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onGameOver, onHome }) =>
           </div>
         )}
 
-        {/* Best Score & Pause */}
-        <div className="flex items-center gap-2">
-          <div className="hidden xs:flex items-center gap-1.5 bg-game-surface border border-game-border shadow-soft px-3 py-1.5 rounded-2xl">
-            <Trophy className="w-4 h-4 text-amber-400 fill-amber-300" />
-            <div className="text-left">
-              <span className="block text-[9px] font-bold uppercase text-game-muted">
-                Best
-              </span>
-              <span className="font-heading font-semibold text-sm text-game-text leading-none">
-                {bestScore.toLocaleString()}
-              </span>
-            </div>
+        {/* Coins & Pause */}
+        <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1 bg-game-surface border border-game-border shadow-soft px-2.5 py-1.5 rounded-2xl text-xs font-heading font-bold text-amber-500">
+            <span>🪙 {(user?.coins || 0).toLocaleString()}</span>
           </div>
 
           <button
             onClick={() => setIsPauseOpen(true)}
-            className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-2xl bg-game-surface border border-game-border shadow-soft flex items-center justify-center text-game-muted hover:text-game-text"
+            className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-2xl bg-game-surface border border-game-border shadow-soft flex items-center justify-center text-game-muted hover:text-game-text hover:border-game-secondary transition-all cursor-pointer"
             aria-label="Pause game"
           >
             <Pause className="w-5 h-5" />

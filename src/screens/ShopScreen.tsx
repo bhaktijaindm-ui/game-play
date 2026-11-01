@@ -9,12 +9,13 @@ import { useAuth } from '../services/authContext';
 import { useToast } from '../components/ui/Toast';
 import { soundSystem } from '../services/soundSystem';
 import { ChevronLeft, Crown, ShieldCheck, Check } from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 interface ShopScreenProps {
   onBack: () => void;
 }
 
-type ShopTab = 'bundles' | 'gems' | 'glam_pass' | 'remove_ads';
+type ShopTab = 'bundles' | 'coins' | 'gems' | 'glam_pass' | 'remove_ads';
 
 export const ShopScreen: React.FC<ShopScreenProps> = ({ onBack }) => {
   const { user, isGlamPassActive, isAdFree, addCurrency, updateProfile } = useAuth();
@@ -31,6 +32,24 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ onBack }) => {
 
   const confirmProduct = confirmProductId ? PRODUCTS[confirmProductId] : null;
 
+  const triggerConfetti = () => {
+    try {
+      confetti({
+        particleCount: 50,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#D4AF37', '#FFD700', '#FF4081', '#C2185B'],
+      });
+    } catch {}
+  };
+
+  const handleInstantCoinClaim = (coins: number, label: string) => {
+    soundSystem.playSparkle();
+    triggerConfetti();
+    addCurrency(coins, 0, 'shop_claim');
+    showToast(`Claimed ${label} (${coins.toLocaleString()} Coins)!`, 'glam');
+  };
+
   const handlePurchase = async () => {
     if (!confirmProduct) return;
     setPurchasing(true);
@@ -40,11 +59,12 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ onBack }) => {
 
       if (result.success) {
         soundSystem.playSparkle();
+        triggerConfetti();
 
         // Apply product rewards
         const reward = confirmProduct.reward;
         if (reward.gems || reward.coins) {
-          addCurrency(reward.coins || 0, reward.gems || 0);
+          addCurrency(reward.coins || 0, reward.gems || 0, 'in_app_purchase');
         }
 
         if (reward.adsRemoved) {
@@ -75,37 +95,43 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-between p-4 safe-top safe-bottom bg-game-bg">
+    <div className="flex-1 flex flex-col justify-between p-4 safe-top safe-bottom bg-gradient-to-b from-game-bg via-game-surface to-pink-50/50 dark:to-purple-950/20">
       {/* Top Header */}
       <div>
-        <div className="flex items-center justify-between min-h-[44px] mb-2">
+        <div className="flex items-center justify-between min-h-[48px] mb-2">
           <button
             onClick={onBack}
-            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-2xl bg-game-surface border border-game-border text-game-muted hover:text-game-text"
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-2xl bg-game-surface border border-game-border text-game-muted hover:text-game-text hover:border-game-secondary transition-all cursor-pointer"
             aria-label="Back to home"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <h2 className="text-xl font-heading font-bold text-game-text">
-            Glam Beauty Shop
+          <h2 className="text-xl font-display font-bold text-game-text">
+            Glam Boutique
           </h2>
+          {/* Header Balance Chips */}
           <div className="flex items-center gap-1.5">
-            <CurrencyChip type="gems" amount={user?.gems || 0} size="sm" />
+            <CurrencyChip
+              type="coins"
+              amount={user?.coins ?? 500}
+              onAddClick={() => setActiveTab('coins')}
+              size="sm"
+            />
+            <CurrencyChip
+              type="gems"
+              amount={user?.gems ?? 100}
+              onAddClick={() => setActiveTab('gems')}
+              size="sm"
+            />
           </div>
         </div>
 
-        {/* Browser Demo Sandbox Notice */}
-        <div className="bg-game-card/80 border border-game-border/80 px-3 py-1.5 rounded-xl text-center mb-3">
-          <p className="text-[10px] text-game-muted font-medium">
-            ✨ Store Sandbox: Tap any item to test simulated purchase without real billing.
-          </p>
-        </div>
-
         {/* Category Tabs */}
-        <div className="grid grid-cols-4 gap-1 p-1 bg-game-card rounded-2xl border border-game-border mb-3">
+        <div className="grid grid-cols-5 gap-1 p-1 bg-game-card rounded-2xl border border-game-border mb-3">
           {(
             [
               { id: 'bundles', label: 'Bundles' },
+              { id: 'coins', label: 'Coins' },
               { id: 'gems', label: 'Gems' },
               { id: 'glam_pass', label: 'VIP Pass' },
               { id: 'remove_ads', label: 'No Ads' },
@@ -118,10 +144,10 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ onBack }) => {
                 setActiveTab(tab.id);
               }}
               className={`
-                min-h-[40px] text-xs font-heading font-semibold rounded-xl transition-all
+                min-h-[42px] text-[11px] font-heading font-semibold rounded-xl transition-all cursor-pointer
                 ${
                   activeTab === tab.id
-                    ? 'bg-game-surface text-game-primary shadow-soft'
+                    ? 'bg-game-surface text-game-primary shadow-soft font-bold'
                     : 'text-game-muted hover:text-game-text'
                 }
               `}
@@ -144,10 +170,10 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ onBack }) => {
                   key={prod.id}
                   variant="gradient"
                   padding="md"
-                  className="relative overflow-hidden border-2 border-pink-400/40"
+                  className="relative overflow-hidden border-2 border-pink-400/50 shadow-luxury"
                 >
                   {prod.badge && (
-                    <span className="absolute top-0 right-0 bg-game-primary text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm">
+                    <span className="absolute top-0 right-0 bg-game-primary text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-xs">
                       {prod.badge}
                     </span>
                   )}
@@ -182,7 +208,73 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ onBack }) => {
           </div>
         )}
 
-        {/* 2. Gems Tab */}
+        {/* 2. Coins Tab (Instant Free Refill & Packages) */}
+        {activeTab === 'coins' && (
+          <div className="space-y-3">
+            {/* Free Instant Refill Card */}
+            <Card variant="gradient" padding="md" className="border-2 border-amber-400/60 shadow-rosegold">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-yellow-300 via-amber-400 to-yellow-500 flex items-center justify-center text-2xl shadow-soft">
+                    🪙
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                      Free Reward
+                    </span>
+                    <h4 className="font-heading font-bold text-base text-game-text">
+                      Instant Coin Refill
+                    </h4>
+                    <p className="text-xs text-game-muted">
+                      Tap to collect +500 free gameplay coins right now!
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleInstantCoinClaim(500, 'Free Refill')}
+                  className="px-4 py-2 min-h-[44px] rounded-xl bg-gradient-to-r from-amber-400 to-yellow-400 hover:from-amber-500 hover:to-yellow-500 text-amber-950 font-heading font-bold text-xs shadow-soft active:scale-95 transition-all cursor-pointer"
+                >
+                  Claim 500
+                </button>
+              </div>
+            </Card>
+
+            {/* Coin Value Packs */}
+            <div className="grid grid-cols-2 gap-2.5">
+              {[
+                { id: 'coins_1000', name: 'Glam Purse', coins: 1000, price: 'FREE', icon: '👛' },
+                { id: 'coins_3000', name: 'Beauty Box', coins: 3000, price: 'FREE', icon: '👝' },
+                { id: 'coins_7500', name: 'Luxe Trunk', coins: 7500, price: 'FREE', icon: '✨' },
+                { id: 'coins_20000', name: 'Empress Vault', coins: 20000, price: 'FREE', icon: '👑' },
+              ].map((pack) => (
+                <Card
+                  key={pack.id}
+                  variant="surface"
+                  padding="md"
+                  className="flex flex-col items-center text-center relative border border-game-border"
+                >
+                  <span className="text-3xl my-2">{pack.icon}</span>
+                  <h5 className="font-heading font-bold text-xs text-game-text">
+                    {pack.name}
+                  </h5>
+                  <span className="text-xs font-semibold text-amber-500 my-1">
+                    +{pack.coins.toLocaleString()} Coins
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleInstantCoinClaim(pack.coins, pack.name)}
+                    className="w-full min-h-[40px] mt-2 rounded-xl bg-game-card hover:bg-game-border/80 border border-game-border text-xs font-heading font-bold text-game-text active:scale-95 transition-all cursor-pointer"
+                  >
+                    Tap to Add
+                  </button>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 3. Gems Tab */}
         {activeTab === 'gems' && (
           <div className="grid grid-cols-2 gap-2.5">
             {[PRODUCTS.gem_pack_s, PRODUCTS.gem_pack_m, PRODUCTS.gem_pack_l, PRODUCTS.gem_pack_xl].map(
@@ -193,7 +285,7 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ onBack }) => {
                     key={prod.id}
                     variant="surface"
                     padding="md"
-                    className="flex flex-col items-center text-center relative"
+                    className="flex flex-col items-center text-center relative border border-game-border"
                   >
                     {prod.badge && (
                       <span className="absolute -top-2 bg-amber-400 text-amber-950 text-[9px] font-bold px-2 py-0.5 rounded-full shadow-xs">
@@ -225,13 +317,13 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ onBack }) => {
           </div>
         )}
 
-        {/* 3. Glam Pass VIP Tab */}
+        {/* 4. Glam Pass VIP Tab */}
         {activeTab === 'glam_pass' && (
           <div className="space-y-3">
-            <Card variant="gradient" padding="md" className="border-2 border-amber-400/50">
+            <Card variant="gradient" padding="md" className="border-2 border-amber-400/50 shadow-luxury">
               <div className="flex items-center gap-2 mb-2">
                 <Crown className="w-6 h-6 text-amber-500 fill-amber-400" />
-                <h4 className="font-heading font-bold text-lg text-game-text">
+                <h4 className="font-display font-bold text-lg text-game-text">
                   Glam Pass VIP Benefits
                 </h4>
               </div>
@@ -293,14 +385,14 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ onBack }) => {
           </div>
         )}
 
-        {/* 4. Remove Ads Tab */}
+        {/* 5. Remove Ads Tab */}
         {activeTab === 'remove_ads' && (
           <div className="space-y-3">
-            <Card variant="surface" padding="lg" className="text-center">
+            <Card variant="surface" padding="lg" className="text-center border border-game-border shadow-soft">
               <div className="w-16 h-16 rounded-3xl bg-pink-100 dark:bg-pink-950/40 text-game-primary flex items-center justify-center mx-auto mb-3">
                 <ShieldCheck className="w-8 h-8" />
               </div>
-              <h4 className="font-heading font-bold text-lg text-game-text">
+              <h4 className="font-display font-bold text-lg text-game-text">
                 Permanent Ad Removal
               </h4>
               <p className="text-xs text-game-muted max-w-xs mx-auto mt-1 mb-4 leading-relaxed">

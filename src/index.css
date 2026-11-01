@@ -3,35 +3,35 @@
 @tailwind utilities;
 
 :root {
-  /* Light Theme Palette */
-  --color-bg: #FFF5F8;
+  /* Luxury Beauty Brand Palette - Soft Pink, Rose-Gold, Cream & Bold Deep Magenta */
+  --color-bg: #FFF5F7;
   --color-surface: #FFFFFF;
-  --color-card: #FFF0F5;
-  --color-primary: #E91E8C;
-  --color-primary-hover: #D8157D;
-  --color-secondary: #9B5DE5;
-  --color-accent: #F5B700;
-  --color-text: #2B1B2E;
-  --color-muted: #7E6382;
-  --color-success: #2FBF71;
-  --color-danger: #E5484D;
-  --color-border: #F5D6E3;
+  --color-card: #FFF0F4;
+  --color-primary: #C2185B; /* Deep vibrant magenta */
+  --color-primary-hover: #AD1457;
+  --color-secondary: #C5837B; /* Rose gold */
+  --color-accent: #D4AF37; /* Metallic champagne gold */
+  --color-text: #2A1625; /* Espresso plum - WCAG AAA */
+  --color-muted: #7E6578; /* Soft plum grey - WCAG AA */
+  --color-success: #2E8B57; /* Emerald */
+  --color-danger: #D32F2F; /* Crimson */
+  --color-border: #F3D9E2; /* Delicate rose gold border */
 }
 
 .dark {
-  /* Dark Theme Palette */
-  --color-bg: #17101C;
-  --color-surface: #241A2B;
-  --color-card: #302339;
-  --color-primary: #FF4DAF;
-  --color-primary-hover: #FF33A0;
-  --color-secondary: #B388FF;
-  --color-accent: #FFD166;
-  --color-text: #F6EAF7;
-  --color-muted: #B9A3BF;
+  /* Dark Luxe Palette - Velvet Noir, Royal Plum, Luminous Magenta & Rose Gold */
+  --color-bg: #140E18;
+  --color-surface: #201726;
+  --color-card: #2B1F33;
+  --color-primary: #FF4D94; /* Radiant magenta */
+  --color-primary-hover: #FF3385;
+  --color-secondary: #E0A899; /* Radiant rose gold */
+  --color-accent: #FFD166; /* Champagne */
+  --color-text: #FBF4F8; /* Opalescent pearl */
+  --color-muted: #B8A5B7;
   --color-success: #3DD68C;
   --color-danger: #FF6B6B;
-  --color-border: #3E2B47;
+  --color-border: #3D2B44;
 }
 
 /* Safe area support for notch and gesture bar */
@@ -54,7 +54,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Poppins', system-ui, -apple-system, sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
@@ -66,7 +66,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6, .font-heading {
-  font-family: 'Fredoka', cursive, sans-serif;
+  font-family: 'Playfair Display', Georgia, serif;
 }
 
 /* Mobile Wrapper Container */

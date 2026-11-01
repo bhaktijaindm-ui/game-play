@@ -28,6 +28,7 @@ interface SettingsScreenProps {
   onOpenPrivacy: () => void;
   onOpenTerms: () => void;
   onLoggedOut: () => void;
+  onOpenAuth?: () => void;
 }
 
 export const SettingsScreen: React.FC<SettingsScreenProps> = ({
@@ -35,6 +36,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   onOpenPrivacy,
   onOpenTerms,
   onLoggedOut,
+  onOpenAuth,
 }) => {
   const { theme, setTheme } = useTheme();
   const { language, setLanguage } = useI18n();
@@ -237,7 +239,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
         {/* Account Details & Management */}
         <Card variant="surface" padding="md" className="space-y-3">
           <h4 className="text-xs font-bold uppercase tracking-wider text-game-primary mb-2 flex items-center gap-1.5">
-            <User className="w-4 h-4" /> Account & Data
+            <User className="w-4 h-4" /> Account & Cloud Sync
           </h4>
           <div className="text-xs text-game-text">
             <span className="text-game-muted">Signed in as: </span>
@@ -246,16 +248,27 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
             </span>
           </div>
 
-          <div className="flex gap-2 pt-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleLogout}
-              icon={<LogOut className="w-4 h-4" />}
-              className="flex-1 text-xs"
+          {user?.isAnonymous && (
+            <button
+              onClick={onOpenAuth}
+              className="w-full min-h-[44px] rounded-2xl bg-game-primary hover:bg-game-primary-hover text-white text-xs font-heading font-bold shadow-soft flex items-center justify-center gap-2 transition-all cursor-pointer"
             >
-              Sign Out
-            </Button>
+              Sign In with Google / Email
+            </button>
+          )}
+
+          <div className="flex gap-2 pt-1">
+            {!user?.isAnonymous && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLogout}
+                icon={<LogOut className="w-4 h-4" />}
+                className="flex-1 text-xs"
+              >
+                Sign Out
+              </Button>
+            )}
             <Button
               variant="danger"
               size="sm"
@@ -263,7 +276,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
               icon={<Trash2 className="w-4 h-4" />}
               className="flex-1 text-xs"
             >
-              Delete Account
+              Reset Data
             </Button>
           </div>
         </Card>

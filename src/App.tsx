@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
 import { SplashScreen } from './screens/SplashScreen';
 import { OnboardingScreen } from './screens/OnboardingScreen';
-import { AuthScreen } from './screens/AuthScreen';
 import { HomeScreen } from './screens/HomeScreen';
 import { GameScreen } from './screens/GameScreen';
 import { GameOverScreen } from './screens/GameOverScreen';
-import { Suspense, lazy } from 'react';
+import { AuthModal } from './components/auth/AuthModal';
+import { DailyRewardModal } from './components/daily/DailyRewardModal';
+import { CoinEarnedToast } from './components/ui/CoinEarnedToast';
+import { BottomNavBar } from './components/navigation/BottomNavBar';
 
 // Lazy load secondary sub-screens
 const LooksScreen = lazy(() =>
@@ -38,7 +40,6 @@ import { AuthProvider, useAuth } from './services/authContext';
 export type ScreenState =
   | 'splash'
   | 'onboarding'
-  | 'auth'
   | 'home'
   | 'game'
   | 'game_over'
@@ -53,11 +54,14 @@ export type ScreenState =
 const ONBOARDING_COMPLETED_KEY = 'glam_blocks_onboarding_completed';
 
 const AppNavigator: React.FC = () => {
-  const { user } = useAuth();
+  const { isDailyRewardAvailable } = useAuth();
   const { showToast } = useToast();
 
   const [currentScreen, setCurrentScreen] = useState<ScreenState>('splash');
   const [, setScreenHistory] = useState<ScreenState[]>(['home']);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isDailyModalOpen, setIsDailyModalOpen] = useState(false);
+
   const [lastGameOverStats, setLastGameOverStats] = useState<{ score: number; coinsEarned: number }>({
     score: 0,
     coinsEarned: 0,
@@ -77,7 +81,6 @@ const AppNavigator: React.FC = () => {
     if (currentScreen === 'home') {
       const now = Date.now();
       if (now - lastBackTapTime < 2000) {
-        // Allow default exit
         return;
       } else {
         setLastBackTapTime(now);
@@ -88,7 +91,6 @@ const AppNavigator: React.FC = () => {
     }
 
     if (currentScreen === 'game') {
-      // Prompt before quitting mid-game
       setCurrentScreen('home');
       return;
     }
@@ -105,7 +107,7 @@ const AppNavigator: React.FC = () => {
     });
   }, [currentScreen, lastBackTapTime, showToast]);
 
-  // Listen to popstate for Android back button
+  // Listen to popstate for back button navigation
   useEffect(() => {
     const onPopState = () => {
       handleBack();
@@ -121,8 +123,6 @@ const AppNavigator: React.FC = () => {
       const onboardingDone = localStorage.getItem(ONBOARDING_COMPLETED_KEY) === 'true';
       if (!onboardingDone) {
         setCurrentScreen('onboarding');
-      } else if (!user) {
-        setCurrentScreen('auth');
       } else {
         setCurrentScreen('home');
       }
@@ -134,15 +134,26 @@ const AppNavigator: React.FC = () => {
   const handleOnboardingComplete = () => {
     try {
       localStorage.setItem(ONBOARDING_COMPLETED_KEY, 'true');
-    } catch {
-      // ignore
-    }
-    if (!user) {
-      setCurrentScreen('auth');
-    } else {
-      setCurrentScreen('home');
-    }
+    } catch {}
+    setCurrentScreen('home');
   };
+
+  // Show Daily Rewards modal once a day when opening Home
+  useEffect(() => {
+    if (currentScreen === 'home') {
+      try {
+        const todayStr = new Date().toISOString().split('T')[0];
+        const lastAutoShown = localStorage.getItem('glam_daily_auto_shown_date');
+        if (isDailyRewardAvailable() && lastAutoShown !== todayStr) {
+          localStorage.setItem('glam_daily_auto_shown_date', todayStr);
+          const timer = setTimeout(() => {
+            setIsDailyModalOpen(true);
+          }, 800);
+          return () => clearTimeout(timer);
+        }
+      } catch {}
+    }
+  }, [currentScreen, isDailyRewardAvailable]);
 
   const handleGameOver = (score: number, coinsEarned: number) => {
     setLastGameOverStats({ score, coinsEarned });
@@ -150,94 +161,117 @@ const AppNavigator: React.FC = () => {
   };
 
   return (
-    <div className="mobile-frame">
-      {currentScreen === 'splash' && (
-        <SplashScreen onFinish={handleSplashFinish} />
-      )}
+    <div className="mobile-frame min-h-[100dvh] flex flex-col justify-between relative overflow-x-hidden">
+      {/* Floating Currency Gain Toast */}
+      <CoinEarnedToast />
 
-      {currentScreen === 'onboarding' && (
-        <OnboardingScreen onComplete={handleOnboardingComplete} />
-      )}
+      {/* Main Screen Content */}
+      <div className="flex-1 flex flex-col">
+        {currentScreen === 'splash' && (
+          <SplashScreen onFinish={handleSplashFinish} />
+        )}
 
-      {currentScreen === 'auth' && (
-        <AuthScreen
-          onSuccess={() => navigateTo('home')}
-          onOpenPrivacy={() => navigateTo('privacy')}
-          onOpenTerms={() => navigateTo('terms')}
-        />
-      )}
+        {currentScreen === 'onboarding' && (
+          <OnboardingScreen onComplete={handleOnboardingComplete} />
+        )}
 
-      {currentScreen === 'home' && (
-        <HomeScreen
-          onPlay={() => navigateTo('game')}
-          onOpenLooks={() => navigateTo('looks')}
-          onOpenShop={() => navigateTo('shop')}
-          onOpenDaily={() => navigateTo('daily')}
-          onOpenLeaderboard={() => navigateTo('leaderboard')}
-          onOpenSettings={() => navigateTo('settings')}
-        />
-      )}
-
-      {currentScreen === 'game' && (
-        <GameScreen
-          onGameOver={handleGameOver}
-          onHome={() => setCurrentScreen('home')}
-        />
-      )}
-
-      {currentScreen === 'game_over' && (
-        <GameOverScreen
-          score={lastGameOverStats.score}
-          coinsEarned={lastGameOverStats.coinsEarned}
-          onPlayAgain={() => setCurrentScreen('game')}
-          onContinueGame={() => setCurrentScreen('game')}
-          onHome={() => setCurrentScreen('home')}
-        />
-      )}
-
-      <Suspense
-        fallback={
-          <div className="flex-1 flex items-center justify-center p-6">
-            <div className="w-8 h-8 border-4 border-game-primary border-t-transparent rounded-full animate-spin" />
-          </div>
-        }
-      >
-        {currentScreen === 'looks' && (
-          <LooksScreen
-            onBack={handleBack}
+        {currentScreen === 'home' && (
+          <HomeScreen
+            onPlay={() => navigateTo('game')}
+            onOpenLooks={() => navigateTo('looks')}
             onOpenShop={() => navigateTo('shop')}
+            onOpenDaily={() => navigateTo('daily')}
+            onOpenLeaderboard={() => navigateTo('leaderboard')}
+            onOpenSettings={() => navigateTo('settings')}
           />
         )}
 
-        {currentScreen === 'shop' && (
-          <ShopScreen onBack={handleBack} />
-        )}
-
-        {currentScreen === 'daily' && (
-          <DailyRewardScreen onBack={handleBack} />
-        )}
-
-        {currentScreen === 'leaderboard' && (
-          <LeaderboardScreen onBack={handleBack} />
-        )}
-
-        {currentScreen === 'settings' && (
-          <SettingsScreen
-            onBack={handleBack}
-            onOpenPrivacy={() => navigateTo('privacy')}
-            onOpenTerms={() => navigateTo('terms')}
-            onLoggedOut={() => setCurrentScreen('auth')}
+        {currentScreen === 'game' && (
+          <GameScreen
+            onGameOver={handleGameOver}
+            onHome={() => setCurrentScreen('home')}
           />
         )}
 
-        {currentScreen === 'privacy' && (
-          <PrivacyPolicyScreen onBack={handleBack} />
+        {currentScreen === 'game_over' && (
+          <GameOverScreen
+            score={lastGameOverStats.score}
+            coinsEarned={lastGameOverStats.coinsEarned}
+            onPlayAgain={() => setCurrentScreen('game')}
+            onContinueGame={() => setCurrentScreen('game')}
+            onHome={() => setCurrentScreen('home')}
+          />
         )}
 
-        {currentScreen === 'terms' && (
-          <TermsScreen onBack={handleBack} />
-        )}
-      </Suspense>
+        <Suspense
+          fallback={
+            <div className="flex-1 flex items-center justify-center p-6">
+              <div className="w-8 h-8 border-4 border-game-primary border-t-transparent rounded-full animate-spin" />
+            </div>
+          }
+        >
+          {currentScreen === 'looks' && (
+            <LooksScreen
+              onBack={handleBack}
+              onOpenShop={() => navigateTo('shop')}
+            />
+          )}
+
+          {currentScreen === 'shop' && (
+            <ShopScreen onBack={handleBack} />
+          )}
+
+          {currentScreen === 'daily' && (
+            <DailyRewardScreen onBack={handleBack} />
+          )}
+
+          {currentScreen === 'leaderboard' && (
+            <LeaderboardScreen onBack={handleBack} />
+          )}
+
+          {currentScreen === 'settings' && (
+            <SettingsScreen
+              onBack={handleBack}
+              onOpenPrivacy={() => navigateTo('privacy')}
+              onOpenTerms={() => navigateTo('terms')}
+              onLoggedOut={() => setCurrentScreen('home')}
+              onOpenAuth={() => setIsAuthModalOpen(true)}
+            />
+          )}
+
+          {currentScreen === 'privacy' && (
+            <PrivacyPolicyScreen onBack={handleBack} />
+          )}
+
+          {currentScreen === 'terms' && (
+            <TermsScreen onBack={handleBack} />
+          )}
+        </Suspense>
+      </div>
+
+      {/* Global Bottom Navigation Bar */}
+      <BottomNavBar currentScreen={currentScreen} onNavigate={navigateTo} />
+
+      {/* Auth Modal with Close (X), Backdrop/Escape dismiss, and Guest option */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onSuccess={() => setIsAuthModalOpen(false)}
+        onOpenPrivacy={() => {
+          setIsAuthModalOpen(false);
+          navigateTo('privacy');
+        }}
+        onOpenTerms={() => {
+          setIsAuthModalOpen(false);
+          navigateTo('terms');
+        }}
+      />
+
+      {/* Daily Reward Modal */}
+      <DailyRewardModal
+        isOpen={isDailyModalOpen}
+        onClose={() => setIsDailyModalOpen(false)}
+      />
     </div>
   );
 };

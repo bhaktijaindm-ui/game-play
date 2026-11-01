@@ -78,7 +78,7 @@ export const LeaderboardScreen: React.FC<LeaderboardScreenProps> = ({ onBack }) 
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <h2 className="text-xl font-heading font-bold text-game-text">
+          <h2 className="text-xl font-display font-bold text-game-text">
             Hall of Glam
           </h2>
           <div className="w-11" />
