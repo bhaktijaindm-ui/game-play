@@ -283,7 +283,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
           border border-[var(--border,rgba(255,255,255,0.18))]
           bg-[var(--glass,rgba(255,255,255,0.06))] backdrop-blur-xl
           shadow-[0_8px_32px_rgba(0,0,0,0.15)]
-          grid grid-cols-8 grid-rows-8 gap-1.5 select-none
+          grid grid-cols-8 grid-rows-8 gap-1.5 select-none touch-none
           ${className}
         `}
         role="grid"
@@ -291,17 +291,18 @@ export const GameBoard: React.FC<GameBoardProps> = ({
       >
         {board.map((rowArr, r) =>
           rowArr.map((cell, c) => {
-            const key = `${r}-${c}`;
-            const isValid = validCells?.has(key) ?? false;
-            const isInvalid = invalidCells?.has(key) ?? false;
-            const isGhost = ghostCellLookup.has(key);
+            const keyHyphen = `${r}-${c}`;
+            const keyComma = `${r},${c}`;
+            const isValid = Boolean(validCells?.has(keyHyphen) || validCells?.has(keyComma));
+            const isInvalid = Boolean(invalidCells?.has(keyHyphen) || invalidCells?.has(keyComma));
+            const isGhost = ghostCellLookup.has(keyHyphen) || ghostCellLookup.has(keyComma);
             const isClearing =
               (typeof cell === 'object' && cell !== null && 'clearing' in cell && Boolean((cell as Record<string, unknown>).clearing)) ||
-              (clearingCells?.has(key) ?? false);
+              Boolean(clearingCells?.has(keyHyphen) || clearingCells?.has(keyComma));
 
             return (
               <GridCell
-                key={key}
+                key={keyHyphen}
                 row={r}
                 col={c}
                 cell={cell}

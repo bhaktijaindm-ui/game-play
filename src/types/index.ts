@@ -177,6 +177,7 @@ export interface PortfolioEntry {
   faceModel: string;
   score: number;
   clientId?: string;
+  lookName?: string;
   stars?: number;
   createdAt: number;
 }

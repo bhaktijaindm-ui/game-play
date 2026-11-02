@@ -81,3 +81,17 @@ This document records the foundational architectural, design, performance, and m
   - All shades are dual-coded with distinct micro-icons and SVG patterns (`lips`, `sparkle`, `heart`, `drop`, `star`, `leaf`, `diamond`).
   - Accessible high-contrast colorblind toggle increases icon scale by 125% and adds high-contrast text labels.
   - Full WCAG AA contrast compliance in both "Rose Quartz Morning" (light) and "Midnight Vanity" (dark) themes.
+
+---
+
+## 7. Mobile UX Audit, QA & Performance Decisions
+
+### Decision: Localized Board Touch-Action & FaceModel Memoization
+* **Context**: Low-end phones previously experienced frame drops during block dragging when pointermove triggered full React tree evaluation. In addition, viewport-wide `user-scalable=no` blocked legitimate pinch-zoom on legal and settings screens.
+* **Rationale**:
+  - `user-scalable=no` was removed from the global viewport tag in `index.html`. Pinch-zoom is now permitted on all non-game screens for accessibility and reading comfort.
+  - `touch-action: none` is strictly bound to the 8x8 `GameBoard` container, guaranteeing that dragging blocks never scrolls or shifts the page viewport.
+  - `FaceModel` is memoized via `React.memo` to isolate the 790-line vector SVG from pointer drag coordinate updates, securing a continuous 60fps drag experience.
+  - `onShapeDrag` streams touch coordinates lifted 60px above the finger to display a real-time green/red ghost preview on the board.
+  - Tray Fairness Guarantee: If 10 random procedural attempts yield no placeable shape on a board with < 64 filled cells, the spawning engine actively selects and places a guaranteed fitting small shape (`I1` 1x1 dot fallback) to eliminate premature unfair game-overs.
+

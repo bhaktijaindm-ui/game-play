@@ -69,6 +69,25 @@ export function spawnShapes(
     }
   }
 
+  // Guaranteed fairness rule fallback:
+  // If no shapes fit after max attempts and the board is not completely full (has at least 1 free cell),
+  // actively find a shape definition from small shapes (e.g. single cell I1) that can fit and insert it.
+  if (getBoardOccupancy(board) < 64 && chosenShapes.length > 0) {
+    const candidatePool = [...SMALL_SHAPES, ...SHAPES];
+    const fallbackShade = palette[0] ?? 'rose';
+    for (const def of candidatePool) {
+      const testShape: Shape = {
+        id: `${def.id}_fallback_fair`,
+        cells: def.cells.map(c => ({ row: c.row, col: c.col })),
+        shade: fallbackShade,
+      };
+      if (canAnyShapeFit(board, [testShape])) {
+        chosenShapes[0] = testShape;
+        break;
+      }
+    }
+  }
+
   return chosenShapes;
 }
 

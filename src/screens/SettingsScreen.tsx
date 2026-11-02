@@ -62,6 +62,7 @@ export const SettingsScreen: React.FC = () => {
     setDeleting(true);
     try {
       await deleteAccount();
+      localStorage.clear();
       navigate('/auth');
     } catch (err) {
       console.error(err);

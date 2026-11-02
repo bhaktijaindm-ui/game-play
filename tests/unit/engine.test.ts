@@ -76,4 +76,64 @@ describe('Game Engine State Machine', () => {
     expect(restored.score).toBe(original.score);
     expect(restored.powerUps.undo).toBe(modified.powerUps.undo - 1);
   });
+
+  it('refills tray with 3 new shapes when all 3 active shapes are placed', () => {
+    const client = getLevel(1);
+    let game = createNewGame(client);
+    // Force specific single-cell shapes for deterministic testing
+    game.currentShapes = [
+      { id: 'I1_1', cells: [{ row: 0, col: 0 }], shade: 'rose' },
+      { id: 'I1_2', cells: [{ row: 0, col: 0 }], shade: 'gold' },
+      { id: 'I1_3', cells: [{ row: 0, col: 0 }], shade: 'mint' },
+    ];
+    game.shapes = [...game.currentShapes];
+
+    // Place shape 0
+    game = handlePlacement(game, 0, { row: 0, col: 0 });
+    expect(game.currentShapes[0]).toBeNull();
+    expect(game.currentShapes[1]).not.toBeNull();
+
+    // Place shape 1
+    game = handlePlacement(game, 1, { row: 1, col: 0 });
+    expect(game.currentShapes[1]).toBeNull();
+    expect(game.currentShapes[2]).not.toBeNull();
+
+    // Place shape 2 (final shape) - should trigger auto-refill
+    game = handlePlacement(game, 2, { row: 2, col: 0 });
+    expect(game.currentShapes.length).toBe(3);
+    expect(game.currentShapes[0]).not.toBeNull();
+    expect(game.currentShapes[1]).not.toBeNull();
+    expect(game.currentShapes[2]).not.toBeNull();
+  });
+
+  it('detects game over when none of the remaining shapes can fit', () => {
+    const client = getLevel(1);
+    const game = createNewGame(client);
+    // Fill the entire board with cells
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        game.board[r][c] = { shade: 'rose' };
+      }
+    }
+    // Set current shapes
+    game.currentShapes = [
+      { id: 'I2h', cells: [{ row: 0, col: 0 }, { row: 0, col: 1 }], shade: 'gold' },
+    ];
+
+    expect(isGameOver(game)).toBe(true);
+  });
+
+  it('tracks and updates best score when current score exceeds best score', () => {
+    const client = getLevel(1);
+    let game = createNewGame(client);
+    game.bestScore = 500;
+    game.currentShapes = [
+      { id: 'I1', cells: [{ row: 0, col: 0 }], shade: 'rose' },
+    ];
+
+    game = handlePlacement(game, 0, { row: 0, col: 0 });
+    expect(game.score).toBeGreaterThan(0);
+    expect(game.bestScore).toBe(Math.max(500, game.score));
+  });
 });
+

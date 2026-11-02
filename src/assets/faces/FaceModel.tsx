@@ -1,4 +1,4 @@
-import React, { useId } from 'react';
+import React, { useId, memo } from 'react';
 import type { FaceRecipe, ShadeApplication } from '../types';
 import { SHADES } from '../config/shades';
 
@@ -149,7 +149,7 @@ function resolveShadeBlendMode(shade: string): React.CSSProperties['mixBlendMode
   return 'normal';
 }
 
-export const FaceModel: React.FC<FaceModelProps> = ({
+export const FaceModel: React.FC<FaceModelProps> = memo(({
   model = '1',
   skinTone,
   makeupRecipe = { eyes: [], cheeks: [], lips: [] },
@@ -790,6 +790,6 @@ export const FaceModel: React.FC<FaceModelProps> = ({
       </g>
     </svg>
   );
-};
+});
 
 export default FaceModel;

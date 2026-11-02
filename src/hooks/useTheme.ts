@@ -38,6 +38,11 @@ function applyThemeToDocument(isDark: boolean) {
     root.setAttribute('data-theme', 'light');
     root.style.colorScheme = 'light';
   }
+
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (metaTheme) {
+    metaTheme.setAttribute('content', isDark ? '#140E19' : '#FFF5F8');
+  }
 }
 
 export function useTheme(): UseThemeResult {

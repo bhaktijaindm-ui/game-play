@@ -6,7 +6,7 @@ This document outlines automated test suites, manual verification matrices, devi
 
 ## 1. Automated Test Suite (Vitest)
 
-The project includes 59 automated unit and integration tests across core puzzle engine, matrix calculation, procedural generation, and scoring logic.
+The project includes 63 automated unit and integration tests across core puzzle engine, matrix calculation, procedural generation, fairness guarantees, and scoring logic.
 
 ### Running Automated Tests
 ```bash
@@ -26,11 +26,11 @@ npx vitest run --coverage
 | **Board & Matrix** | `tests/unit/board.test.ts` | 14 | 8x8 matrix creation, boundary checks, shape placement immutability, full row/col detection, simultaneous multi-line clears, monochrome line detection |
 | **Scoring Engine** | `tests/unit/scoring.test.ts` | 6 | Cell placement points, line clear points, combo multipliers (1x–3.5x), pure shade x2 multiplier, full board wipe bonus (+1000) |
 | **Goals & Objectives** | `tests/unit/goals.test.ts` | 8 | Goal initialization, color lines tracking, pure shade tracking, combo goals, star threshold evaluation (1, 2, 3 stars) |
-| **Fair Spawning** | `tests/unit/spawning.test.ts` | 5 | Deterministic daily brief seeding, occupancy-based small shape fallback (>75%), pure shade 30% batch spawning, deadlock prevention |
-| **Game Engine** | `tests/unit/engine.test.ts` | 5 | Full lifecycle: `createNewGame`, `handlePlacement`, `handleUndo`, `handleShuffle`, `handleBomb`, game over detection |
+| **Fair Spawning** | `tests/unit/spawning.test.ts` | 6 | Deterministic daily brief seeding, occupancy-based small shape fallback (>75%), pure shade 30% batch spawning, deadlock prevention, single-free-cell fairness rule guarantee |
+| **Game Engine** | `tests/unit/engine.test.ts` | 8 | Full lifecycle: `createNewGame`, `handlePlacement`, `handleUndo`, `handleShuffle`, `handleBomb`, game over detection, 3-shape tray auto-refill, best score tracking |
 | **Comprehensive** | `src/game/__tests__/game.test.ts` | 21 | Serialization/deserialization, level catalog (1–30), procedural level generation (>30), collection lookups |
 
-**Status**: 6 / 6 test files passed, 59 / 59 tests passing (100% pass rate).
+**Status**: 6 / 6 test files passed, 63 / 63 tests passing (100% pass rate). Zero high or critical vulnerabilities (`npm audit`: 0 vulnerabilities).
 
 ---
 

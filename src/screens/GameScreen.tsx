@@ -78,6 +78,28 @@ export const GameScreen: React.FC = () => {
     lightTap();
   }, [lightTap]);
 
+  const handleShapeDrag = useCallback(
+    (index: number, coords: { x: number; y: number } | null) => {
+      setDraggingShapeIndex(index);
+      if (!coords) {
+        setGhostPosition(null);
+        return;
+      }
+      const elem = document.elementFromPoint(coords.x, coords.y);
+      const cellElem = elem?.closest('[data-row][data-col]');
+      if (cellElem) {
+        const row = parseInt(cellElem.getAttribute('data-row') ?? '-1', 10);
+        const col = parseInt(cellElem.getAttribute('data-col') ?? '-1', 10);
+        if (row >= 0 && col >= 0) {
+          setGhostPosition((prev) => (prev?.row === row && prev?.col === col ? prev : { row, col }));
+          return;
+        }
+      }
+      setGhostPosition(null);
+    },
+    []
+  );
+
   const handleShapeDrop = useCallback(
     (
       index: number,
@@ -192,11 +214,11 @@ export const GameScreen: React.FC = () => {
   );
 
   const validCellsSet = ghostValidity && ghostCells
-    ? new Set(ghostCells.cells.map((c) => `${c.row},${c.col}`))
+    ? new Set(ghostCells.cells.map((c) => `${c.row}-${c.col}`))
     : undefined;
 
   const invalidCellsSet = !ghostValidity && ghostCells
-    ? new Set(ghostCells.cells.map((c) => `${c.row},${c.col}`))
+    ? new Set(ghostCells.cells.map((c) => `${c.row}-${c.col}`))
     : undefined;
 
   return (
@@ -366,6 +388,7 @@ export const GameScreen: React.FC = () => {
         <ShapeTray
           shapes={gameState.shapes}
           onShapePickUp={handleShapePickUp}
+          onShapeDrag={handleShapeDrag}
           onShapeDrop={handleShapeDrop}
         />
       </footer>

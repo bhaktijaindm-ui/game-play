@@ -159,6 +159,32 @@ export async function createUserProfile(user: User, marketingConsent: boolean): 
   }
 }
 
+const PROFANITY_WORDS = [
+  'fuck', 'shit', 'bitch', 'asshole', 'cunt', 'dick', 'pussy', 'bastard', 'nigger', 'faggot', 'whore', 'slut'
+];
+
+/**
+ * Strips HTML tags, trims whitespace, limits length to 24 chars,
+ * and filters basic profanity before persisting text to Firestore.
+ */
+export function sanitizeTextInput(input: string, maxLength: number = 24): string {
+  if (!input) return 'Glam Artist';
+  // 1. Strip HTML tags
+  let cleaned = input.replace(/<[^>]*>?/gm, '').trim();
+  // 2. Limit length to 24 characters
+  if (cleaned.length > maxLength) {
+    cleaned = cleaned.slice(0, maxLength).trim();
+  }
+  // 3. Profanity filter
+  for (const word of PROFANITY_WORDS) {
+    const regex = new RegExp(`\\b${word}\\b`, 'gi');
+    if (regex.test(cleaned)) {
+      cleaned = cleaned.replace(regex, '***');
+    }
+  }
+  return cleaned || 'Glam Artist';
+}
+
 /**
  * Updates user profile with only whitelisted fields:
  * theme, faceModel, displayName, marketingConsent.
@@ -178,7 +204,7 @@ export async function updateUserProfile(
       safeData.faceModel = data.faceModel;
     }
     if (data.displayName !== undefined) {
-      safeData.displayName = data.displayName.trim();
+      safeData.displayName = sanitizeTextInput(data.displayName, 24);
     }
     if (data.marketingConsent !== undefined) {
       safeData.marketingConsent = Boolean(data.marketingConsent);
@@ -202,8 +228,12 @@ export async function updateUserProfile(
 export async function addPortfolioEntry(uid: string, entry: PortfolioEntry): Promise<void> {
   try {
     const docRef = doc(db, USERS_COLLECTION, uid);
+    const sanitizedEntry: PortfolioEntry = {
+      ...entry,
+      lookName: sanitizeTextInput(entry.lookName || 'Glam Look', 24),
+    };
     await updateDoc(docRef, {
-      portfolio: arrayUnion(entry),
+      portfolio: arrayUnion(sanitizedEntry),
     });
   } catch (error) {
     console.error('Error adding portfolio entry:', error);

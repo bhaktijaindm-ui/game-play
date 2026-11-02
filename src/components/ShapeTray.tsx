@@ -6,6 +6,7 @@ import { SHADES } from '../config/shades';
 export interface ShapeTrayProps {
   shapes: (Shape | null)[];
   onShapePickUp?: (index: number) => void;
+  onShapeDrag?: (index: number, position: { x: number; y: number } | null) => void;
   onShapeDrop?: (
     index: number,
     position: { x: number; y: number } | { row: number; col: number } | null
@@ -75,6 +76,7 @@ function getShapeGridInfo(shape: Shape) {
 export const ShapeTray: React.FC<ShapeTrayProps> = ({
   shapes,
   onShapePickUp,
+  onShapeDrag,
   onShapeDrop,
   disabled = false,
   className = '',
@@ -99,14 +101,16 @@ export const ShapeTray: React.FC<ShapeTrayProps> = ({
     setDraggingIndex(index);
     setPointerPos({ x: e.clientX, y: e.clientY });
     onShapePickUp?.(index);
+    onShapeDrag?.(index, { x: e.clientX, y: e.clientY - 60 });
   };
 
   const handlePointerMove = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
       if (draggingIndex === null) return;
       setPointerPos({ x: e.clientX, y: e.clientY });
+      onShapeDrag?.(draggingIndex, { x: e.clientX, y: e.clientY - 60 });
     },
-    [draggingIndex]
+    [draggingIndex, onShapeDrag]
   );
 
   const handlePointerUp = useCallback(
@@ -125,11 +129,12 @@ export const ShapeTray: React.FC<ShapeTrayProps> = ({
 
       setDraggingIndex(null);
       setPointerPos(null);
+      onShapeDrag?.(index, null);
 
       // Pass coordinates lifted 60px above finger so piece placement aligns with target
       onShapeDrop?.(index, { x: e.clientX, y: e.clientY - 60 });
     },
-    [draggingIndex, onShapeDrop]
+    [draggingIndex, onShapeDrag, onShapeDrop]
   );
 
   const handlePointerCancel = useCallback(
@@ -142,10 +147,13 @@ export const ShapeTray: React.FC<ShapeTrayProps> = ({
         }
         activePointerIdRef.current = null;
       }
+      if (draggingIndex !== null) {
+        onShapeDrag?.(draggingIndex, null);
+      }
       setDraggingIndex(null);
       setPointerPos(null);
     },
-    []
+    [draggingIndex, onShapeDrag]
   );
 
   const activeDraggedShape = draggingIndex !== null ? shapes[draggingIndex] : null;

@@ -125,4 +125,21 @@ describe('Spawning Logic Unit Tests', () => {
     expect(highRatio).toBeGreaterThan(lowRatio);
     expect(highRatio).toBeGreaterThan(0.55);
   });
+
+  it('Fairness rule: guarantees at least one shape can be placed even when board has only 1 free cell', () => {
+    const crowdedBoard = createEmptyBoard();
+    // Fill 63 of 64 cells, leaving only row 4 col 4 empty
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        if (!(r === 4 && c === 4)) {
+          crowdedBoard[r][c] = { shade: 'ruby' };
+        }
+      }
+    }
+
+    const shapes = spawnShapes(crowdedBoard, 'fairness_test_seed');
+    expect(shapes.length).toBe(3);
+    const canFit = canAnyShapeFit(crowdedBoard, shapes);
+    expect(canFit).toBe(true);
+  });
 });
