@@ -1,4 +1,4 @@
-const CACHE_NAME = 'glam-blocks-v1';
+const CACHE_NAME = 'glam-blocks-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -7,11 +7,6 @@ const STATIC_ASSETS = [
 ];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS);
-    })
-  );
   self.skipWaiting();
 });
 
@@ -25,9 +20,8 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {

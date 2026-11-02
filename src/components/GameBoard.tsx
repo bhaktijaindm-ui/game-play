@@ -96,12 +96,12 @@ const GridCell = memo(function GridCell({
     onClick?.(row, col);
   };
 
-  // Determine background styling
+  // Determine background styling: crystal semi-transparent glass so face canvas underneath is vivid
   let cellBgStyle: React.CSSProperties = {
-    background: 'var(--glass, rgba(255, 255, 255, 0.08))',
-    backdropFilter: 'blur(12px)',
-    WebkitBackdropFilter: 'blur(12px)',
-    borderColor: 'var(--border, rgba(255, 255, 255, 0.16))',
+    background: 'rgba(255, 255, 255, 0.18)',
+    backdropFilter: 'blur(3px)',
+    WebkitBackdropFilter: 'blur(3px)',
+    borderColor: 'var(--border, rgba(255, 255, 255, 0.22))',
   };
 
   if (cell && shadeInfo) {

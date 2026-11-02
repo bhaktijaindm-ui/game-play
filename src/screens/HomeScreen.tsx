@@ -135,7 +135,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       </header>
 
       {/* Main Content Area */}
-      <div className="flex-1 px-4 py-4 space-y-5">
+      <div className="flex-1 px-4 py-4 space-y-4">
+        {/* Release Pill Badge */}
+        <div className="flex items-center justify-between text-[11px] font-bold text-pink-600 dark:text-pink-400 bg-pink-500/10 px-3.5 py-1.5 rounded-xl border border-pink-500/20">
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            Glam Blocks 2.0 Live
+          </span>
+          <span className="font-semibold text-xs text-[var(--text-muted,#71717a)]">The Face is Your Board</span>
+        </div>
+
         {/* Best Score Banner */}
         <div className="flex items-center justify-between rounded-2xl bg-[var(--surface-elevated,#f9fafb)] dark:bg-[var(--surface-elevated,#2c2c36)] px-4 py-2.5 border border-black/5 dark:border-white/5">
           <span className="text-xs font-semibold text-[var(--text-muted,#71717a)]">All-Time Best Score</span>
@@ -179,7 +188,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </button>
         </div>
 
-        {/* Row of 4 Icon Tiles */}
+        {/* Row of 4 Primary Mobile Hub Tiles */}
         <div className="grid grid-cols-4 gap-2.5 pt-2">
           {/* Daily Beauty Brief */}
           <button
@@ -197,39 +206,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </span>
           </button>
 
-          {/* Portfolio */}
+          {/* Collection */}
           <button
             type="button"
-            onClick={() => onNavigate?.('portfolio')}
+            onClick={() => onNavigate?.('collections')}
             className="flex flex-col items-center justify-center rounded-2xl bg-[var(--surface-card,#ffffff)] dark:bg-[var(--surface-card,#22222a)] p-3 shadow-sm border border-black/5 dark:border-white/5 hover:border-pink-500/30 transition-all active:scale-95 text-center"
           >
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-500/10 text-purple-500 mb-1.5">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
               </svg>
             </div>
             <span className="text-[11px] font-bold text-[var(--text,#18181b)] dark:text-[var(--text,#f4f4f5)] leading-tight">
-              Portfolio
-            </span>
-          </button>
-
-          {/* Palette with Progress Ring */}
-          <button
-            type="button"
-            onClick={() => onNavigate?.('palette')}
-            className="flex flex-col items-center justify-center rounded-2xl bg-[var(--surface-card,#ffffff)] dark:bg-[var(--surface-card,#22222a)] p-3 shadow-sm border border-black/5 dark:border-white/5 hover:border-pink-500/30 transition-all active:scale-95 text-center relative"
-          >
-            <div className="relative flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500 mb-1.5">
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-              </svg>
-              {/* Progress badge */}
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[8px] font-bold text-white">
-                {palettePercent}%
-              </span>
-            </div>
-            <span className="text-[11px] font-bold text-[var(--text,#18181b)] dark:text-[var(--text,#f4f4f5)] leading-tight">
-              Palette
+              Collection
             </span>
           </button>
 
@@ -247,6 +236,43 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             <span className="text-[11px] font-bold text-[var(--text,#18181b)] dark:text-[var(--text,#f4f4f5)] leading-tight">
               Shop
             </span>
+          </button>
+
+          {/* Leaderboard */}
+          <button
+            type="button"
+            onClick={() => onNavigate?.('leaderboard')}
+            className="flex flex-col items-center justify-center rounded-2xl bg-[var(--surface-card,#ffffff)] dark:bg-[var(--surface-card,#22222a)] p-3 shadow-sm border border-black/5 dark:border-white/5 hover:border-pink-500/30 transition-all active:scale-95 text-center"
+          >
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500 mb-1.5">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <span className="text-[11px] font-bold text-[var(--text,#18181b)] dark:text-[var(--text,#f4f4f5)] leading-tight">
+              Leaderboard
+            </span>
+          </button>
+        </div>
+
+        {/* Quick Vanity Access: Palette & Portfolio */}
+        <div className="grid grid-cols-2 gap-2.5 pt-1">
+          <button
+            type="button"
+            onClick={() => onNavigate?.('palette')}
+            className="flex items-center justify-between rounded-xl bg-[var(--surface-card,#ffffff)] dark:bg-[var(--surface-card,#22222a)] px-3 py-2.5 shadow-sm border border-black/5 dark:border-white/5 hover:border-pink-500/30 transition-all active:scale-95"
+          >
+            <span className="text-xs font-bold text-[var(--text,#18181b)] dark:text-[var(--text,#f4f4f5)]">🎨 Palette</span>
+            <span className="text-[10px] font-black bg-pink-500/10 text-pink-600 dark:text-pink-400 px-2 py-0.5 rounded-full border border-pink-500/20">{palettePercent}%</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onNavigate?.('portfolio')}
+            className="flex items-center justify-between rounded-xl bg-[var(--surface-card,#ffffff)] dark:bg-[var(--surface-card,#22222a)] px-3 py-2.5 shadow-sm border border-black/5 dark:border-white/5 hover:border-pink-500/30 transition-all active:scale-95"
+          >
+            <span className="text-xs font-bold text-[var(--text,#18181b)] dark:text-[var(--text,#f4f4f5)]">📸 Portfolio</span>
+            <span className="text-[10px] font-semibold text-[var(--text-muted,#71717a)]">Looks →</span>
           </button>
         </div>
       </div>
