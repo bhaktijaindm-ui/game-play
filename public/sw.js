@@ -1,4 +1,4 @@
-const CACHE_NAME = 'glam-blocks-v2';
+const CACHE_NAME = 'glam-blocks-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
