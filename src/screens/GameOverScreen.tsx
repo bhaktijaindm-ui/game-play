@@ -1,194 +1,169 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Button } from '../components/ui/Button';
-import { Card } from '../components/ui/Card';
-import { useAuth } from '../services/authContext';
-import { adsProvider } from '../services/ads';
-import { soundSystem } from '../services/soundSystem';
-import { Trophy, RotateCcw, Home, Film, Gem } from 'lucide-react';
-import { GAME_RULES } from '../config/product.config';
-import { useToast } from '../components/ui/Toast';
-import confetti from 'canvas-confetti';
+import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import type { GameState } from '../types';
+import { FaceModel } from '../assets/faces/FaceModel';
+import { Button } from '../components/Button';
+import { ConfirmSheet } from '../components/ConfirmSheet';
+import { useGame } from '../context/GameContext';
+import { getAdsProvider } from '../services/ads';
+import { generateLookCard, shareImage } from '../services/share';
 
-interface GameOverScreenProps {
-  score: number;
-  coinsEarned: number;
-  onPlayAgain: () => void;
-  onContinueGame: () => void;
-  onHome: () => void;
-}
+export const GameOverScreen: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { userProfile, updateProfile } = useGame();
 
-const GAME_OVER_COUNT_KEY = 'glam_blocks_game_over_count';
+  const stateData = location.state as { gameState: GameState } | undefined;
+  const gameState = stateData?.gameState;
 
-export const GameOverScreen: React.FC<GameOverScreenProps> = ({
-  score,
-  coinsEarned,
-  onPlayAgain,
-  onContinueGame,
-  onHome,
-}) => {
-  const { user, isAdFree, spendCurrency } = useAuth();
-  const { showToast } = useToast();
+  const [showContinueSheet, setShowContinueSheet] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const [adLoading, setAdLoading] = useState(false);
 
-  const [continued, setContinued] = useState(false);
-  const bestScore = user?.bestScore || 0;
-  const isNewRecord = score >= bestScore && score > 0;
+  const score = gameState?.score || 0;
+  const bestScore = Math.max(score, userProfile.bestScore || 0);
+  const coinsEarned = Math.floor(score / 50) + 20;
 
-  // Interstitial ad check and celebratory particles on high score
-  useEffect(() => {
-    if (isNewRecord) {
-      try {
-        confetti({
-          particleCount: 50,
-          spread: 80,
-          origin: { y: 0.5 },
-          colors: ['#D4AF37', '#FF4081', '#C2185B', '#FFFFFF'],
-        });
-      } catch {}
-    }
-
+  const handleWatchAdContinue = async () => {
+    setAdLoading(true);
     try {
-      const count = parseInt(localStorage.getItem(GAME_OVER_COUNT_KEY) || '0', 10) + 1;
-      localStorage.setItem(GAME_OVER_COUNT_KEY, count.toString());
-
-      if (count > 3 && count % 3 === 0 && !isAdFree()) {
-        adsProvider.showInterstitial(() => {});
+      const ads = getAdsProvider();
+      const success = await ads.showRewarded('continue_game');
+      if (success) {
+        setShowContinueSheet(false);
+        navigate('/game');
       }
-    } catch {}
-  }, [isNewRecord, isAdFree]);
-
-  const handleContinueWithGems = () => {
-    if (continued) return;
-    const ok = spendCurrency(0, GAME_RULES.CONTINUE_COST_GEMS);
-    if (!ok) {
-      showToast('Not enough gems! Visit the boutique.', 'warning');
-      return;
+    } finally {
+      setAdLoading(false);
     }
-    soundSystem.playPowerup();
-    setContinued(true);
-    showToast('Board refreshed! Keep playing!', 'glam');
-    onContinueGame();
   };
 
-  const handleContinueWithAd = () => {
-    if (continued) return;
-    adsProvider.showRewardedAd(
-      () => {
-        soundSystem.playPowerup();
-        setContinued(true);
-        showToast('Ad completed! Board refreshed!', 'glam');
-        onContinueGame();
-      },
-      () => {}
-    );
+  const handleSpendGemsContinue = () => {
+    if (userProfile.gems >= 50) {
+      updateProfile({ gems: userProfile.gems - 50 });
+      setShowContinueSheet(false);
+      navigate('/game');
+    }
+  };
+
+  const handleShare = async () => {
+    if (!gameState) return;
+    setSharing(true);
+    try {
+      const canvas = await generateLookCard(
+        gameState.faceRecipe,
+        userProfile.faceModel || '1',
+        score,
+        userProfile.displayName || 'Glam Artist',
+        'post'
+      );
+      await shareImage(canvas, 'My Glam Look!', 'Check out my score in Glam Blocks!');
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSharing(false);
+    }
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-between p-5 safe-top safe-bottom bg-gradient-to-b from-game-bg via-game-surface to-pink-50/50 dark:to-purple-950/20 text-center">
-      {/* Header */}
-      <motion.div
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="pt-2"
-      >
-        <span className="inline-block text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-game-danger/10 text-game-danger border border-game-danger/30 mb-2">
-          Out of Space
-        </span>
-        <h1 className="text-3xl font-display font-bold text-game-text">
-          Game Over
-        </h1>
-        {isNewRecord && (
-          <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-950 bg-gradient-to-r from-amber-300 to-yellow-400 px-3.5 py-1 rounded-full shadow-xs border border-amber-200 mt-2 animate-bounce">
-            <Trophy className="w-3.5 h-3.5 fill-amber-950" />
-            <span>NEW HIGH SCORE!</span>
-          </div>
+    <div className="relative min-h-screen min-h-[100dvh] w-full max-w-[480px] mx-auto flex flex-col justify-between overflow-x-hidden bg-[var(--bg,#fff6f9)] dark:bg-[var(--bg,#140e19)] text-[var(--text)] p-4 select-none">
+      {/* Title */}
+      <header className="text-center pt-4">
+        <span className="text-xs font-bold uppercase tracking-widest text-[var(--text-muted)]">No More Moves</span>
+        <h1 className="text-3xl font-black text-[var(--text)] mt-1">Out of Space!</h1>
+      </header>
+
+      {/* Center Makeup Result */}
+      <div className="relative w-full max-w-[280px] aspect-[3/4] mx-auto rounded-3xl overflow-hidden shadow-xl border-2 border-[var(--border)] bg-[var(--surface)] my-2">
+        {gameState && (
+          <FaceModel
+            model={userProfile.faceModel || '1'}
+            skinTone="#FDDCBF"
+            makeupRecipe={gameState.faceRecipe}
+            width={280}
+          />
         )}
-      </motion.div>
+      </div>
 
-      {/* Main Score & Rewards Card */}
-      <div className="w-full max-w-xs mx-auto my-auto py-2">
-        <Card variant="gradient" padding="lg" className="border border-game-border shadow-luxury">
-          <div className="mb-4">
-            <span className="text-[11px] font-bold uppercase tracking-widest text-game-muted">
-              Final Beauty Score
-            </span>
-            <div className="text-4xl font-display font-bold text-game-primary mt-1">
-              {score.toLocaleString()}
-            </div>
-          </div>
+      {/* Score Summary Box */}
+      <div className="bg-[var(--surface)] rounded-2xl p-4 border border-[var(--border)] shadow-md space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold text-[var(--text-muted)] uppercase">Your Score</span>
+          <span className="text-2xl font-black text-[var(--primary)] tabular-nums">{score.toLocaleString()}</span>
+        </div>
 
-          <div className="grid grid-cols-2 gap-2.5 pt-4 border-t border-game-border text-left">
-            <div className="bg-game-surface p-2.5 rounded-2xl border border-game-border">
-              <span className="block text-[10px] font-bold uppercase text-game-muted">
-                Best Score
-              </span>
-              <span className="font-heading font-bold text-base text-game-text">
-                {Math.max(score, bestScore).toLocaleString()}
-              </span>
-            </div>
+        <div className="flex items-center justify-between border-t border-[var(--border)] pt-2 text-xs">
+          <span className="font-semibold text-[var(--text-muted)]">Best Score</span>
+          <span className="font-bold text-[var(--text)] tabular-nums">{bestScore.toLocaleString()}</span>
+        </div>
 
-            <div className="bg-game-surface p-2.5 rounded-2xl border border-game-border">
-              <span className="block text-[10px] font-bold uppercase text-game-muted">
-                Coins Earned
-              </span>
-              <span className="font-heading font-bold text-base text-amber-500 flex items-center gap-1">
-                🪙 +{coinsEarned.toLocaleString()}
-              </span>
-            </div>
-          </div>
-        </Card>
+        <div className="flex items-center justify-between border-t border-[var(--border)] pt-2 text-xs">
+          <span className="font-semibold text-[var(--text-muted)]">Coins Collected</span>
+          <span className="font-bold text-amber-500 tabular-nums">+{coinsEarned} 🪙</span>
+        </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="w-full max-w-xs mx-auto flex flex-col gap-2.5">
-        {/* Continue Options */}
-        {!continued && (
-          <div className="grid grid-cols-2 gap-2 mb-1">
-            <Button
-              variant="accent"
-              size="sm"
-              onClick={handleContinueWithGems}
-              icon={<Gem className="w-4 h-4 text-gray-900" />}
-              className="text-xs font-heading font-bold min-h-[44px]"
-            >
-              50 Gems
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={handleContinueWithAd}
-              icon={<Film className="w-4 h-4" />}
-              className="text-xs font-heading font-bold min-h-[44px]"
-            >
-              Watch Ad
-            </Button>
-          </div>
-        )}
-
-        {/* Play Again */}
+      <footer className="flex flex-col gap-2.5 pt-2 pb-4">
         <Button
           variant="primary"
-          size="md"
+          size="lg"
           fullWidth
-          onClick={onPlayAgain}
-          icon={<RotateCcw className="w-5 h-5" />}
-          className="font-heading font-bold shadow-luxury"
+          onClick={() => navigate('/game')}
         >
-          Play Again
+          🔄 Play Again
         </Button>
 
-        {/* Home */}
         <Button
-          variant="ghost"
+          variant="secondary"
           size="md"
           fullWidth
-          onClick={onHome}
-          icon={<Home className="w-5 h-5" />}
-          className="font-heading font-semibold"
+          onClick={() => setShowContinueSheet(true)}
         >
-          Main Menu
+          ✨ Continue (Watch Ad or 50 Gems)
         </Button>
-      </div>
+
+        <div className="flex gap-2">
+          <Button
+            variant="ghost"
+            size="md"
+            fullWidth
+            loading={sharing}
+            onClick={handleShare}
+          >
+            Share Look
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="md"
+            fullWidth
+            onClick={() => navigate('/')}
+          >
+            Home
+          </Button>
+        </div>
+      </footer>
+
+      {/* Continue Options Confirmation Sheet */}
+      <ConfirmSheet
+        open={showContinueSheet}
+        title="Continue This Game?"
+        message="Clear 3 bottom rows and get 3 small fresh blocks to keep your streak alive!"
+        confirmText="Watch 3s Ad (Free)"
+        cancelText={userProfile.gems >= 50 ? 'Spend 50 Gems 💎' : 'Cancel'}
+        onConfirm={handleWatchAdContinue}
+        onCancel={() => {
+          if (userProfile.gems >= 50) {
+            handleSpendGemsContinue();
+          } else {
+            setShowContinueSheet(false);
+          }
+        }}
+        loading={adLoading}
+      />
     </div>
   );
 };
+
+export default GameOverScreen;

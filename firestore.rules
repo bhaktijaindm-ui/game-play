@@ -1,59 +1,44 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // Helper functions
-    function isAuthenticated() {
-      return request.auth != null;
-    }
-
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
-    }
-
-    // Users collection rules
+    // Users: read/write own document only
+    // Client CANNOT change: coins, gems, adsRemoved, glamPassUntil, palette completion flags, unlockedLooks, purchases
+    // These fields are server-write-only (Cloud Functions)
     match /users/{userId} {
-      allow read: if isOwner(userId);
-
-      // Create new user record
-      allow create: if isOwner(userId)
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId
+        && request.resource.data.keys().hasAll(['displayName', 'email', 'createdAt'])
         && request.resource.data.displayName is string
         && request.resource.data.displayName.size() >= 2
         && request.resource.data.displayName.size() <= 20
-        && request.resource.data.marketingConsent is bool;
-
-      // Update existing user: client cannot modify coins, gems, adsRemoved, glamPassUntil directly
-      allow update: if isOwner(userId)
-        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['coins', 'gems', 'adsRemoved', 'glamPassUntil']);
-
-      allow delete: if isOwner(userId);
+        && !request.resource.data.displayName.matches('.*[<>"\'/].*');
+      allow update: if request.auth != null && request.auth.uid == userId
+        && !request.resource.data.diff(resource.data).affectedKeys()
+          .hasAny(['coins', 'gems', 'adsRemoved', 'glamPassUntil', 'unlockedLooks', 'purchases']);
     }
-
-    // Scores collection (Weekly Leaderboard)
+    
+    // Scores: creatable by signed-in owner with valid schema, read-only for leaderboard
     match /scores/{scoreId} {
-      // Read-only for any authenticated user
-      allow read: if isAuthenticated();
-
-      // Only signed-in owner can submit their score with a valid schema
-      allow create, update: if isAuthenticated()
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
         && request.resource.data.uid == request.auth.uid
-        && request.resource.data.score is number
+        && request.resource.data.score is int
         && request.resource.data.score >= 0
-        && request.resource.data.score <= 500000
-        && request.resource.data.displayName is string
-        && request.resource.data.displayName.size() >= 2
-        && request.resource.data.displayName.size() <= 20
-        && request.resource.data.week is string;
-
-      allow delete: if false; // Scores cannot be deleted by clients
+        && request.resource.data.score <= 100000
+        && request.resource.data.mode in ['free', 'daily']
+        && request.resource.data.keys().hasAll(['uid', 'displayName', 'score', 'mode', 'createdAt']);
+      allow update, delete: if false;
     }
-
-    // Purchases collection (Google Play & Digital Goods verification)
+    
+    // Daily Brief: read-only for clients
+    match /dailyBrief/{date} {
+      allow read: if request.auth != null;
+      allow write: if false; // server only
+    }
+    
+    // Purchases: read own only, write server only
     match /purchases/{purchaseId} {
-      // Users can only view their own validated purchases
-      allow read: if isAuthenticated() && resource.data.uid == request.auth.uid;
-
-      // Clients cannot write or manipulate purchase records; server-only
+      allow read: if request.auth != null && resource.data.uid == request.auth.uid;
       allow write: if false;
     }
   }

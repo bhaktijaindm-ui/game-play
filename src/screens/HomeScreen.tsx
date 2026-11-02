@@ -1,232 +1,354 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { GlamAvatar } from '../components/avatar/GlamAvatar';
-import { CurrencyChip } from '../components/ui/CurrencyChip';
-import { IconButton } from '../components/ui/IconButton';
-import { DailyRewardModal } from '../components/daily/DailyRewardModal';
-import { useAuth } from '../services/authContext';
-import { Settings, Play, Sparkles, ShoppingBag, Trophy, Calendar, Crown, Gift } from 'lucide-react';
-import { soundSystem } from '../services/soundSystem';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import type { UserProfile, Client } from '../types';
+import DailyBriefCard from '../components/DailyBriefCard';
 
-interface HomeScreenProps {
-  onPlay: () => void;
-  onOpenLooks: () => void;
-  onOpenShop: () => void;
-  onOpenDaily: () => void;
-  onOpenLeaderboard: () => void;
-  onOpenSettings: () => void;
+export interface HomeScreenProps {
+  user?: Partial<UserProfile> | null;
+  coins?: number;
+  gems?: number;
+  streak?: number;
+  level?: number;
+  bestScore?: number;
+  todayClient?: Client | null;
+  onPlay?: (client?: Client | null) => void;
+  onNavigate?: (screen: 'home' | 'collections' | 'leaderboard' | 'profile' | 'palette' | 'shop' | 'portfolio' | 'settings' | 'dailyReward') => void;
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
+  user,
+  coins = 450,
+  gems = 25,
+  streak = 4,
+  level = 7,
+  bestScore = 18450,
+  todayClient,
   onPlay,
-  onOpenLooks,
-  onOpenShop,
-  onOpenDaily,
-  onOpenLeaderboard,
-  onOpenSettings,
+  onNavigate,
 }) => {
-  const { user, isGlamPassActive, isDailyRewardAvailable, addCurrency } = useAuth();
-  const [isDailyModalOpen, setIsDailyModalOpen] = useState(false);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
 
-  const handlePlayClick = () => {
-    soundSystem.playPop();
-    onPlay();
+  // Handle Android back button hardware intercept
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      e.preventDefault();
+      setShowExitConfirm(true);
+      // Re-push state so user doesn't leave unexpectedly
+      window.history.pushState(null, '', window.location.pathname);
+    };
+
+    window.history.pushState(null, '', window.location.pathname);
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
+  const handleExitApp = () => {
+    setShowExitConfirm(false);
+    // Standard web exit / history back
+    window.history.go(-2);
   };
 
-  const handleQuickClaimBonus = () => {
-    soundSystem.playSparkle();
-    addCurrency(250, 0, 'quick_bonus');
-  };
-
-  const equippedLook = user?.equippedLook || 'look_natural_glow';
-  const hasGlamPass = isGlamPassActive();
-  const hasDailyGift = isDailyRewardAvailable();
+  const palettePansFilled = user?.palette?.pans?.filter((p) => p.filled).length ?? 7;
+  const paletteTotal = 12;
+  const palettePercent = Math.round((palettePansFilled / paletteTotal) * 100);
 
   return (
-    <div className="flex-1 flex flex-col justify-between p-4 safe-top safe-bottom bg-gradient-to-b from-game-bg via-game-surface to-pink-50/50 dark:to-purple-950/20">
+    <motion.main
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      style={{
+        paddingTop: 'env(safe-area-inset-top, 0px)',
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+      }}
+      className="relative flex min-h-screen min-h-[100dvh] w-full max-w-[480px] mx-auto flex-col justify-between overflow-x-hidden bg-[var(--background,#fdf4f8)] dark:bg-[var(--background,#0f0f13)] select-none pb-20"
+    >
       {/* Top Bar HUD */}
-      <header className="flex items-center justify-between gap-2 min-h-[48px]">
-        {/* Avatar & Player Info */}
+      <header className="sticky top-0 z-20 flex w-full items-center justify-between bg-[var(--background,#fdf4f8)]/90 dark:bg-[var(--background,#0f0f13)]/90 backdrop-blur-md px-4 py-3 border-b border-black/5 dark:border-white/5">
+        {/* User avatar & level badge */}
         <button
           type="button"
-          onClick={onOpenLooks}
-          className="flex items-center gap-2.5 p-1 rounded-2xl hover:bg-game-card transition-all text-left cursor-pointer"
-          aria-label="Open looks studio"
+          onClick={() => onNavigate?.('profile')}
+          className="flex items-center gap-2 text-left focus:outline-none"
         >
           <div className="relative">
-            <GlamAvatar
-              lookId={equippedLook}
-              size="md"
-              showGoldenFrame={hasGlamPass}
-            />
-            {hasGlamPass && (
-              <span className="absolute -bottom-1 -right-1 bg-amber-400 text-amber-950 text-[10px] font-bold p-1 rounded-full shadow-xs">
-                <Crown className="w-3 h-3 fill-amber-950" />
-              </span>
-            )}
+            <div className="h-10 w-10 overflow-hidden rounded-full border-2 border-pink-500 bg-gradient-to-tr from-pink-400 to-purple-500 p-0.5 shadow-md">
+              <img
+                src={user?.photoURL || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80'}
+                alt="Avatar"
+                className="h-full w-full rounded-full object-cover"
+              />
+            </div>
+            <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-pink-600 text-[9px] font-black text-white">
+              {level}
+            </span>
           </div>
           <div>
-            <div className="text-[10px] font-bold text-game-primary uppercase tracking-widest">
-              Level {user?.level || 1}
+            <div className="text-xs font-black text-[var(--text,#18181b)] dark:text-[var(--text,#f4f4f5)] leading-tight">
+              {user?.displayName || 'Glam Artist'}
             </div>
-            <div className="text-sm font-heading font-bold text-game-text truncate max-w-[105px]">
-              {user?.displayName || 'Glam Queen'}
+            <div className="flex items-center gap-1 text-[10px] font-semibold text-amber-500">
+              <span>🔥</span> {streak} Day Streak
             </div>
           </div>
         </button>
 
-        {/* Currency Chips & Settings */}
-        <div className="flex items-center gap-1.5">
-          <CurrencyChip
-            type="coins"
-            amount={user?.coins ?? 500}
-            onAddClick={() => setIsDailyModalOpen(true)}
-            size="sm"
-          />
-          <CurrencyChip
-            type="gems"
-            amount={user?.gems ?? 100}
-            onAddClick={onOpenShop}
-            size="sm"
-          />
-          <IconButton
-            icon={<Settings className="w-5 h-5 text-game-muted" />}
-            label="Settings"
-            variant="surface"
-            size="sm"
-            onClick={onOpenSettings}
-          />
+        {/* Currency chips and Settings Gear */}
+        <div className="flex items-center gap-2">
+          {/* Coins Chip */}
+          <button
+            type="button"
+            onClick={() => onNavigate?.('shop')}
+            className="flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-1 text-xs font-black text-amber-600 dark:text-amber-400 border border-amber-500/20"
+          >
+            <span>🪙</span>
+            <span>{coins.toLocaleString()}</span>
+          </button>
+
+          {/* Gems Chip */}
+          <button
+            type="button"
+            onClick={() => onNavigate?.('shop')}
+            className="flex items-center gap-1 rounded-full bg-cyan-500/10 px-2.5 py-1 text-xs font-black text-cyan-600 dark:text-cyan-400 border border-cyan-500/20"
+          >
+            <span>💎</span>
+            <span>{gems.toLocaleString()}</span>
+          </button>
+
+          {/* Settings Button */}
+          <button
+            type="button"
+            aria-label="Settings"
+            onClick={() => onNavigate?.('settings')}
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-black/5 dark:bg-white/10 text-[var(--text-muted,#71717a)] hover:text-[var(--text,#18181b)] dark:hover:text-white transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </button>
         </div>
       </header>
 
-      {/* Main Hero Showcase */}
-      <div className="my-auto py-2 flex flex-col items-center text-center">
-        {/* Brand Title */}
-        <div className="mb-2">
-          <span className="inline-block text-[11px] font-bold uppercase tracking-[0.2em] text-game-primary/80">
-            Beauty Block Puzzle
+      {/* Main Content Area */}
+      <div className="flex-1 px-4 py-4 space-y-5">
+        {/* Best Score Banner */}
+        <div className="flex items-center justify-between rounded-2xl bg-[var(--surface-elevated,#f9fafb)] dark:bg-[var(--surface-elevated,#2c2c36)] px-4 py-2.5 border border-black/5 dark:border-white/5">
+          <span className="text-xs font-semibold text-[var(--text-muted,#71717a)]">All-Time Best Score</span>
+          <span className="text-sm font-black text-pink-600 dark:text-pink-400">
+            {bestScore.toLocaleString()} pts
           </span>
-          <h1 className="text-3xl sm:text-4xl font-display font-bold text-game-text tracking-tight mt-0.5">
-            Glam Blocks
-          </h1>
         </div>
 
-        {/* Best Score & Quick Bonus Bar */}
-        <div className="flex items-center gap-2 mb-4">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-game-surface border border-game-border shadow-soft">
-            <Trophy className="w-4 h-4 text-amber-400 fill-amber-300" />
-            <span className="text-[11px] uppercase font-bold text-game-muted tracking-wider">
-              Best:
-            </span>
-            <span className="font-heading font-bold text-sm text-game-text">
-              {(user?.bestScore || 0).toLocaleString()}
-            </span>
-          </div>
+        {/* Center: Large Today's Client Card */}
+        <DailyBriefCard
+          client={todayClient}
+          streakCount={streak}
+          onPlay={() => onPlay?.(todayClient)}
+        />
 
-          {/* Instant Claim Bonus Coins Button */}
-          <motion.button
-            whileTap={{ scale: 0.94 }}
-            onClick={handleQuickClaimBonus}
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-400 text-amber-950 font-heading font-bold text-xs shadow-xs hover:shadow-rosegold active:scale-95 transition-all cursor-pointer"
-            title="Claim bonus 250 coins immediately"
-          >
-            <span>+250 🪙</span>
-          </motion.button>
-        </div>
-
-        {/* Big Glamorous Play Button with Pulse Animation */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="relative group cursor-pointer my-2"
-          onClick={handlePlayClick}
-        >
-          {/* Radiant Aura Ring */}
-          <div className="absolute -inset-4 bg-gradient-to-r from-game-primary via-game-secondary to-amber-300 rounded-full blur-xl opacity-70 group-hover:opacity-100 transition duration-500 animate-pulse-glow" />
+        {/* Big 56px Primary Play Button with Gentle Glow Pulse */}
+        <div className="relative">
+          {/* Gentle glow pulse underneath */}
+          <motion.div
+            animate={{
+              scale: [1, 1.04, 1],
+              opacity: [0.4, 0.7, 0.4],
+            }}
+            transition={{
+              duration: 2.2,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+            className="absolute inset-0 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 blur-lg"
+          />
 
           <button
             type="button"
-            className="relative w-36 h-36 rounded-full bg-gradient-to-tr from-game-primary via-[#D8157D] to-amber-400 p-1.5 shadow-luxury flex items-center justify-center border-2 border-white/80 cursor-pointer"
-            aria-label="Play game"
+            onClick={() => onPlay?.(todayClient)}
+            className="relative flex h-[56px] w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 px-6 font-black text-white shadow-xl transition-all hover:brightness-105 active:scale-[0.98]"
           >
-            <div className="w-full h-full rounded-full bg-gradient-to-br from-game-primary to-[#AD1457] flex flex-col items-center justify-center text-white shadow-inner-gloss">
-              <Play className="w-12 h-12 fill-white stroke-none ml-1.5 drop-shadow-md" />
-              <span className="font-heading font-bold text-base tracking-wider mt-0.5 drop-shadow">
-                PLAY
+            <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            <span className="text-lg tracking-wide uppercase">Play Now</span>
+          </button>
+        </div>
+
+        {/* Row of 4 Icon Tiles */}
+        <div className="grid grid-cols-4 gap-2.5 pt-2">
+          {/* Daily Beauty Brief */}
+          <button
+            type="button"
+            onClick={() => onNavigate?.('dailyReward')}
+            className="flex flex-col items-center justify-center rounded-2xl bg-[var(--surface-card,#ffffff)] dark:bg-[var(--surface-card,#22222a)] p-3 shadow-sm border border-black/5 dark:border-white/5 hover:border-pink-500/30 transition-all active:scale-95 text-center"
+          >
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-pink-500/10 text-pink-500 mb-1.5">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <span className="text-[11px] font-bold text-[var(--text,#18181b)] dark:text-[var(--text,#f4f4f5)] leading-tight">
+              Daily
+            </span>
+          </button>
+
+          {/* Portfolio */}
+          <button
+            type="button"
+            onClick={() => onNavigate?.('portfolio')}
+            className="flex flex-col items-center justify-center rounded-2xl bg-[var(--surface-card,#ffffff)] dark:bg-[var(--surface-card,#22222a)] p-3 shadow-sm border border-black/5 dark:border-white/5 hover:border-pink-500/30 transition-all active:scale-95 text-center"
+          >
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-500/10 text-purple-500 mb-1.5">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+            </div>
+            <span className="text-[11px] font-bold text-[var(--text,#18181b)] dark:text-[var(--text,#f4f4f5)] leading-tight">
+              Portfolio
+            </span>
+          </button>
+
+          {/* Palette with Progress Ring */}
+          <button
+            type="button"
+            onClick={() => onNavigate?.('palette')}
+            className="flex flex-col items-center justify-center rounded-2xl bg-[var(--surface-card,#ffffff)] dark:bg-[var(--surface-card,#22222a)] p-3 shadow-sm border border-black/5 dark:border-white/5 hover:border-pink-500/30 transition-all active:scale-95 text-center relative"
+          >
+            <div className="relative flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500 mb-1.5">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+              </svg>
+              {/* Progress badge */}
+              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[8px] font-bold text-white">
+                {palettePercent}%
               </span>
             </div>
+            <span className="text-[11px] font-bold text-[var(--text,#18181b)] dark:text-[var(--text,#f4f4f5)] leading-tight">
+              Palette
+            </span>
           </button>
-        </motion.div>
 
-        {/* Daily Gift Prompt Banner */}
-        <motion.button
-          whileTap={{ scale: 0.96 }}
-          onClick={() => setIsDailyModalOpen(true)}
-          className={`
-            mt-3 px-4 py-2 rounded-2xl border flex items-center gap-2 shadow-soft transition-all cursor-pointer
-            ${
-              hasDailyGift
-                ? 'bg-gradient-to-r from-game-card to-pink-100/60 dark:to-purple-950/40 border-game-primary/40 text-game-primary ring-2 ring-game-primary/20 animate-pulse'
-                : 'bg-game-surface border-game-border text-game-muted'
-            }
-          `}
-        >
-          <Gift className={`w-4 h-4 ${hasDailyGift ? 'text-game-primary animate-bounce' : 'text-game-muted'}`} />
-          <span className="text-xs font-heading font-bold">
-            {hasDailyGift ? 'Daily Gift Ready to Claim! 🎁' : 'Daily Streak Active'}
-          </span>
-        </motion.button>
+          {/* Shop */}
+          <button
+            type="button"
+            onClick={() => onNavigate?.('shop')}
+            className="flex flex-col items-center justify-center rounded-2xl bg-[var(--surface-card,#ffffff)] dark:bg-[var(--surface-card,#22222a)] p-3 shadow-sm border border-black/5 dark:border-white/5 hover:border-pink-500/30 transition-all active:scale-95 text-center"
+          >
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-500 mb-1.5">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            </div>
+            <span className="text-[11px] font-bold text-[var(--text,#18181b)] dark:text-[var(--text,#f4f4f5)] leading-tight">
+              Shop
+            </span>
+          </button>
+        </div>
       </div>
 
-      {/* Feature Navigation Grid */}
-      <div className="grid grid-cols-4 gap-2 w-full pt-2 border-t border-game-border/60">
+      {/* Bottom Nav: Home (active), Collections, Leaderboard, Profile */}
+      <nav className="fixed bottom-0 inset-x-0 z-30 mx-auto max-w-[480px] bg-[var(--surface-card,#ffffff)]/95 dark:bg-[var(--surface-card,#22222a)]/95 backdrop-blur-lg border-t border-black/5 dark:border-white/5 px-6 py-2 flex items-center justify-between">
+        {/* Home */}
         <button
           type="button"
-          onClick={onOpenDaily}
-          className="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-game-surface border border-game-border shadow-soft hover:bg-game-card active:scale-95 transition-all text-game-text min-h-[56px] cursor-pointer"
+          onClick={() => onNavigate?.('home')}
+          className="flex flex-col items-center text-pink-600 dark:text-pink-400 font-bold"
         >
-          <div className="relative">
-            <Calendar className="w-5 h-5 text-game-primary" />
-            {hasDailyGift && (
-              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-game-danger rounded-full animate-ping" />
-            )}
+          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+          </svg>
+          <span className="text-[10px] mt-0.5">Home</span>
+        </button>
+
+        {/* Collections */}
+        <button
+          type="button"
+          onClick={() => onNavigate?.('collections')}
+          className="flex flex-col items-center text-[var(--text-muted,#71717a)] hover:text-pink-500 transition-colors"
+        >
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+          <span className="text-[10px] mt-0.5">Looks</span>
+        </button>
+
+        {/* Leaderboard */}
+        <button
+          type="button"
+          onClick={() => onNavigate?.('leaderboard')}
+          className="flex flex-col items-center text-[var(--text-muted,#71717a)] hover:text-pink-500 transition-colors"
+        >
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          <span className="text-[10px] mt-0.5">Rank</span>
+        </button>
+
+        {/* Profile */}
+        <button
+          type="button"
+          onClick={() => onNavigate?.('profile')}
+          className="flex flex-col items-center text-[var(--text-muted,#71717a)] hover:text-pink-500 transition-colors"
+        >
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          <span className="text-[10px] mt-0.5">Profile</span>
+        </button>
+      </nav>
+
+      {/* Exit Bottom Sheet Dialog */}
+      <AnimatePresence>
+        {showExitConfirm && (
+          <div className="fixed inset-0 z-50 flex items-end justify-center">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowExitConfirm(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="relative z-10 w-full max-w-[480px] rounded-t-3xl bg-[var(--surface-card,#ffffff)] dark:bg-[var(--surface-card,#22222a)] p-6 text-center border-t border-black/10 dark:border-white/10"
+            >
+              <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+              <h3 className="text-xl font-black text-[var(--text,#18181b)] dark:text-[var(--text,#f4f4f5)]">
+                Exit Glam Blocks?
+              </h3>
+              <p className="mt-2 text-sm text-[var(--text-muted,#71717a)]">
+                Don't lose your styling streak! You can return anytime.
+              </p>
+              <div className="mt-6 flex flex-col gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setShowExitConfirm(false)}
+                  className="w-full rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 py-3.5 font-bold text-white shadow-md active:scale-95"
+                >
+                  Keep Playing
+                </button>
+                <button
+                  type="button"
+                  onClick={handleExitApp}
+                  className="w-full rounded-2xl py-3 text-sm font-semibold text-red-500 hover:bg-red-500/10 active:scale-95"
+                >
+                  Exit Game
+                </button>
+              </div>
+            </motion.div>
           </div>
-          <span className="text-[11px] font-heading font-semibold mt-1">Daily</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={onOpenLooks}
-          className="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-game-surface border border-game-border shadow-soft hover:bg-game-card active:scale-95 transition-all text-game-text min-h-[56px] cursor-pointer"
-        >
-          <Sparkles className="w-5 h-5 text-purple-500" />
-          <span className="text-[11px] font-heading font-semibold mt-1">Looks</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={onOpenShop}
-          className="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-game-surface border border-game-border shadow-soft hover:bg-game-card active:scale-95 transition-all text-game-text min-h-[56px] cursor-pointer"
-        >
-          <ShoppingBag className="w-5 h-5 text-amber-500" />
-          <span className="text-[11px] font-heading font-semibold mt-1">Boutique</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={onOpenLeaderboard}
-          className="flex flex-col items-center justify-center p-2.5 rounded-2xl bg-game-surface border border-game-border shadow-soft hover:bg-game-card active:scale-95 transition-all text-game-text min-h-[56px] cursor-pointer"
-        >
-          <Trophy className="w-5 h-5 text-emerald-500" />
-          <span className="text-[11px] font-heading font-semibold mt-1">Ranks</span>
-        </button>
-      </div>
-
-      {/* Daily Reward Modal */}
-      <DailyRewardModal
-        isOpen={isDailyModalOpen}
-        onClose={() => setIsDailyModalOpen(false)}
-      />
-    </div>
+        )}
+      </AnimatePresence>
+    </motion.main>
   );
 };
+
+export default HomeScreen;

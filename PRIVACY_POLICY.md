@@ -1,77 +1,82 @@
 # Privacy Policy for Glam Blocks
 
-**Last Updated:** November 2026  
-**Effective Date:** November 2026  
-**Contact Email:** privacy@glamblocks.game  
+**Last Updated: November 2, 2026**  
+**Effective Date: November 2, 2026**
+
+Welcome to **Glam Blocks** ("we," "our," or "the Game"). Your privacy is deeply important to us. This Privacy Policy explains clearly and transparently how we collect, use, store, and protect your information when you play Glam Blocks on web, Android, iOS, or installed as a Progressive Web App (PWA).
+
+This policy complies with applicable data protection laws, including the **General Data Protection Regulation (GDPR)** and India’s **Digital Personal Data Protection Act (DPDPA 2023)**.
 
 ---
 
-## 1. Introduction & Scope
-Glam Blocks ("we", "our", or "the Game") is a makeup-themed mobile block puzzle game. We are dedicated to transparent data stewardship and protecting user privacy in compliance with:
-- The European Union **General Data Protection Regulation (GDPR)**
-- India's **Digital Personal Data Protection Act (DPDP Act, 2023)**
-- California Consumer Privacy Act (**CCPA/CPRA**)
+## 1. Information We Collect
+
+### A. Information You Provide Directly
+* **Account Registration (Optional)**: If you choose to create an account via Google Sign-In or Email/Password, we collect your email address, display name, and avatar/photo URL.
+* **Guest Play**: You may play Glam Blocks entirely as a guest without providing any personal identification. All guest game progress, high scores, and cosmetics are stored locally on your device.
+* **Marketing Consent (Explicit Opt-In)**: We will only send you promotional updates, cosmetic release news, or special offers if you explicitly check the opt-in checkbox during sign-up. This box is **unchecked by default**. When checked, we record your email, opt-in choice, and the exact ISO timestamp of your consent. You can unsubscribe at any time from Settings or via the email footer.
+
+### B. Gameplay & Virtual Cosmetics Data
+* High scores, level progress, stars earned, client completion records, and Eyeshadow Palette completion status.
+* Virtual currency balances (Coins and Gems).
+* Saved makeup looks and portfolio cards created during your sessions.
+
+### C. Technical & Device Information
+* Non-identifiable device details (screen resolution, operating system version, browser type, and language preference).
+* Offline state indicators to determine when local data should sync to Cloud Firestore.
 
 ---
 
-## 2. Age Requirement (13+ Only)
-Glam Blocks is intended strictly for users aged **13 and older** (or the applicable digital age of consent in your country). We do not knowingly solicit or collect personal information from children under 13. If you believe a child has provided data without parental consent, please contact us at `privacy@glamblocks.game` for immediate deletion.
+## 2. How We Use Your Information
+
+We use the collected information exclusively to:
+1. Provide, save, and restore your game progress across sessions and devices.
+2. Calculate leaderboards, daily puzzle rankings, and streak rewards.
+3. Process in-app purchases and subscription perks (such as Glam Pass and Ad Removal).
+4. Respect accessibility preferences (such as Colorblind Mode and Reduced Motion).
+5. Prevent fraud, abuse, and cheating on global leaderboards.
+
+**We never sell, rent, or trade your personal data to third-party data brokers.**
 
 ---
 
-## 3. Information We Collect
-We practice strict data minimization. We only collect information essential for game operations:
+## 3. Storage, Offline Data & Synchronization
 
-1. **Authentication Data (Optional Real Account)**:
-   - If you register via Email: We store your email address and display name in your private Firestore document.
-   - If you sign in via Google: We store your public display name, email, and avatar photo URL.
-   - If you play in **Guest Mode**: A randomized string ID is generated and stored locally in your browser/device's `localStorage`. No personal identity is transmitted to our servers.
-
-2. **Gameplay & Progress Data**:
-   - Best score, current level, coin and gem virtual balances, unlocked avatar looks, and equipped look.
-   - Game board matrix state saved to local storage for offline resumption.
-
-3. **Locale & Region**:
-   - Country code inferred purely from your device timezone and language setting (e.g., `IN` for India, `US` for United States). We **NEVER** request or access precise GPS location.
-
-4. **Marketing Consent (Explicit Opt-In Only)**:
-   - We store `marketingConsent: true` only if you explicitly and voluntarily check the optional promotional email box during signup. Consent timestamps and IP country are logged for audit compliance.
+* **Local Storage (`localStorage` & IndexedDB)**: Game state, audio toggles, face model choices, and portfolio looks are stored directly on your device. If you play offline or in Airplane Mode, no data leaves your device.
+* **Cloud Storage (Firebase Cloud Firestore)**: For signed-in users, progress is backed up securely to Firebase Cloud Firestore protected by strict Firebase Security Rules. Only authenticated requests can read or update your personal document (`/users/{userId}`).
 
 ---
 
-## 4. How We Use Your Data
-- Synchronize your gameplay, high scores, and cosmetics across devices.
-- Generate weekly global "Hall of Glam" leaderboard rankings.
-- Verify in-app purchases through official platform stores (Google Play Billing).
-- Distribute promotional event updates **only** to users with active marketing consent.
-- **We NEVER sell, rent, or trade your personal data to data brokers or third-party advertisers.**
+## 4. Advertising & In-App Purchases
+
+* **Advertisements (Google AdMob)**:
+  - If you play the free version of the game, non-personalized or contextual ads may be served.
+  - Interstitial ads are capped to game-over events after every 3rd game and never appear during active gameplay or for new players during their first 3 games.
+  - Players who purchase **"Remove Ads"** or hold an active **"Glam Pass"** will never be served third-party ads.
+* **Google Play Billing**: All payment transactions are handled directly and securely through Google Play or platform app stores. We never receive or store your credit card or bank account information.
 
 ---
 
-## 5. Third-Party Services
-The Game utilizes secure, reputable infrastructure providers:
-- **Google Firebase**: Authentication, Cloud Firestore (encrypted in transit via TLS 1.3 and at rest via AES-256), App Check.
-- **Google Play Billing**: For processing digital goods and subscriptions. Payment details are handled entirely by Google; we never receive or store credit card numbers.
+## 5. Your Rights & Data Control (GDPR & DPDP 2023)
+
+Under GDPR and India's DPDPA 2023, you have the following clear rights:
+* **Right to Access**: You may view your stored game data, high scores, and profile in the in-game Profile and Settings screens.
+* **Right to Rectification**: You can update your display name or cosmetic avatar at any time in Profile Settings.
+* **Right to Erasure ("Right to be Forgotten")**: You may permanently delete your account and all associated Firestore records by selecting **"Delete Account & Data"** in Settings or emailing privacy@glamblocks.game. Deletion is immediate and irreversible.
+* **Right to Withdraw Consent**: You can opt out of marketing communications anytime without affecting your gameplay or account status.
 
 ---
 
-## 6. Your Rights & Account Deletion
-Under GDPR and India DPDP principles, you have the right to:
-- Access and inspect the data stored about you.
-- Withdraw marketing consent at any time.
-- **Right to Erasure ("Delete My Account and Data")**:
-  - We provide an instant, in-app deletion button in **Settings -> Account -> Delete Account**.
-  - Clicking this permanently wipes your Firebase Auth record, Firestore user document, score history, and local storage data immediately.
+## 6. Children's Privacy
+
+Glam Blocks is designed for general audiences who enjoy casual puzzle games and fashion styling. We do not knowingly collect personal data from children under 13 (or under the applicable age of digital consent in your jurisdiction). If you believe a child has provided us with personal data without parental consent, please contact us and we will delete the data immediately.
 
 ---
 
-## 7. Security Measures
-- All network communication requires HTTPS with strict Content-Security-Policy (CSP) headers.
-- Firestore Security Rules enforce that users can access only their own records.
-- Financial fields (`coins`, `gems`, `purchases`) cannot be modified directly by client applications.
+## 7. Contact Us
 
----
+For any privacy-related inquiries, data deletion requests, or questions regarding this Privacy Policy, please contact our Data Protection Officer:
 
-## 8. Inquiries
-For privacy questions, access requests, or regulatory inquiries, contact:  
-**Data Protection Officer:** `privacy@glamblocks.game`
+* **Email**: privacy@glamblocks.game
+* **Studio**: Glam Blocks Development Team
+* **Address**: Bengaluru, Karnataka, India / Global Support

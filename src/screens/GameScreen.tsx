@@ -1,585 +1,391 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import type { BoardMatrix, TrayShape, SavedGameState } from '../game/types';
-import {
-  createEmptyBoard,
-  placeShape,
-  generateTrayShapes,
-  canPlaceShape,
-  hasAnyValidMoves,
-  applyBomb,
-  BOARD_SIZE,
-} from '../game/board';
-import { GridCell } from '../components/game/GridCell';
-import { PowerUpBar } from '../components/game/PowerUpBar';
-import { PauseModal } from '../components/game/PauseModal';
-import { RenderMakeupIcon } from '../components/icons/MakeupIcons';
-import { soundSystem } from '../services/soundSystem';
-import { useAuth } from '../services/authContext';
-import { GAME_RULES } from '../config/product.config';
-import { Pause, Flame } from 'lucide-react';
-import confetti from 'canvas-confetti';
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import type { FaceZone, ShadeId, GameState } from '../types';
+import { getLevel } from '../game/levels';
+import { createNewGame, handlePlacement, handleUndo, handleShuffle, handleBomb } from '../game/engine';
+import { canPlace } from '../game/board';
+import { FaceModel } from '../assets/faces/FaceModel';
+import { GameBoard } from '../components/GameBoard';
+import { ShapeTray } from '../components/ShapeTray';
+import { MakeupBrush } from '../components/MakeupBrush';
+import { PureShadeBurst } from '../components/PureShadeBurst';
+import { ComboMeter } from '../components/ComboMeter';
+import { GoalChip } from '../components/GoalChip';
+import { PauseModal } from '../components/PauseModal';
+import { IconButton } from '../components/IconButton';
+import { useSound } from '../hooks/useSound';
+import { useHaptics } from '../hooks/useHaptics';
+import { useGame } from '../context/GameContext';
+import { storageService } from '../services/storage';
 
-interface GameScreenProps {
-  onGameOver: (finalScore: number, coinsEarned: number) => void;
-  onHome: () => void;
-}
+export const GameScreen: React.FC = () => {
+  const navigate = useNavigate();
+  const { userProfile } = useGame();
+  const { playPop, playSparkle, playChime, playTaDa } = useSound();
+  const { lightTap, mediumTap, successBuzz } = useHaptics();
 
-const LOCAL_STORAGE_SAVE_KEY = 'glam_blocks_active_game_state';
+  // Load client from current level or default level 1
+  const clientLevel = userProfile.level || 1;
+  const currentClient = getLevel(clientLevel);
 
-export const GameScreen: React.FC<GameScreenProps> = ({ onGameOver, onHome }) => {
-  const { user, isGlamPassActive, spendCurrency, addCurrency, updateProfile } = useAuth();
+  // Initialize or resume game state
+  const [gameState, setGameState] = useState<GameState>(() => {
+    const saved = storageService.loadGameState();
+    if (saved && !saved.isGameOver) {
+      return saved;
+    }
+    return createNewGame(currentClient);
+  });
 
-  // Core Game State
-  const [board, setBoard] = useState<BoardMatrix>(() => createEmptyBoard());
-  const [tray, setTray] = useState<(TrayShape | null)[]>([null, null, null]);
-  const [score, setScore] = useState<number>(0);
-  const [bestScore, setBestScore] = useState<number>(user?.bestScore || 0);
-  const [combo, setCombo] = useState<number>(0);
-  const [movesCount, setMovesCount] = useState<number>(0);
-  const [isPauseOpen, setIsPauseOpen] = useState<boolean>(false);
-  const [isBombActive, setIsBombActive] = useState<boolean>(false);
-  const [freeUndoUsed, setFreeUndoUsed] = useState<boolean>(false);
+  const [previousState, setPreviousState] = useState<GameState | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const [activeBrush, setActiveBrush] = useState<{ zone: FaceZone; shade: ShadeId } | null>(null);
+  const [showPureBurst, setShowPureBurst] = useState<ShadeId | null>(null);
 
-  // Undo History Snapshot
-  const [history, setHistory] = useState<{
-    board: BoardMatrix;
-    tray: (TrayShape | null)[];
-    score: number;
-    combo: number;
-  } | null>(null);
+  // Drag preview states
+  const [draggingShapeIndex, setDraggingShapeIndex] = useState<number | null>(null);
+  const [ghostPosition, setGhostPosition] = useState<{ row: number; col: number } | null>(null);
 
-  // Drag and Drop Pointer Tracking
-  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
-  const [pointerPos, setPointerPos] = useState<{ x: number; y: number } | null>(null);
-  const [hoverGridPos, setHoverGridPos] = useState<{ row: number; col: number; valid: boolean } | null>(null);
+  // Bomb target mode
+  const [isBombMode, setIsBombMode] = useState(false);
 
-  const gridRef = useRef<HTMLDivElement>(null);
-
-  // Initialize or restore saved game
+  // Autosave game state after every change
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(LOCAL_STORAGE_SAVE_KEY);
-      if (saved) {
-        const parsed: SavedGameState = JSON.parse(saved);
-        if (parsed.board && parsed.tray && parsed.tray.some((t) => t !== null)) {
-          setBoard(parsed.board);
-          setTray(parsed.tray);
-          setScore(parsed.score);
-          setBestScore(Math.max(parsed.bestScore, user?.bestScore || 0));
-          setCombo(parsed.combo);
-          setMovesCount(parsed.movesCount || 0);
-          setHistory(parsed.historyState);
-          return;
+    storageService.saveGameState(gameState);
+  }, [gameState]);
+
+  // Check victory or game over
+  useEffect(() => {
+    if (gameState.isGameOver) {
+      storageService.clearGameState();
+      storageService.incrementGamesPlayed();
+      // Navigate to game over or victory
+      if (gameState.goals?.every((g) => g.completed)) {
+        playTaDa();
+        successBuzz();
+        navigate('/result', { state: { gameState, client: currentClient } });
+      } else {
+        mediumTap();
+        navigate('/game-over', { state: { gameState, client: currentClient } });
+      }
+    }
+  }, [gameState.isGameOver, gameState.goals, navigate, currentClient, playTaDa, successBuzz, mediumTap, gameState]);
+
+  // Drag & drop handlers
+  const handleShapePickUp = useCallback((index: number) => {
+    setDraggingShapeIndex(index);
+    lightTap();
+  }, [lightTap]);
+
+  const handleShapeDrop = useCallback(
+    (
+      index: number,
+      posOrCoords: { x: number; y: number } | { row: number; col: number } | null
+    ) => {
+      setDraggingShapeIndex(null);
+      setGhostPosition(null);
+
+      if (!posOrCoords) return;
+
+      let gridPos: { row: number; col: number } | null = null;
+      if ('row' in posOrCoords && 'col' in posOrCoords) {
+        gridPos = { row: posOrCoords.row, col: posOrCoords.col };
+      } else if ('x' in posOrCoords && 'y' in posOrCoords) {
+        const elem = document.elementFromPoint(posOrCoords.x, posOrCoords.y);
+        const cellElem = elem?.closest('[data-row][data-col]');
+        if (cellElem) {
+          const row = parseInt(cellElem.getAttribute('data-row') ?? '-1', 10);
+          const col = parseInt(cellElem.getAttribute('data-col') ?? '-1', 10);
+          if (row >= 0 && col >= 0) {
+            gridPos = { row, col };
+          }
         }
       }
-    } catch {
-      // ignore
-    }
 
-    // New game
-    const initialBoard = createEmptyBoard();
-    const initialTray = generateTrayShapes(initialBoard, 0);
-    setBoard(initialBoard);
-    setTray(initialTray);
-    setScore(0);
-    setCombo(0);
-    setMovesCount(0);
-    setHistory(null);
-  }, [user?.bestScore]);
+      if (!gridPos) return;
 
-  // Persist game state after every change
-  useEffect(() => {
-    if (tray.every((t) => t === null)) return;
-    try {
-      const stateToSave: SavedGameState = {
-        board,
-        tray,
-        score,
-        bestScore,
-        combo,
-        movesCount,
-        lastScoreTime: Date.now(),
-        historyState: history,
-      };
-      localStorage.setItem(LOCAL_STORAGE_SAVE_KEY, JSON.stringify(stateToSave));
-    } catch {
-      // ignore
-    }
-  }, [board, tray, score, bestScore, combo, movesCount, history]);
+      const shape = gameState.shapes[index];
+      if (!shape) return;
 
-  // Check Game Over condition
-  const checkGameOver = useCallback(
-    (currentBoard: BoardMatrix, currentTray: (TrayShape | null)[]) => {
-      // If all shapes in tray were placed, spawn new set
-      const allEmpty = currentTray.every((s) => s === null);
-      if (allEmpty) {
-        const newTray = generateTrayShapes(currentBoard, movesCount);
-        setTray(newTray);
-        return;
-      }
+      if (canPlace(gameState.board, shape, gridPos)) {
+        setPreviousState(gameState);
+        playPop();
+        lightTap();
 
-      // Check if any remaining shape can fit anywhere on the board
-      const canMove = hasAnyValidMoves(currentBoard, currentTray);
-      if (!canMove) {
-        soundSystem.playGameOver();
-        // Clear local save
-        try {
-          localStorage.removeItem(LOCAL_STORAGE_SAVE_KEY);
-        } catch {
-          // ignore
+        const nextState = handlePlacement(gameState, index, gridPos);
+
+        // Check if lines cleared
+        if (nextState.clearedLines.length > 0) {
+          playSparkle();
+          mediumTap();
+
+          // Get last cleared line for animated brush sweep
+          const lastLine = nextState.clearedLines[nextState.clearedLines.length - 1];
+          if (lastLine?.shade) {
+            setActiveBrush({ zone: lastLine.zone, shade: lastLine.shade });
+          }
+
+          // Pure shade detection
+          const hasPure = nextState.clearedLines.some((l) => l.isPure);
+          if (hasPure && lastLine?.shade) {
+            setShowPureBurst(lastLine.shade);
+            playChime();
+          }
         }
 
-        // Coins earned: 1 coin per 20 points
-        const coinsEarned = Math.max(10, Math.floor(score / 20));
-        addCurrency(coinsEarned, 0);
-
-        if (score > (user?.bestScore || 0)) {
-          updateProfile({ bestScore: score });
-        }
-
-        setTimeout(() => {
-          onGameOver(score, coinsEarned);
-        }, 600);
+        setGameState(nextState);
       }
     },
-    [movesCount, score, user?.bestScore, addCurrency, updateProfile, onGameOver]
+    [gameState, playPop, playSparkle, playChime, lightTap, mediumTap]
   );
 
-  // Trigger sparkle celebratory particles
-  const triggerClearParticles = (clientX?: number, clientY?: number) => {
-    try {
-      confetti({
-        particleCount: 35,
-        spread: 60,
-        origin: {
-          x: clientX ? clientX / window.innerWidth : 0.5,
-          y: clientY ? clientY / window.innerHeight : 0.45,
-        },
-        colors: ['#E91E8C', '#9B5DE5', '#F5B700', '#FF4DAF', '#FFFFFF'],
-        ticks: 120,
-        disableForReducedMotion: true,
-      });
-    } catch {
-      // confetti fallback
+  // Power-up handlers
+  const handlePowerUpUndo = () => {
+    if (gameState.powerUps.undo > 0 && previousState) {
+      setGameState(handleUndo(gameState, previousState));
+      setPreviousState(null);
+      lightTap();
     }
   };
 
-  // Convert screen coordinates (with 60px finger lift offset) into grid [row, col]
-  const calculateGridCoords = (
-    clientX: number,
-    clientY: number,
-    shape: TrayShape
-  ): { row: number; col: number } | null => {
-    if (!gridRef.current) return null;
-    const rect = gridRef.current.getBoundingClientRect();
-
-    // 60px finger lift offset so piece sits comfortably above thumb
-    const liftedY = clientY - 60;
-
-    if (
-      clientX < rect.left ||
-      clientX > rect.right ||
-      liftedY < rect.top ||
-      liftedY > rect.bottom
-    ) {
-      return null;
-    }
-
-    const cellWidth = rect.width / BOARD_SIZE;
-    const cellHeight = rect.height / BOARD_SIZE;
-
-    // Center shape anchor on cursor
-    const anchorOffsetX = (shape.shape.cols * cellWidth) / 2;
-    const anchorOffsetY = (shape.shape.rows * cellHeight) / 2;
-
-    const targetCol = Math.floor((clientX - rect.left - anchorOffsetX + cellWidth / 2) / cellWidth);
-    const targetRow = Math.floor((liftedY - rect.top - anchorOffsetY + cellHeight / 2) / cellHeight);
-
-    return { row: targetRow, col: targetCol };
-  };
-
-  // Pointer Event Handlers for Drag and Drop
-  const handlePointerDown = (index: number, e: React.PointerEvent) => {
-    const shape = tray[index];
-    if (!shape) return;
-
-    soundSystem.playClick();
-    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
-    setDraggingIndex(index);
-    setPointerPos({ x: e.clientX, y: e.clientY });
-
-    const coords = calculateGridCoords(e.clientX, e.clientY, shape);
-    if (coords) {
-      const valid = canPlaceShape(board, shape.shape, coords.row, coords.col);
-      setHoverGridPos({ ...coords, valid });
-    } else {
-      setHoverGridPos(null);
+  const handlePowerUpShuffle = () => {
+    if (gameState.powerUps.shuffle > 0) {
+      setGameState(handleShuffle(gameState));
+      mediumTap();
     }
   };
 
-  const handlePointerMove = (e: React.PointerEvent) => {
-    if (draggingIndex === null) return;
-    const shape = tray[draggingIndex];
-    if (!shape) return;
-
-    setPointerPos({ x: e.clientX, y: e.clientY });
-
-    const coords = calculateGridCoords(e.clientX, e.clientY, shape);
-    if (coords) {
-      const valid = canPlaceShape(board, shape.shape, coords.row, coords.col);
-      setHoverGridPos({ ...coords, valid });
-    } else {
-      setHoverGridPos(null);
+  const handlePowerUpBomb = () => {
+    if (gameState.powerUps.bomb > 0) {
+      setIsBombMode((prev) => !prev);
+      lightTap();
     }
   };
 
-  const handlePointerUp = (e: React.PointerEvent) => {
-    if (draggingIndex === null) return;
-    const shape = tray[draggingIndex];
-
-    if (shape && hoverGridPos && hoverGridPos.valid) {
-      // 1. Save state for Undo
-      setHistory({
-        board: board.map((r) => [...r]),
-        tray: [...tray],
-        score,
-        combo,
-      });
-
-      // 2. Perform placement
-      const result = placeShape(
-        board,
-        shape.shape,
-        hoverGridPos.row,
-        hoverGridPos.col,
-        shape.itemId,
-        shape.color,
-        combo
-      );
-
-      if (result.valid) {
-        soundSystem.playPop();
-
-        if (result.linesCleared > 0) {
-          soundSystem.playSparkle();
-          if (result.comboCount > 1) {
-            soundSystem.playCombo(result.comboCount);
-          }
-          triggerClearParticles(e.clientX, e.clientY);
-        }
-
-        const newScore = score + result.scoreGained;
-        setBoard(result.newBoard);
-        setScore(newScore);
-        setCombo(result.comboCount);
-        setMovesCount((prev) => prev + 1);
-
-        if (newScore > bestScore) {
-          setBestScore(newScore);
-        }
-
-        // Remove placed shape from tray
-        const nextTray = [...tray];
-        nextTray[draggingIndex] = null;
-        setTray(nextTray);
-
-        // Check if game over or if new tray spawn needed
-        checkGameOver(result.newBoard, nextTray);
-      }
-    }
-
-    setDraggingIndex(null);
-    setPointerPos(null);
-    setHoverGridPos(null);
-  };
-
-  // Bomb Power-Up Placement
   const handleCellClick = (row: number, col: number) => {
-    if (!isBombActive) return;
-
-    // Apply 3x3 blast
-    const { newBoard, clearedCellsCount } = applyBomb(board, row, col);
-    if (clearedCellsCount > 0) {
-      soundSystem.playSparkle();
-      triggerClearParticles();
-      setBoard(newBoard);
-      setIsBombActive(false);
-      checkGameOver(newBoard, tray);
-    } else {
-      setIsBombActive(false);
+    if (isBombMode) {
+      setPreviousState(gameState);
+      setGameState(handleBomb(gameState, { row, col }));
+      setIsBombMode(false);
+      playSparkle();
+      mediumTap();
     }
   };
 
-  // Power-up: Undo
-  const handleUseUndo = () => {
-    if (!history) return;
-    const hasFree = isGlamPassActive() && !freeUndoUsed;
+  // Build ghost cells preview
+  const ghostCells = ghostPosition && draggingShapeIndex !== null && gameState.shapes[draggingShapeIndex]
+    ? {
+        cells: gameState.shapes[draggingShapeIndex].cells.map((c) => ({
+          row: ghostPosition.row + c.row,
+          col: ghostPosition.col + c.col,
+        })),
+        shade: gameState.shapes[draggingShapeIndex].shade,
+      }
+    : undefined;
 
-    if (hasFree) {
-      setFreeUndoUsed(true);
-    } else {
-      const ok = spendCurrency(GAME_RULES.POWERUPS.UNDO.costCoins, 0);
-      if (!ok) return;
-    }
+  const ghostValidity = Boolean(
+    ghostPosition &&
+    draggingShapeIndex !== null &&
+    gameState.shapes[draggingShapeIndex] &&
+    canPlace(gameState.board, gameState.shapes[draggingShapeIndex], ghostPosition)
+  );
 
-    setBoard(history.board);
-    setTray(history.tray);
-    setScore(history.score);
-    setCombo(history.combo);
-    setHistory(null);
-  };
+  const validCellsSet = ghostValidity && ghostCells
+    ? new Set(ghostCells.cells.map((c) => `${c.row},${c.col}`))
+    : undefined;
 
-  // Power-up: Shuffle
-  const handleUseShuffle = () => {
-    const ok = spendCurrency(GAME_RULES.POWERUPS.SHUFFLE.costCoins, 0);
-    if (!ok) return;
-    const newTray = generateTrayShapes(board, movesCount);
-    setTray(newTray);
-  };
-
-  // Power-up: Bomb Toggle
-  const handleUseBomb = () => {
-    if (isBombActive) {
-      setIsBombActive(false);
-      return;
-    }
-    const ok = spendCurrency(GAME_RULES.POWERUPS.BOMB.costCoins, 0);
-    if (!ok) return;
-    setIsBombActive(true);
-  };
-
-  const handleRestart = () => {
-    setIsPauseOpen(false);
-    const initialBoard = createEmptyBoard();
-    const initialTray = generateTrayShapes(initialBoard, 0);
-    setBoard(initialBoard);
-    setTray(initialTray);
-    setScore(0);
-    setCombo(0);
-    setMovesCount(0);
-    setHistory(null);
-  };
-
-  const draggedShape = draggingIndex !== null ? tray[draggingIndex] : null;
+  const invalidCellsSet = !ghostValidity && ghostCells
+    ? new Set(ghostCells.cells.map((c) => `${c.row},${c.col}`))
+    : undefined;
 
   return (
-    <div
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerUp}
-      className="flex-1 flex flex-col justify-between p-4 safe-top safe-bottom bg-game-bg select-none touch-none overflow-hidden"
-    >
+    <div className="relative min-h-screen min-h-[100dvh] w-full max-w-[480px] mx-auto flex flex-col justify-between overflow-hidden bg-[var(--bg,#fff6f9)] dark:bg-[var(--bg,#140e19)] text-[var(--text)] select-none">
       {/* Top HUD */}
-      <div className="flex items-center justify-between gap-2 min-h-[50px]">
-        {/* Score Card */}
-        <div className="flex items-center gap-2 bg-game-surface border border-game-border shadow-soft px-3.5 py-1.5 rounded-2xl">
-          <div className="text-left">
-            <span className="block text-[10px] font-bold uppercase tracking-wider text-game-primary">
-              Score
-            </span>
-            <span className="font-display font-bold text-2xl text-game-text leading-none">
-              {score.toLocaleString()}
-            </span>
-          </div>
-        </div>
+      <header className="px-4 pt-3 pb-2 flex items-center justify-between border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-md z-20">
+        <IconButton
+          aria-label="Pause game"
+          onClick={() => setIsPaused(true)}
+          className="w-10 h-10"
+        >
+          <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+          </svg>
+        </IconButton>
 
-        {/* Combo Badge (if > 1) */}
-        {combo > 1 && (
-          <div className="flex items-center gap-1 bg-gradient-to-r from-amber-400 to-pink-500 text-white font-heading font-bold px-3 py-1 rounded-full shadow-glossy-gold animate-bounce text-xs">
-            <Flame className="w-4 h-4 fill-white" />
-            <span>{combo}X COMBO!</span>
-          </div>
-        )}
-
-        {/* Coins & Pause */}
-        <div className="flex items-center gap-1.5">
-          <div className="flex items-center gap-1 bg-game-surface border border-game-border shadow-soft px-2.5 py-1.5 rounded-2xl text-xs font-heading font-bold text-amber-500">
-            <span>🪙 {(user?.coins || 0).toLocaleString()}</span>
-          </div>
-
-          <button
-            onClick={() => setIsPauseOpen(true)}
-            className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-2xl bg-game-surface border border-game-border shadow-soft flex items-center justify-center text-game-muted hover:text-game-text hover:border-game-secondary transition-all cursor-pointer"
-            aria-label="Pause game"
+        {/* Live Score Counter */}
+        <div className="flex flex-col items-center">
+          <span className="text-[10px] font-bold tracking-widest uppercase text-[var(--text-muted)]">Score</span>
+          <motion.span
+            key={gameState.score}
+            initial={{ scale: 1.15 }}
+            animate={{ scale: 1 }}
+            className="text-2xl font-black tabular-nums leading-tight text-[var(--primary)]"
           >
-            <Pause className="w-5 h-5" />
-          </button>
+            {gameState.score.toLocaleString()}
+          </motion.span>
         </div>
+
+        {/* Coins & Best Score */}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-1 rounded-full text-xs font-black border border-amber-500/20">
+            <span>🪙</span>
+            <span>{userProfile.coins}</span>
+          </div>
+        </div>
+      </header>
+
+      {/* Goal Chips Bar */}
+      <div className="px-4 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar z-10">
+        {gameState.goals?.map((goal, idx) => (
+          <GoalChip
+            key={goal.id || `goal_${goal.type}_${idx}`}
+            type={goal.type}
+            target={goal.target}
+            current={goal.current}
+            completed={goal.completed}
+            shade={goal.shade}
+          />
+        ))}
       </div>
 
-      {/* Center 8x8 Grid */}
-      <div className="my-auto w-full max-w-[360px] mx-auto aspect-square p-2 bg-gradient-to-b from-game-surface to-game-card border-2 border-game-border/80 rounded-3xl shadow-soft-lg flex items-center justify-center relative">
-        {/* Active Glam Bomb Indicator */}
-        {isBombActive && (
-          <div className="absolute inset-0 z-30 bg-amber-500/10 backdrop-blur-[1px] rounded-3xl border-2 border-amber-400 flex items-center justify-center pointer-events-none">
-            <span className="bg-amber-400 text-amber-950 font-heading font-bold px-4 py-2 rounded-2xl shadow-lg text-sm animate-pulse">
-              💥 Tap any cell to blast 3x3!
-            </span>
+      {/* Combo Meter */}
+      <div className="px-4 py-1 z-10">
+        <ComboMeter combo={gameState.combo} maxCombo={5} />
+      </div>
+
+      {/* Central Makeup Face Canvas & Glass Board */}
+      <div className="relative flex-1 flex items-center justify-center px-4 my-auto overflow-hidden">
+        {/* Face Model Vector Canvas (underneath) */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-85">
+          <FaceModel
+            model={userProfile.faceModel || '1'}
+            skinTone="#FDDCBF"
+            makeupRecipe={gameState.faceRecipe}
+            width={340}
+          />
+        </div>
+
+        {/* Animated Brush Sweep Overlay */}
+        {activeBrush && (
+          <div className="absolute inset-0 z-20 pointer-events-none">
+            <MakeupBrush
+              zone={activeBrush.zone}
+              shade={activeBrush.shade}
+              active={true}
+              onComplete={() => setActiveBrush(null)}
+            />
           </div>
         )}
 
-        <div
-          ref={gridRef}
-          className="w-full h-full grid grid-cols-8 grid-rows-8 gap-1"
-        >
-          {board.map((rowArr, r) =>
-            rowArr.map((cell, c) => {
-              // Check if cell is part of current ghost hover
-              let isGhost = false;
-              let isValidGhost = false;
+        {/* Pure Shade Celebratory Burst */}
+        {showPureBurst && (
+          <div className="absolute inset-0 z-30 pointer-events-none flex items-center justify-center">
+            <PureShadeBurst
+              active={true}
+              shade={showPureBurst}
+              onComplete={() => setShowPureBurst(null)}
+            />
+          </div>
+        )}
 
-              if (draggedShape && hoverGridPos) {
-                const shape = draggedShape.shape;
-                const offsetR = r - hoverGridPos.row;
-                const offsetC = c - hoverGridPos.col;
+        {/* 8x8 Glass Matrix Board (over top) */}
+        <div className="relative z-10 w-full max-w-[340px] aspect-square">
+          <GameBoard
+            board={gameState.board}
+            ghostShape={ghostCells}
+            validCells={validCellsSet}
+            invalidCells={invalidCellsSet}
+            onCellClick={handleCellClick}
+          />
 
-                if (
-                  offsetR >= 0 &&
-                  offsetR < shape.rows &&
-                  offsetC >= 0 &&
-                  offsetC < shape.cols &&
-                  shape.matrix[offsetR][offsetC] === 1
-                ) {
-                  isGhost = true;
-                  isValidGhost = hoverGridPos.valid;
-                }
-              }
-
-              return (
-                <div
-                  key={`${r}-${c}`}
-                  onClick={() => handleCellClick(r, c)}
-                  className="w-full h-full"
-                >
-                  <GridCell
-                    row={r}
-                    col={c}
-                    cell={cell}
-                    isGhost={isGhost}
-                    isValidGhost={isValidGhost}
-                  />
-                </div>
-              );
-            })
+          {/* Bomb indicator overlay */}
+          {isBombMode && (
+            <div className="absolute inset-0 bg-red-500/20 border-2 border-red-500 rounded-2xl flex items-center justify-center text-center p-4 pointer-events-none">
+              <span className="bg-red-600 text-white font-black px-3 py-1 rounded-full text-xs animate-bounce">
+                TAP ANY CELL TO BOMB 3x3 AREA
+              </span>
+            </div>
           )}
         </div>
       </div>
 
-      {/* Bottom Tray with 3 Shapes */}
-      <div className="w-full flex items-center justify-around gap-2 min-h-[96px] px-2 py-1.5 bg-game-surface/80 border border-game-border/60 rounded-3xl shadow-soft">
-        {tray.map((trayShape, idx) => {
-          if (!trayShape) {
-            return (
-              <div
-                key={idx}
-                className="w-24 h-24 rounded-2xl border border-dashed border-game-border/60 flex items-center justify-center opacity-30"
-              />
-            );
-          }
-
-          const isCurrentlyDragged = draggingIndex === idx;
-
-          return (
-            <div
-              key={trayShape.instanceId}
-              onPointerDown={(e) => handlePointerDown(idx, e)}
-              className={`
-                w-24 h-24 rounded-2xl flex items-center justify-center p-2 cursor-grab active:cursor-grabbing transition-transform touch-none select-none
-                ${isCurrentlyDragged ? 'opacity-30' : 'hover:scale-105 active:scale-95'}
-              `}
-            >
-              {/* Mini preview grid */}
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateRows: `repeat(${trayShape.shape.rows}, minmax(0, 1fr))`,
-                  gridTemplateColumns: `repeat(${trayShape.shape.cols}, minmax(0, 1fr))`,
-                  gap: '2px',
-                }}
-              >
-                {trayShape.shape.matrix.map((rowArr, r) =>
-                  rowArr.map((filled, c) => (
-                    <div
-                      key={`${r}-${c}`}
-                      className="w-5 h-5 rounded-md flex items-center justify-center relative overflow-hidden"
-                      style={{
-                        backgroundColor: filled === 1 ? trayShape.color : 'transparent',
-                        border: filled === 1 ? '1px solid rgba(255,255,255,0.4)' : 'none',
-                      }}
-                    >
-                      {filled === 1 && (
-                        <RenderMakeupIcon type={trayShape.itemId} size={12} />
-                      )}
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Floating Dragged Piece (Lifted 60px above finger) */}
-      {draggedShape && pointerPos && (
-        <div
-          style={{
-            position: 'fixed',
-            left: pointerPos.x,
-            top: pointerPos.y - 60, // 60px finger lift offset
-            transform: 'translate(-50%, -50%)',
-            pointerEvents: 'none',
-            zIndex: 100,
-          }}
+      {/* Power-up Bar */}
+      <div className="px-6 py-2 flex items-center justify-around border-t border-[var(--border)] bg-[var(--surface)]/60 backdrop-blur-sm z-10">
+        {/* Undo */}
+        <button
+          type="button"
+          onClick={handlePowerUpUndo}
+          disabled={gameState.powerUps.undo === 0 || !previousState}
+          className="flex flex-col items-center gap-1 disabled:opacity-40"
         >
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateRows: `repeat(${draggedShape.shape.rows}, minmax(0, 1fr))`,
-              gridTemplateColumns: `repeat(${draggedShape.shape.cols}, minmax(0, 1fr))`,
-              gap: '4px',
-            }}
-            className="filter drop-shadow-2xl scale-110"
-          >
-            {draggedShape.shape.matrix.map((rowArr, r) =>
-              rowArr.map((filled, c) => (
-                <div
-                  key={`${r}-${c}`}
-                  className="w-8 h-8 rounded-xl flex items-center justify-center relative overflow-hidden shadow-lg"
-                  style={{
-                    backgroundColor: filled === 1 ? draggedShape.color : 'transparent',
-                    border: filled === 1 ? '1.5px solid #FFFFFF' : 'none',
-                  }}
-                >
-                  {filled === 1 && (
-                    <RenderMakeupIcon type={draggedShape.itemId} size={18} />
-                  )}
-                </div>
-              ))
-            )}
+          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-pink-500/10 text-pink-600 dark:text-pink-400 font-bold border border-pink-500/20">
+            <span>↩</span>
+            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-pink-600 text-[9px] text-white">
+              {gameState.powerUps.undo}
+            </span>
           </div>
-        </div>
-      )}
+          <span className="text-[10px] font-bold text-[var(--text-muted)]">Undo</span>
+        </button>
 
-      {/* Power-Up Bar (Undo, Shuffle, Bomb) */}
-      <div className="w-full mt-2">
-        <PowerUpBar
-          coins={user?.coins || 0}
-          freeUndoAvailable={isGlamPassActive() && !freeUndoUsed}
-          canUndo={history !== null}
-          onUseUndo={handleUseUndo}
-          onUseShuffle={handleUseShuffle}
-          onUseBomb={handleUseBomb}
-          isBombActive={isBombActive}
-        />
+        {/* Shuffle */}
+        <button
+          type="button"
+          onClick={handlePowerUpShuffle}
+          disabled={gameState.powerUps.shuffle === 0}
+          className="flex flex-col items-center gap-1 disabled:opacity-40"
+        >
+          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 font-bold border border-purple-500/20">
+            <span>🔀</span>
+            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-purple-600 text-[9px] text-white">
+              {gameState.powerUps.shuffle}
+            </span>
+          </div>
+          <span className="text-[10px] font-bold text-[var(--text-muted)]">Shuffle</span>
+        </button>
+
+        {/* Bomb */}
+        <button
+          type="button"
+          onClick={handlePowerUpBomb}
+          disabled={gameState.powerUps.bomb === 0}
+          className={`flex flex-col items-center gap-1 disabled:opacity-40 ${isBombMode ? 'scale-110' : ''}`}
+        >
+          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold border border-amber-500/20">
+            <span>💣</span>
+            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-600 text-[9px] text-white">
+              {gameState.powerUps.bomb}
+            </span>
+          </div>
+          <span className="text-[10px] font-bold text-[var(--text-muted)]">Bomb</span>
+        </button>
       </div>
+
+      {/* Bottom Shape Tray with 3 Pieces */}
+      <footer className="px-4 pt-2 pb-6 bg-[var(--surface)] border-t border-[var(--border)] z-20">
+        <ShapeTray
+          shapes={gameState.shapes}
+          onShapePickUp={handleShapePickUp}
+          onShapeDrop={handleShapeDrop}
+        />
+      </footer>
 
       {/* Pause Modal */}
       <PauseModal
-        isOpen={isPauseOpen}
-        onResume={() => setIsPauseOpen(false)}
-        onRestart={handleRestart}
-        onHome={onHome}
+        open={isPaused}
+        score={gameState.score}
+        onResume={() => setIsPaused(false)}
+        onRestart={() => {
+          setIsPaused(false);
+          setGameState(createNewGame(currentClient));
+        }}
+        onHome={() => {
+          setIsPaused(false);
+          navigate('/');
+        }}
       />
     </div>
   );
 };
+
+export default GameScreen;

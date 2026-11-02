@@ -1,292 +1,167 @@
-import React, { useState, useEffect, useCallback, Suspense, lazy } from 'react';
-import { SplashScreen } from './screens/SplashScreen';
-import { OnboardingScreen } from './screens/OnboardingScreen';
-import { HomeScreen } from './screens/HomeScreen';
-import { GameScreen } from './screens/GameScreen';
-import { GameOverScreen } from './screens/GameOverScreen';
-import { AuthModal } from './components/auth/AuthModal';
-import { DailyRewardModal } from './components/daily/DailyRewardModal';
-import { CoinEarnedToast } from './components/ui/CoinEarnedToast';
-import { BottomNavBar } from './components/navigation/BottomNavBar';
+import { Suspense, lazy } from 'react';
+import { BrowserRouter, Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import { GameProvider, useGame } from './context/GameContext';
+import { OfflineBanner } from './components/OfflineBanner';
+import { Skeleton } from './components/Skeleton';
+import { storageService } from './services/storage';
 
-// Lazy load secondary sub-screens
-const LooksScreen = lazy(() =>
-  import('./screens/LooksScreen').then((m) => ({ default: m.LooksScreen }))
-);
-const ShopScreen = lazy(() =>
-  import('./screens/ShopScreen').then((m) => ({ default: m.ShopScreen }))
-);
-const DailyRewardScreen = lazy(() =>
-  import('./screens/DailyRewardScreen').then((m) => ({ default: m.DailyRewardScreen }))
-);
-const LeaderboardScreen = lazy(() =>
-  import('./screens/LeaderboardScreen').then((m) => ({ default: m.LeaderboardScreen }))
-);
-const SettingsScreen = lazy(() =>
-  import('./screens/SettingsScreen').then((m) => ({ default: m.SettingsScreen }))
-);
-const PrivacyPolicyScreen = lazy(() =>
-  import('./screens/PrivacyPolicyScreen').then((m) => ({ default: m.PrivacyPolicyScreen }))
-);
-const TermsScreen = lazy(() =>
-  import('./screens/TermsScreen').then((m) => ({ default: m.TermsScreen }))
-);
+// Screens
+const SplashScreen = lazy(() => import('./screens/SplashScreen'));
+const OnboardingScreen = lazy(() => import('./screens/OnboardingScreen'));
+const AuthScreen = lazy(() => import('./screens/AuthScreen'));
+const HomeScreen = lazy(() => import('./screens/HomeScreen'));
+const GameScreen = lazy(() => import('./screens/GameScreen'));
+const ClientResultScreen = lazy(() => import('./screens/ClientResultScreen'));
+const GameOverScreen = lazy(() => import('./screens/GameOverScreen'));
+const PortfolioScreen = lazy(() => import('./screens/PortfolioScreen'));
+const PaletteScreen = lazy(() => import('./screens/PaletteScreen'));
+const CollectionsScreen = lazy(() => import('./screens/CollectionsScreen'));
+const ShopScreen = lazy(() => import('./screens/ShopScreen'));
+const DailyRewardScreen = lazy(() => import('./screens/DailyRewardScreen'));
+const LeaderboardScreen = lazy(() => import('./screens/LeaderboardScreen'));
+const SettingsScreen = lazy(() => import('./screens/SettingsScreen'));
+const ProfileScreen = lazy(() => import('./screens/ProfileScreen'));
 
-import { ThemeProvider } from './services/themeContext';
-import { ToastProvider, useToast } from './components/ui/Toast';
-import { I18nProvider } from './i18n/i18nContext';
-import { AuthProvider, useAuth } from './services/authContext';
+function LoadingFallback() {
+  return (
+    <div className="flex h-screen w-full max-w-[480px] mx-auto flex-col items-center justify-center p-6 space-y-4 bg-[var(--bg,#fff6f9)] dark:bg-[var(--bg,#140e19)]">
+      <div className="w-16 h-16 rounded-3xl bg-pink-500/20 animate-pulse flex items-center justify-center text-3xl">
+        💄
+      </div>
+      <Skeleton width="180px" height="24px" rounded="12px" />
+      <Skeleton width="120px" height="16px" rounded="8px" />
+    </div>
+  );
+}
 
-export type ScreenState =
-  | 'splash'
-  | 'onboarding'
-  | 'home'
-  | 'game'
-  | 'game_over'
-  | 'looks'
-  | 'shop'
-  | 'daily'
-  | 'leaderboard'
-  | 'settings'
-  | 'privacy'
-  | 'terms';
+// Wrapper for Home to inject router navigation and profile
+function HomeRoute() {
+  const navigate = useNavigate();
+  const { userProfile } = useGame();
 
-const ONBOARDING_COMPLETED_KEY = 'glam_blocks_onboarding_completed';
-
-const AppNavigator: React.FC = () => {
-  const { isDailyRewardAvailable } = useAuth();
-  const { showToast } = useToast();
-
-  const [currentScreen, setCurrentScreen] = useState<ScreenState>('splash');
-  const [, setScreenHistory] = useState<ScreenState[]>(['home']);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isDailyModalOpen, setIsDailyModalOpen] = useState(false);
-
-  const [lastGameOverStats, setLastGameOverStats] = useState<{ score: number; coinsEarned: number }>({
-    score: 0,
-    coinsEarned: 0,
-  });
-
-  const [lastBackTapTime, setLastBackTapTime] = useState<number>(0);
-
-  // Navigate to a new screen and record history
-  const navigateTo = useCallback((screen: ScreenState) => {
-    setScreenHistory((prev) => [...prev, screen]);
-    setCurrentScreen(screen);
-    window.history.pushState({ screen }, '', `#${screen}`);
-  }, []);
-
-  // Handle hardware / Android back button
-  const handleBack = useCallback(() => {
-    if (currentScreen === 'home') {
-      const now = Date.now();
-      if (now - lastBackTapTime < 2000) {
-        return;
-      } else {
-        setLastBackTapTime(now);
-        showToast('Press back again to exit game', 'info');
-        window.history.pushState({ screen: 'home' }, '', '#home');
-        return;
-      }
+  const handleNavigate = (screen: string) => {
+    switch (screen) {
+      case 'home':
+        navigate('/');
+        break;
+      case 'collections':
+        navigate('/collections');
+        break;
+      case 'leaderboard':
+        navigate('/leaderboard');
+        break;
+      case 'profile':
+        navigate('/profile');
+        break;
+      case 'palette':
+        navigate('/palette');
+        break;
+      case 'shop':
+        navigate('/shop');
+        break;
+      case 'portfolio':
+        navigate('/portfolio');
+        break;
+      case 'settings':
+        navigate('/settings');
+        break;
+      case 'dailyReward':
+        navigate('/daily-reward');
+        break;
+      default:
+        navigate(`/${screen}`);
     }
-
-    if (currentScreen === 'game') {
-      setCurrentScreen('home');
-      return;
-    }
-
-    setScreenHistory((prev) => {
-      if (prev.length > 1) {
-        const nextHistory = prev.slice(0, -1);
-        const previousScreen = nextHistory[nextHistory.length - 1];
-        setCurrentScreen(previousScreen);
-        return nextHistory;
-      }
-      setCurrentScreen('home');
-      return ['home'];
-    });
-  }, [currentScreen, lastBackTapTime, showToast]);
-
-  // Listen to popstate for back button navigation
-  useEffect(() => {
-    const onPopState = () => {
-      handleBack();
-    };
-
-    window.addEventListener('popstate', onPopState);
-    return () => window.removeEventListener('popstate', onPopState);
-  }, [handleBack]);
-
-  // Handle Splash transition
-  const handleSplashFinish = () => {
-    try {
-      const onboardingDone = localStorage.getItem(ONBOARDING_COMPLETED_KEY) === 'true';
-      if (!onboardingDone) {
-        setCurrentScreen('onboarding');
-      } else {
-        setCurrentScreen('home');
-      }
-    } catch {
-      setCurrentScreen('home');
-    }
-  };
-
-  const handleOnboardingComplete = () => {
-    try {
-      localStorage.setItem(ONBOARDING_COMPLETED_KEY, 'true');
-    } catch {}
-    setCurrentScreen('home');
-  };
-
-  // Show Daily Rewards modal once a day when opening Home
-  useEffect(() => {
-    if (currentScreen === 'home') {
-      try {
-        const todayStr = new Date().toISOString().split('T')[0];
-        const lastAutoShown = localStorage.getItem('glam_daily_auto_shown_date');
-        if (isDailyRewardAvailable() && lastAutoShown !== todayStr) {
-          localStorage.setItem('glam_daily_auto_shown_date', todayStr);
-          const timer = setTimeout(() => {
-            setIsDailyModalOpen(true);
-          }, 800);
-          return () => clearTimeout(timer);
-        }
-      } catch {}
-    }
-  }, [currentScreen, isDailyRewardAvailable]);
-
-  const handleGameOver = (score: number, coinsEarned: number) => {
-    setLastGameOverStats({ score, coinsEarned });
-    navigateTo('game_over');
   };
 
   return (
-    <div className="mobile-frame min-h-[100dvh] flex flex-col justify-between relative overflow-x-hidden">
-      {/* Floating Currency Gain Toast */}
-      <CoinEarnedToast />
-
-      {/* Main Screen Content */}
-      <div className="flex-1 flex flex-col">
-        {currentScreen === 'splash' && (
-          <SplashScreen onFinish={handleSplashFinish} />
-        )}
-
-        {currentScreen === 'onboarding' && (
-          <OnboardingScreen onComplete={handleOnboardingComplete} />
-        )}
-
-        {currentScreen === 'home' && (
-          <HomeScreen
-            onPlay={() => navigateTo('game')}
-            onOpenLooks={() => navigateTo('looks')}
-            onOpenShop={() => navigateTo('shop')}
-            onOpenDaily={() => navigateTo('daily')}
-            onOpenLeaderboard={() => navigateTo('leaderboard')}
-            onOpenSettings={() => navigateTo('settings')}
-          />
-        )}
-
-        {currentScreen === 'game' && (
-          <GameScreen
-            onGameOver={handleGameOver}
-            onHome={() => setCurrentScreen('home')}
-          />
-        )}
-
-        {currentScreen === 'game_over' && (
-          <GameOverScreen
-            score={lastGameOverStats.score}
-            coinsEarned={lastGameOverStats.coinsEarned}
-            onPlayAgain={() => setCurrentScreen('game')}
-            onContinueGame={() => setCurrentScreen('game')}
-            onHome={() => setCurrentScreen('home')}
-          />
-        )}
-
-        <Suspense
-          fallback={
-            <div className="flex-1 flex items-center justify-center p-6">
-              <div className="w-8 h-8 border-4 border-game-primary border-t-transparent rounded-full animate-spin" />
-            </div>
-          }
-        >
-          {currentScreen === 'looks' && (
-            <LooksScreen
-              onBack={handleBack}
-              onOpenShop={() => navigateTo('shop')}
-            />
-          )}
-
-          {currentScreen === 'shop' && (
-            <ShopScreen onBack={handleBack} />
-          )}
-
-          {currentScreen === 'daily' && (
-            <DailyRewardScreen onBack={handleBack} />
-          )}
-
-          {currentScreen === 'leaderboard' && (
-            <LeaderboardScreen onBack={handleBack} />
-          )}
-
-          {currentScreen === 'settings' && (
-            <SettingsScreen
-              onBack={handleBack}
-              onOpenPrivacy={() => navigateTo('privacy')}
-              onOpenTerms={() => navigateTo('terms')}
-              onLoggedOut={() => setCurrentScreen('home')}
-              onOpenAuth={() => setIsAuthModalOpen(true)}
-            />
-          )}
-
-          {currentScreen === 'privacy' && (
-            <PrivacyPolicyScreen onBack={handleBack} />
-          )}
-
-          {currentScreen === 'terms' && (
-            <TermsScreen onBack={handleBack} />
-          )}
-        </Suspense>
-      </div>
-
-      {/* Global Bottom Navigation Bar */}
-      <BottomNavBar currentScreen={currentScreen} onNavigate={navigateTo} />
-
-      {/* Auth Modal with Close (X), Backdrop/Escape dismiss, and Guest option */}
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        onSuccess={() => setIsAuthModalOpen(false)}
-        onOpenPrivacy={() => {
-          setIsAuthModalOpen(false);
-          navigateTo('privacy');
-        }}
-        onOpenTerms={() => {
-          setIsAuthModalOpen(false);
-          navigateTo('terms');
-        }}
-      />
-
-      {/* Daily Reward Modal */}
-      <DailyRewardModal
-        isOpen={isDailyModalOpen}
-        onClose={() => setIsDailyModalOpen(false)}
-      />
-    </div>
+    <HomeScreen
+      user={userProfile as any}
+      coins={userProfile.coins}
+      gems={userProfile.gems}
+      streak={userProfile.streakDays || userProfile.streakDay || 1}
+      level={userProfile.level || 1}
+      bestScore={userProfile.highScore || userProfile.bestScore || 18450}
+      onPlay={() => navigate('/game')}
+      onNavigate={handleNavigate}
+    />
   );
-};
+}
+
+// Wrapper for Splash
+function SplashRoute() {
+  const navigate = useNavigate();
+  const hasSeenOnboarding = storageService.hasSeenOnboarding();
+
+  return (
+    <SplashScreen
+      onFinish={() => {
+        if (!hasSeenOnboarding) {
+          navigate('/onboarding');
+        } else {
+          navigate('/');
+        }
+      }}
+    />
+  );
+}
+
+// Wrapper for Onboarding
+function OnboardingRoute() {
+  const navigate = useNavigate();
+  return (
+    <OnboardingScreen
+      onComplete={() => {
+        storageService.setOnboardingSeen();
+        navigate('/auth');
+      }}
+    />
+  );
+}
+
+// Wrapper for Auth
+function AuthRoute() {
+  const navigate = useNavigate();
+  return (
+    <AuthScreen
+      onSuccess={() => navigate('/')}
+      onGuest={() => navigate('/')}
+      onTermsClick={() => window.open('/terms', '_blank')}
+      onPrivacyClick={() => window.open('/privacy', '_blank')}
+    />
+  );
+}
 
 export function App() {
   return (
-    <ThemeProvider>
-      <I18nProvider>
-        <AuthProvider>
-          <ToastProvider>
-            <AppNavigator />
-          </ToastProvider>
-        </AuthProvider>
-      </I18nProvider>
-    </ThemeProvider>
+    <GameProvider>
+      <BrowserRouter>
+        <div className="min-h-screen min-h-[100dvh] w-full bg-[var(--bg,#fff6f9)] dark:bg-[var(--bg,#140e19)] flex justify-center text-[var(--text)]">
+          <OfflineBanner />
+          <div className="w-full max-w-[480px] shadow-2xl relative min-h-screen min-h-[100dvh] flex flex-col">
+            <Suspense fallback={<LoadingFallback />}>
+              <Routes>
+                <Route path="/" element={<HomeRoute />} />
+                <Route path="/splash" element={<SplashRoute />} />
+                <Route path="/onboarding" element={<OnboardingRoute />} />
+                <Route path="/auth" element={<AuthRoute />} />
+                <Route path="/game" element={<GameScreen />} />
+                <Route path="/result" element={<ClientResultScreen />} />
+                <Route path="/game-over" element={<GameOverScreen />} />
+                <Route path="/portfolio" element={<PortfolioScreen />} />
+                <Route path="/palette" element={<PaletteScreen />} />
+                <Route path="/collections" element={<CollectionsScreen />} />
+                <Route path="/shop" element={<ShopScreen />} />
+                <Route path="/daily-reward" element={<DailyRewardScreen />} />
+                <Route path="/leaderboard" element={<LeaderboardScreen />} />
+                <Route path="/settings" element={<SettingsScreen />} />
+                <Route path="/profile" element={<ProfileScreen />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Suspense>
+          </div>
+        </div>
+      </BrowserRouter>
+    </GameProvider>
   );
 }
 

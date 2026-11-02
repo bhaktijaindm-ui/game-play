@@ -1,43 +1,27 @@
 /**
- * Glam Blocks - Centralized Monetization & Pricing Configuration (Phase 7)
- * Strictly single source of truth for all products, types, tiers, and regional pricing.
+ * Glam Blocks - Centralized Monetization & Regional Pricing Configuration
+ * Single source of truth for products, pricing tiers, region detection,
+ * and billing providers (Google Play Billing + 3-second Mock Sandbox).
  */
 
-export type ProductType = 'consumable' | 'non-consumable' | 'subscription';
-export type RegionTier = 'IN' | 'TIER_1' | 'ROW'; // India, Tier 1 (US/UK/EU/CA/AU), Rest of World
+import type {
+  Product,
+  ProductType,
+  ProductReward,
+  RegionTier,
+  RegionalPrice,
+  PurchaseResult,
+  BillingProvider,
+} from '../types';
 
-export interface ProductReward {
-  gems?: number;
-  coins?: number;
-  adsRemoved?: boolean;
-  glamPassDays?: number;
-  exclusiveLookId?: string;
-}
+export type { Product, ProductType, ProductReward, RegionTier, RegionalPrice, PurchaseResult, BillingProvider };
 
-export interface RegionalPrice {
-  amount: number;
-  currency: string;
-  currencySymbol: string;
-  formatted: string;
-}
-
-export interface ProductDefinition {
-  id: string;
-  name: string;
-  description: string;
-  type: ProductType;
-  reward: ProductReward;
-  prices: Record<RegionTier, RegionalPrice>;
-  badge?: string;
-  popular?: boolean;
-}
-
-export const PRODUCTS: Record<string, ProductDefinition> = {
+export const PRODUCTS: Record<string, Product> = {
   starter_bundle: {
     id: 'starter_bundle',
     name: 'Starter Glam Bundle',
     description: '300 Gems + 1,500 Coins + Remove Ads forever',
-    type: 'non-consumable',
+    type: 'one_time',
     badge: '80% OFF',
     popular: true,
     reward: {
@@ -55,7 +39,7 @@ export const PRODUCTS: Record<string, ProductDefinition> = {
     id: 'gem_pack_s',
     name: 'Glam Gem Pouch',
     description: '100 Sparkling Gems',
-    type: 'consumable',
+    type: 'gem_pack',
     reward: { gems: 100 },
     prices: {
       IN: { amount: 49, currency: 'INR', currencySymbol: '₹', formatted: '₹49' },
@@ -67,7 +51,7 @@ export const PRODUCTS: Record<string, ProductDefinition> = {
     id: 'gem_pack_m',
     name: 'Glam Gem Box',
     description: '550 Sparkling Gems (+10% Bonus)',
-    type: 'consumable',
+    type: 'gem_pack',
     popular: true,
     reward: { gems: 550 },
     prices: {
@@ -80,7 +64,7 @@ export const PRODUCTS: Record<string, ProductDefinition> = {
     id: 'gem_pack_l',
     name: 'Glam Vanity Chest',
     description: '1,200 Sparkling Gems (+20% Bonus)',
-    type: 'consumable',
+    type: 'gem_pack',
     reward: { gems: 1200 },
     prices: {
       IN: { amount: 399, currency: 'INR', currencySymbol: '₹', formatted: '₹399' },
@@ -92,7 +76,7 @@ export const PRODUCTS: Record<string, ProductDefinition> = {
     id: 'gem_pack_xl',
     name: 'Royal Diamond Vault',
     description: '3,000 Sparkling Gems (+35% Bonus)',
-    type: 'consumable',
+    type: 'gem_pack',
     badge: 'BEST VALUE',
     reward: { gems: 3000 },
     prices: {
@@ -105,7 +89,7 @@ export const PRODUCTS: Record<string, ProductDefinition> = {
     id: 'remove_ads',
     name: 'Ad-Free Luxury',
     description: 'Permanently removes all interstitial ads',
-    type: 'non-consumable',
+    type: 'one_time',
     reward: { adsRemoved: true },
     prices: {
       IN: { amount: 149, currency: 'INR', currencySymbol: '₹', formatted: '₹149' },
@@ -149,10 +133,19 @@ export const PRODUCTS: Record<string, ProductDefinition> = {
   },
 };
 
+export const PRODUCT_LIST: Product[] = Object.values(PRODUCTS);
+
 /**
- * Detect player's region using standard Intl API & device locale
+ * Detect player's region tier from navigator.language / locale and timezone.
+ * IN: India
+ * TIER_1: US, UK, Canada, Australia, EU Tier 1
+ * ROW: Rest of World
  */
-export function detectUserRegionTier(): RegionTier {
+export function detectUserRegion(): RegionTier {
+  if (typeof window === 'undefined') {
+    return 'ROW';
+  }
+
   try {
     const locale = (navigator.language || '').toLowerCase();
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
@@ -168,26 +161,21 @@ export function detectUserRegionTier(): RegionTier {
       return 'IN';
     }
 
-    // Check Tier 1 countries: USA, UK, EU, Canada, Australia
-    const tier1Locales = ['en-us', 'en-gb', 'en-ca', 'en-au', 'fr-fr', 'de-de', 'it-it', 'es-es', 'nl-nl', 'sv-se'];
+    // Check Tier 1
+    const tier1Locales = [
+      'en-us', 'en-gb', 'en-ca', 'en-au', 'en-nz',
+      'fr-fr', 'de-de', 'it-it', 'es-es', 'nl-nl',
+      'sv-se', 'da-dk', 'nb-no', 'nn-no', 'fi-fi',
+    ];
     if (tier1Locales.some((t1) => locale.startsWith(t1))) {
       return 'TIER_1';
     }
 
     const tier1Zones = [
-      'New_York',
-      'Chicago',
-      'Los_Angeles',
-      'London',
-      'Toronto',
-      'Vancouver',
-      'Sydney',
-      'Melbourne',
-      'Paris',
-      'Berlin',
-      'Rome',
-      'Madrid',
-      'Amsterdam',
+      'New_York', 'Chicago', 'Los_Angeles', 'Denver', 'Phoenix', 'Anchorage', 'Honolulu',
+      'London', 'Toronto', 'Vancouver', 'Montreal', 'Sydney', 'Melbourne', 'Brisbane',
+      'Perth', 'Auckland', 'Paris', 'Berlin', 'Rome', 'Madrid', 'Amsterdam', 'Stockholm',
+      'Copenhagen', 'Oslo', 'Helsinki', 'Zurich', 'Vienna', 'Dublin', 'Brussels',
     ];
     if (tier1Zones.some((tz) => timeZone.includes(tz))) {
       return 'TIER_1';
@@ -200,13 +188,152 @@ export function detectUserRegionTier(): RegionTier {
 }
 
 /**
- * Helper to get region-formatted price object for any product
+ * Formats a monetary amount into a clean currency string.
  */
-export function getProductDisplayPrice(productId: string, region?: RegionTier): RegionalPrice {
-  const activeRegion = region || detectUserRegionTier();
+export function formatPrice(amount: number, currency: string): string {
+  try {
+    return new Intl.NumberFormat(undefined, {
+      style: 'currency',
+      currency,
+      maximumFractionDigits: amount % 1 === 0 ? 0 : 2,
+    }).format(amount);
+  } catch {
+    const symbol = currency === 'INR' ? '₹' : '$';
+    return `${symbol}${amount.toFixed(amount % 1 === 0 ? 0 : 2)}`;
+  }
+}
+
+/**
+ * Retrieve the RegionalPrice for a product given an optional region override.
+ */
+export function getPrice(productId: string, region?: RegionTier): RegionalPrice {
+  const activeRegion = region || detectUserRegion();
   const product = PRODUCTS[productId];
   if (!product) {
-    return { amount: 0, currency: 'USD', currencySymbol: '$', formatted: '$0.00' };
+    return {
+      amount: 0,
+      currency: 'USD',
+      currencySymbol: '$',
+      formatted: '$0.00',
+    };
   }
-  return product.prices[activeRegion] || product.prices['ROW'];
+
+  return product.prices[activeRegion] || product.prices.ROW;
+}
+
+/**
+ * Google Play Store Digital Goods API Provider (for TWA / Google Play packaging)
+ */
+export class PlayBillingProvider implements BillingProvider {
+  isAvailable(): boolean {
+    return typeof window !== 'undefined' && 'getDigitalGoodsService' in window;
+  }
+
+  async purchaseProduct(productId: string): Promise<PurchaseResult> {
+    try {
+      const windowWithDGS = window as unknown as {
+        getDigitalGoodsService?: (scope: string) => Promise<{
+          getDetails: (itemIds: string[]) => Promise<unknown>;
+        }>;
+      };
+
+      if (!windowWithDGS.getDigitalGoodsService) {
+        throw new Error('Digital Goods Service is not supported on this browser/environment.');
+      }
+
+      const service = await windowWithDGS.getDigitalGoodsService('https://play.google.com/billing');
+      if (!service) {
+        throw new Error('Failed to connect to Google Play Digital Goods Service.');
+      }
+
+      const product = PRODUCTS[productId];
+      const region = detectUserRegion();
+      const regionalPrice = product ? product.prices[region] : { amount: 0.99, currency: 'USD' };
+
+      const paymentMethodData = [
+        {
+          supportedMethods: 'https://play.google.com/billing',
+          data: { sku: productId },
+        },
+      ];
+
+      const request = new PaymentRequest(paymentMethodData, {
+        total: {
+          label: product?.name || 'Glam Blocks Purchase',
+          amount: {
+            currency: regionalPrice.currency,
+            value: regionalPrice.amount.toString(),
+          },
+        },
+      });
+
+      const response = await request.show();
+      await response.complete('success');
+
+      return {
+        success: true,
+        productId,
+        purchaseToken: `play_token_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+        isMock: false,
+      };
+    } catch (err) {
+      return {
+        success: false,
+        productId,
+        isMock: false,
+        error: (err as Error).message || 'Play Store purchase cancelled or failed',
+      };
+    }
+  }
+
+  async purchase(productId: string): Promise<PurchaseResult> {
+    return this.purchaseProduct(productId);
+  }
+}
+
+/**
+ * Mock Billing Provider for web sandbox & development.
+ * Simulates a 3-second realistic purchase latency with mock token generation.
+ */
+export class MockBillingProvider implements BillingProvider {
+  isAvailable(): boolean {
+    return true;
+  }
+
+  async purchaseProduct(productId: string): Promise<PurchaseResult> {
+    // 3-second simulated purchase network roundtrip
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    const product = PRODUCTS[productId];
+    if (!product) {
+      return {
+        success: false,
+        productId,
+        isMock: true,
+        error: `Product not found: ${productId}`,
+      };
+    }
+
+    return {
+      success: true,
+      productId,
+      purchaseToken: `mock_token_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+      isMock: true,
+    };
+  }
+
+  async purchase(productId: string): Promise<PurchaseResult> {
+    return this.purchaseProduct(productId);
+  }
+}
+
+/**
+ * Factory returning the best available billing provider
+ */
+export function getBillingProvider(): BillingProvider {
+  const play = new PlayBillingProvider();
+  if (play.isAvailable()) {
+    return play;
+  }
+  return new MockBillingProvider();
 }

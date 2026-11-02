@@ -1,83 +1,25 @@
 {
-  "name": "Glam Blocks - Makeup Block Puzzle",
-  "short_name": "Glam Blocks",
-  "description": "The chic makeup-themed block puzzle game. Place cosmetic blocks, clear lines, and collect glamorous beauty looks!",
-  "start_url": "./",
-  "id": "./",
-  "scope": "./",
+  "name": "Glam Blocks",
+  "short_name": "GlamBlocks",
+  "description": "The Face is Your Board. Block puzzle meets luxury makeup artistry.",
+  "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#FFF5F8",
-  "theme_color": "#FFF5F8",
-  "categories": ["games", "puzzle", "casual"],
+  "theme_color": "#E6177F",
+  "background_color": "#FFF6F9",
+  "categories": ["games", "beauty", "puzzle"],
   "icons": [
     {
-      "src": "./icons/icon-48.png",
-      "sizes": "48x48",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-72.png",
-      "sizes": "72x72",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-96.png",
-      "sizes": "96x96",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-144.png",
-      "sizes": "144x144",
-      "type": "image/png"
-    },
-    {
-      "src": "./icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
+      "src": "/favicon.svg",
+      "sizes": "48x48 72x72 96x96 144x144 192x192 512x512",
+      "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "./icons/icon-512.png",
+      "src": "/favicon.svg",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "./icons/icon-512-maskable.png",
-      "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "./store/screenshot-1.svg",
-      "sizes": "1080x1920",
-      "type": "image/svg+xml",
-      "form_factor": "narrow",
-      "label": "Place and clear chic cosmetic block puzzle shapes"
-    },
-    {
-      "src": "./store/screenshot-2.svg",
-      "sizes": "1080x1920",
-      "type": "image/svg+xml",
-      "form_factor": "narrow",
-      "label": "Score combos and blast 3x3 areas with Glam Bombs"
-    },
-    {
-      "src": "./store/screenshot-3.svg",
-      "sizes": "1080x1920",
-      "type": "image/svg+xml",
-      "form_factor": "narrow",
-      "label": "Unlock and equip glamorous makeup looks for your avatar"
-    },
-    {
-      "src": "./store/screenshot-4.svg",
-      "sizes": "1080x1920",
-      "type": "image/svg+xml",
-      "form_factor": "narrow",
-      "label": "Climb the weekly global Hall of Glam rankings"
     }
   ]
 }

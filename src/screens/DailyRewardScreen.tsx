@@ -1,169 +1,165 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Card } from '../components/ui/Card';
-import { useAuth } from '../services/authContext';
-import { useToast } from '../components/ui/Toast';
-import { soundSystem } from '../services/soundSystem';
-import { ChevronLeft, Check, Flame, Sparkles } from 'lucide-react';
-import confetti from 'canvas-confetti';
-import { REWARDS_SCHEDULE } from '../components/daily/DailyRewardModal';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { IconButton } from '../components/IconButton';
+import { Button } from '../components/Button';
+import { useGame } from '../context/GameContext';
+import { useSound } from '../hooks/useSound';
+import { useHaptics } from '../hooks/useHaptics';
 
-interface DailyRewardScreenProps {
-  onBack: () => void;
-}
+const STREAK_REWARDS = [
+  { day: 1, coins: 10, gems: 0 },
+  { day: 2, coins: 20, gems: 0 },
+  { day: 3, coins: 30, gems: 0 },
+  { day: 4, coins: 50, gems: 0 },
+  { day: 5, coins: 50, gems: 0 },
+  { day: 6, coins: 75, gems: 0 },
+  { day: 7, coins: 100, gems: 10 },
+];
 
-export const DailyRewardScreen: React.FC<DailyRewardScreenProps> = ({ onBack }) => {
-  const { user, claimDailyReward, isDailyRewardAvailable } = useAuth();
-  const { showToast } = useToast();
+export const DailyRewardScreen: React.FC = () => {
+  const navigate = useNavigate();
+  const { userProfile, updateProfile } = useGame();
+  const { playTaDa, playSparkle } = useSound();
+  const { successBuzz } = useHaptics();
 
-  const currentStreak = user?.streakDay || 1;
-  const isAvailable = isDailyRewardAvailable();
+  const currentStreak = userProfile.streakDay || 1;
+  const activeDayIndex = ((currentStreak - 1) % 7);
+
+  // Check if claimed today based on date string comparison
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const lastClaimedStr = userProfile.lastRewardClaimedAt
+    ? new Date(userProfile.lastRewardClaimedAt).toISOString().slice(0, 10)
+    : '';
+  const canClaim = todayStr !== lastClaimedStr;
+
+  const [claimed, setClaimed] = useState(!canClaim);
 
   const handleClaim = () => {
-    if (!isAvailable) {
-      showToast('Already claimed today! Next reward unlocks tomorrow.', 'info');
-      return;
-    }
+    playTaDa();
+    playSparkle();
+    successBuzz();
 
-    const reward = REWARDS_SCHEDULE[(currentStreak - 1) % REWARDS_SCHEDULE.length];
-    const nextDay = (currentStreak % 7) + 1;
+    const todayReward = STREAK_REWARDS[activeDayIndex];
+    setClaimed(true);
 
-    try {
-      confetti({
-        particleCount: 50,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#D4AF37', '#FFD700', '#FF4081', '#C2185B', '#FFFDF9'],
-      });
-    } catch {}
-
-    soundSystem.playSparkle();
-    claimDailyReward(nextDay, reward.coins, reward.gems);
-    showToast(`Claimed Day ${currentStreak} Reward: ${reward.label}!`, 'glam');
+    updateProfile({
+      coins: userProfile.coins + todayReward.coins,
+      gems: userProfile.gems + todayReward.gems,
+      streakDay: currentStreak + (canClaim ? 1 : 0),
+      lastRewardClaimedAt: Date.now(),
+    });
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-between p-4 safe-top safe-bottom bg-gradient-to-b from-game-bg via-game-surface to-pink-50/50 dark:to-purple-950/20">
+    <div className="min-h-screen min-h-[100dvh] w-full max-w-[480px] mx-auto flex flex-col justify-between overflow-x-hidden bg-[var(--bg,#fff6f9)] dark:bg-[var(--bg,#140e19)] text-[var(--text)] select-none pb-8">
       {/* Top Header */}
-      <div>
-        <div className="flex items-center justify-between min-h-[48px] mb-3">
-          <button
-            onClick={onBack}
-            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-2xl bg-game-surface border border-game-border text-game-muted hover:text-game-text hover:border-game-secondary transition-all cursor-pointer"
-            aria-label="Back to home"
+      <header className="px-4 py-3 flex items-center justify-between border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-md sticky top-0 z-10">
+        <div className="flex items-center gap-3">
+          <IconButton
+            aria-label="Back"
+            onClick={() => navigate('/')}
+            className="w-9 h-9"
           >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <h2 className="text-xl font-display font-bold text-game-text">
-            Daily Glam Rewards
-          </h2>
-          <div className="w-11" />
-        </div>
-
-        {/* Streak Counter Header Banner */}
-        <Card variant="gradient" padding="md" className="flex items-center justify-between mb-4 border border-game-border shadow-soft">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-400 via-game-secondary to-game-primary flex items-center justify-center text-white shadow-soft">
-              <Flame className="w-6 h-6 fill-white" />
-            </div>
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-game-primary">
-                Login Streak
-              </span>
-              <h3 className="text-xl font-heading font-bold text-game-text">
-                {currentStreak} Days Active
-              </h3>
-            </div>
+            <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+            </svg>
+          </IconButton>
+          <div>
+            <h1 className="text-xl font-black text-[var(--text)]">Daily Beauty Streak</h1>
+            <p className="text-[10px] font-semibold text-[var(--text-muted)]">
+              Log in daily for escalating glam gifts!
+            </p>
           </div>
-          <span
-            className={`text-xs font-semibold px-3 py-1 rounded-full border ${
-              isAvailable
-                ? 'bg-game-primary/10 border-game-primary/30 text-game-primary font-bold'
-                : 'bg-game-surface border-game-border text-game-muted'
-            }`}
-          >
-            {isAvailable ? 'Ready to Claim' : 'Claimed Today'}
-          </span>
-        </Card>
-      </div>
+        </div>
+      </header>
 
-      {/* 7-Day Calendar Grid */}
-      <div className="flex-1 overflow-y-auto pr-1">
-        <div className="grid grid-cols-2 xs:grid-cols-3 gap-2.5">
-          {REWARDS_SCHEDULE.map((item) => {
-            const isCompleted = item.day < currentStreak || (!isAvailable && item.day === currentStreak);
-            const isToday = item.day === currentStreak && isAvailable;
+      {/* Center Streak Banner & Calendar */}
+      <div className="flex-1 p-4 flex flex-col items-center justify-center space-y-6">
+        {/* Streak Flame Banner */}
+        <div className="flex flex-col items-center text-center">
+          <div className="relative">
+            <span className="text-6xl animate-bounce">🔥</span>
+          </div>
+          <h2 className="text-3xl font-black text-[var(--text)] mt-2">
+            Day {currentStreak} Streak!
+          </h2>
+          <p className="text-xs text-[var(--text-muted)] max-w-[240px] mt-1">
+            Keep your beauty streak going each morning to unlock Day 7 diamond chest!
+          </p>
+        </div>
 
-            return (
-              <motion.div
-                key={item.day}
-                whileHover={isToday ? { scale: 1.02 } : {}}
-                className={`
-                  p-3 rounded-2xl border transition-all text-center flex flex-col items-center justify-between relative
-                  ${item.isGrand ? 'col-span-2 xs:col-span-3 bg-gradient-to-r from-pink-500/10 via-amber-400/10 to-purple-500/10 border-amber-400/60' : ''}
-                  ${isToday ? 'bg-game-surface border-game-primary ring-2 ring-game-primary/30 shadow-luxury' : ''}
-                  ${isCompleted ? 'bg-game-surface/50 border-game-border opacity-70' : 'bg-game-surface border-game-border'}
-                `}
-              >
-                <div className="flex items-center justify-between w-full mb-1">
-                  <span className="text-[10px] font-bold uppercase text-game-muted">
-                    Day {item.day}
+        {/* 7-Day Visual Calendar */}
+        <div className="w-full max-w-[360px] bg-[var(--surface)] rounded-3xl p-4 border border-[var(--border)] shadow-lg space-y-3">
+          <div className="text-xs font-black uppercase text-[var(--text-muted)] tracking-wider">
+            7-Day Beauty Calendar
+          </div>
+
+          <div className="grid grid-cols-4 gap-2.5">
+            {STREAK_REWARDS.map((reward, i) => {
+              const isPast = i < activeDayIndex;
+              const isToday = i === activeDayIndex;
+
+              return (
+                <div
+                  key={reward.day}
+                  className={`p-2.5 rounded-2xl border text-center flex flex-col items-center justify-between transition-all ${
+                    isToday
+                      ? 'border-amber-400 bg-amber-500/10 ring-2 ring-amber-400/30 scale-105'
+                      : isPast
+                      ? 'border-emerald-500/30 bg-emerald-500/5 opacity-70'
+                      : 'border-[var(--border)] bg-[var(--surface-2)]'
+                  } ${reward.day === 7 ? 'col-span-2' : ''}`}
+                >
+                  <span className="text-[9px] font-black text-[var(--text-muted)] uppercase">
+                    Day {reward.day}
                   </span>
-                  {isCompleted && <Check className="w-4 h-4 text-game-success stroke-[3]" />}
-                </div>
 
-                <div className="text-3xl my-2 drop-shadow-sm">
-                  {isCompleted ? '✨' : item.icon}
-                </div>
-
-                <div className="text-xs font-heading font-bold text-game-text">
-                  {item.coins.toLocaleString()} Coins
-                </div>
-
-                {item.gems > 0 && (
-                  <div className="text-[10px] font-bold text-purple-600 dark:text-purple-300">
-                    +{item.gems} Gems 💎
+                  <div className="my-1 text-xl">
+                    {reward.gems > 0 ? '💎' : '🪙'}
                   </div>
-                )}
 
-                {isToday && (
-                  <div className="mt-2 text-[10px] font-bold text-game-primary bg-game-card px-2 py-0.5 rounded-full border border-game-primary/30">
-                    READY TODAY
+                  <div className="text-[10px] font-black text-[var(--text)]">
+                    +{reward.coins}
+                    {reward.gems > 0 && ` & +${reward.gems}💎`}
                   </div>
-                )}
-              </motion.div>
-            );
-          })}
+
+                  {isPast && (
+                    <span className="text-[9px] font-bold text-emerald-500">✓ Done</span>
+                  )}
+                  {isToday && (
+                    <span className="text-[9px] font-bold text-amber-500">TODAY</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      {/* Action Footer */}
-      <div className="pt-3 border-t border-game-border/60">
-        <button
-          onClick={handleClaim}
-          disabled={!isAvailable}
-          className={`
-            w-full min-h-[48px] rounded-2xl flex items-center justify-center gap-2 font-heading font-bold text-sm shadow-luxury transition-all cursor-pointer
-            ${
-              isAvailable
-                ? 'bg-gradient-to-r from-game-primary via-pink-600 to-amber-500 text-white hover:opacity-95 active:scale-98 animate-pulse-glow'
-                : 'bg-game-card border border-game-border text-game-muted cursor-not-allowed opacity-75'
-            }
-          `}
-        >
-          {isAvailable ? (
-            <>
-              <Sparkles className="w-4 h-4 text-amber-300" />
-              <span>Claim Day {currentStreak} Gift</span>
-            </>
-          ) : (
-            <>
-              <Check className="w-4 h-4 text-game-success" />
-              <span>Claimed Today - Next in 24 Hours</span>
-            </>
-          )}
-        </button>
-      </div>
+      {/* Claim Button */}
+      <footer className="p-4 bg-[var(--surface)] border-t border-[var(--border)]">
+        {claimed ? (
+          <Button
+            variant="ghost"
+            size="lg"
+            fullWidth
+            disabled={true}
+          >
+            ✓ Claimed for Today! Check Back Tomorrow
+          </Button>
+        ) : (
+          <Button
+            variant="primary"
+            size="lg"
+            fullWidth
+            onClick={handleClaim}
+          >
+            🎁 Claim Today's Glam Gift
+          </Button>
+        )}
+      </footer>
     </div>
   );
 };
+
+export default DailyRewardScreen;

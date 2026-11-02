@@ -1,125 +1,285 @@
 {
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "close": "Close",
+    "back": "Back",
+    "confirm": "Confirm",
+    "save": "Save",
+    "share": "Share",
+    "claim": "Claim",
+    "claimed": "Claimed",
+    "loading": "Loading...",
+    "retry": "Retry",
+    "error": "Something went wrong",
+    "delete": "Delete",
+    "edit": "Edit",
+    "continue": "Continue",
+    "done": "Done",
+    "copy": "Copy",
+    "copied": "Copied to clipboard!",
+    "dismiss": "Dismiss"
+  },
   "app": {
     "title": "Glam Blocks",
-    "subtitle": "Makeup Block Puzzle"
+    "subtitle": "Makeup Block Puzzle & Beauty Studio",
+    "tagline": "Match cosmetics, craft gorgeous looks, and express your style!"
   },
   "nav": {
     "home": "Home",
     "play": "Play",
-    "looks": "Looks",
+    "vanity": "Vanity",
+    "clients": "Clients",
+    "portfolio": "Portfolio",
     "shop": "Shop",
-    "daily": "Daily",
-    "leaderboard": "Leaderboard",
+    "leaderboard": "Rankings",
     "settings": "Settings"
   },
+  "splash": {
+    "title": "Glam Blocks",
+    "tagline": "The Couture Makeup Puzzle",
+    "loading": "Preparing vanity mirrors & cosmetic palettes..."
+  },
+  "onboarding": {
+    "skip": "Skip",
+    "next": "Next",
+    "getStarted": "Get Started",
+    "step1": {
+      "title": "Drag & Drop Cosmetics",
+      "description": "Place lipstick, blush, eyeshadow, and skincare blocks into the 8x8 vanity grid to clear rows and columns."
+    },
+    "step2": {
+      "title": "Craft Pure Looks",
+      "description": "Clear monochromatic lines to apply pure shades to eyes, cheeks, and lips, building stunning face recipes."
+    },
+    "step3": {
+      "title": "Climb the Hall of Glam",
+      "description": "Complete client briefs, unlock seasonal collections, collect star ratings, and dominate the weekly global rankings."
+    }
+  },
+  "auth": {
+    "title": "Vanity Sign In",
+    "subtitle": "Sync your looks, cosmetic palette, and high scores across all devices",
+    "google": "Continue with Google",
+    "or": "OR",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "stylist@glamblocks.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "confirmPasswordLabel": "Confirm Password",
+    "signIn": "Sign In",
+    "signUp": "Create Account",
+    "guest": "Play as Guest (Offline Mode)",
+    "guestNotice": "Guest accounts save progress on this device only.",
+    "needAccount": "New stylist? Create an account",
+    "haveAccount": "Already registered? Sign in here",
+    "forgotPassword": "Forgot Password?",
+    "resetPasswordTitle": "Reset Your Password",
+    "resetPasswordDesc": "Enter your email address and we will send you a password reset link.",
+    "sendResetLink": "Send Reset Link",
+    "termsConsent": "I accept the Terms of Service and Privacy Policy (Required)",
+    "marketingConsent": "Send me seasonal beauty drops, exclusive events, and gifts (Optional)",
+    "ageConsent": "I confirm that I am 13 years of age or older",
+    "logout": "Sign Out",
+    "deleteAccount": "Delete My Account & Data",
+    "deleteConfirmTitle": "Permanently Delete Account?",
+    "deleteConfirmMessage": "This action cannot be undone. All your portfolio entries, unlocked looks, gems, and coins will be permanently destroyed."
+  },
   "home": {
-    "welcome": "Welcome back",
-    "bestScore": "Best Score",
+    "welcome": "Welcome back,",
+    "bestScore": "High Score",
     "level": "Level",
+    "stars": "Stars",
+    "coins": "Coins",
+    "gems": "Gems",
     "playNow": "PLAY NOW",
-    "dailyReward": "Daily Gift",
-    "looksCollection": "Looks Studio",
-    "shop": "Beauty Shop",
-    "leaderboard": "Rankings"
+    "dailyBrief": "Daily Client Brief",
+    "looksStudio": "Looks Studio",
+    "beautyShop": "Glam Boutique",
+    "hallOfGlam": "Hall of Glam",
+    "streakDay": "Day {day} Streak",
+    "claimStreak": "Claim Daily Reward",
+    "quickStats": "Artist Career"
   },
   "game": {
     "score": "Score",
     "best": "Best",
     "combo": "Combo",
-    "undo": "Undo",
-    "shuffle": "Shuffle",
-    "bomb": "Glam Bomb",
-    "paused": "Game Paused",
+    "comboMultiplier": "{count}x Combo!",
+    "pureShade": "PURE SHADE!",
+    "moveCount": "Moves",
+    "linesCleared": "Lines",
+    "paused": "Paused",
     "resume": "Resume",
     "restart": "Restart",
-    "quit": "Quit to Home"
+    "quit": "Quit",
+    "outOfMoves": "No More Placements!",
+    "newBest": "NEW HIGH SCORE!",
+    "victory": "Client Thrilled!",
+    "levelUp": "Level Up!",
+    "powerups": {
+      "undo": "Undo",
+      "shuffle": "Shuffle",
+      "bomb": "Glam Bomb",
+      "undoDesc": "Take back your previous placement",
+      "shuffleDesc": "Reroll 3 fresh legal cosmetic shapes",
+      "bombDesc": "Clear a dazzling 3x3 blast area",
+      "insufficientCoins": "Need more coins to purchase booster!"
+    },
+    "zones": {
+      "eyes": "Eyes Zone",
+      "cheeks": "Cheeks Zone",
+      "lips": "Lips Zone"
+    },
+    "shades": {
+      "rose": "Rose Pink",
+      "lavender": "Lavender Violet",
+      "peach": "Peach Blush",
+      "ruby": "Ruby Red",
+      "gold": "Champagne Gold",
+      "mint": "Mint Green",
+      "sky": "Sky Blue"
+    },
+    "goals": {
+      "title": "Client Objectives",
+      "clearColor": "Clear {target} {shade} blocks",
+      "clearLines": "Clear {target} lines",
+      "combo": "Trigger a {target}x Combo",
+      "score": "Reach {target} points",
+      "pureShade": "Clear {target} pure shade lines",
+      "completed": "Objective Complete!",
+      "starsEarned": "{count} of 3 Stars Earned"
+    },
+    "gameOver": {
+      "title": "Vanity Full!",
+      "finalScore": "Final Score",
+      "highScore": "Personal Best",
+      "coinsEarned": "Coins Earned",
+      "starsAwarded": "Stars Earned",
+      "continueGems": "Continue for 50 Gems",
+      "continueAd": "Watch Ad to Continue",
+      "saveToPortfolio": "Save Look to Portfolio",
+      "playAgain": "Play Again",
+      "mainMenu": "Main Menu"
+    }
   },
-  "gameOver": {
-    "title": "Out of Space!",
-    "score": "Final Score",
-    "best": "High Score",
-    "newRecord": "New Personal Record!",
-    "coinsEarned": "Coins Earned",
-    "playAgain": "Play Again",
-    "continue": "Continue (50 Gems)",
-    "watchAd": "Continue with Ad",
-    "home": "Main Menu"
-  },
-  "looks": {
-    "title": "Looks Collection",
-    "subtitle": "Unlock glamorous cosmetic styles by earning points and leveling up",
+  "vanity": {
+    "title": "Vanity Studio",
+    "subtitle": "Design, preview, and equip haute-couture makeup looks",
+    "tabs": {
+      "looks": "Collectible Looks",
+      "recipe": "Active Face Recipe",
+      "palette": "Color Palette"
+    },
+    "equip": "Equip Look",
+    "equipped": "Equipped",
     "locked": "Locked",
     "unlocked": "Unlocked",
-    "equipped": "Equipped",
-    "equip": "Equip Look",
-    "reqScore": "Score required",
-    "glamPassReq": "Requires Glam Pass VIP"
+    "levelReq": "Unlocks at Level {level}",
+    "scoreReq": "Requires {score} XP",
+    "glamPassReq": "Exclusive to Glam Pass VIP",
+    "recipeTitle": "Live Makeup Recipe",
+    "eyesZone": "Eyeshadow & Liner",
+    "cheeksZone": "Cheek Blush & Glow",
+    "lipsZone": "Lipstick & Gloss",
+    "applications": "{count} layer(s) applied",
+    "clearRecipe": "Wash Face Clean"
   },
-  "shop": {
-    "title": "Glam Shop",
-    "tabs": {
-      "gems": "Gems",
-      "removeAds": "No Ads",
-      "glamPass": "Glam Pass",
-      "bundles": "Bundles"
-    },
-    "demoNotice": "Preview Mode: Demo purchases only. No real charges occur.",
-    "buy": "Buy",
-    "active": "Active",
-    "subscribed": "Subscribed"
+  "palette": {
+    "title": "Cosmetic Pan Palette",
+    "subtitle": "Fill all 7 shade pans by clearing pure lines during puzzle play",
+    "pansFilled": "{filled} of {total} Pans Filled",
+    "completedTitle": "Full Palette Mastered!",
+    "completedDesc": "All 7 beauty pans are glowing! Claim your master artist gem bonus.",
+    "claimBonus": "Claim 100 Gems",
+    "seasonalTitle": "Seasonal Shimmer Collection",
+    "expiresOn": "Season ends {date}"
   },
-  "daily": {
-    "title": "Daily Beauty Rewards",
-    "subtitle": "Log in every day to claim sparkling coins, gems, and exclusive boosters!",
-    "streak": "Current Streak: {days} Days",
-    "claim": "Claim Reward",
-    "claimed": "Claimed Today",
-    "nextIn": "Next reward in: {time}"
+  "clients": {
+    "title": "Client Appointments",
+    "subtitle": "Complete customized cosmetic briefs for VIP clients",
+    "dailyBriefTitle": "Today's VIP Brief",
+    "occasion": "Occasion: {occasion}",
+    "collection": "Collection: {collection}",
+    "goalsTitle": "Look Requirements",
+    "starThresholds": "Star Ratings: 1★ ({s1} pts) · 2★ ({s2} pts) · 3★ ({s3} pts)",
+    "startSession": "Start Makeover Session",
+    "completedToday": "Client Satisfied for Today!"
+  },
+  "portfolio": {
+    "title": "Stylist Portfolio",
+    "subtitle": "Your history of runway creations and client transformations",
+    "emptyTitle": "Portfolio Empty",
+    "emptyDesc": "Complete client makeovers or achieve high scores to immortalize your looks here!",
+    "clientLook": "Client: {client}",
+    "freeplayLook": "Freestyle Session",
+    "score": "Score: {score}",
+    "stars": "{stars} Stars",
+    "share": "Share Card",
+    "download": "Export Image",
+    "delete": "Delete Look"
   },
   "leaderboard": {
     "title": "Weekly Hall of Glam",
+    "subtitle": "Top makeup artists worldwide competing for the Golden Crown",
     "tabs": {
       "global": "Top 50 Global",
-      "friends": "Friends"
+      "country": "Regional"
     },
     "rank": "Rank",
-    "player": "Player",
+    "player": "Stylist",
     "score": "Score",
-    "friendsComingSoon": "Friends leaderboard will be enabled in an upcoming season!"
+    "yourRank": "Your Current Ranking: #{rank}",
+    "resetsIn": "Weekly cycle resets in {time}",
+    "emptyLeaderboard": "No scores submitted yet this week. Be the first!"
+  },
+  "shop": {
+    "title": "Glam Boutique",
+    "subtitle": "Stock up on sparkling gems, luxury bundles, and VIP perks",
+    "tabs": {
+      "all": "All Items",
+      "gems": "Gems",
+      "bundles": "Bundles",
+      "passes": "Glam Pass",
+      "specials": "Special Offers"
+    },
+    "buy": "Buy",
+    "currentBalance": "Your Vanity Wallet:",
+    "bestValue": "BEST VALUE",
+    "popular": "MOST POPULAR",
+    "savePercent": "SAVE {percent}%",
+    "demoNotice": "Demo Preview Mode: No real monetary charge will be incurred.",
+    "adFreeUnlocked": "Ad-Free Luxury Active",
+    "passActive": "Glam Pass VIP Active ({days} days remaining)",
+    "purchaseSuccess": "Thank you! Your beauty items have been delivered to your vanity.",
+    "purchaseFailed": "Purchase could not be completed. Please try again."
   },
   "settings": {
-    "title": "Settings",
-    "theme": "Theme Appearance",
-    "sound": "Sound Effects",
-    "music": "Background Chimes",
-    "haptics": "Vibration & Haptics",
-    "reduceMotion": "Reduce Motion",
-    "language": "Language",
-    "account": "Account & Data",
-    "loggedInAs": "Signed in as",
-    "logout": "Log Out",
-    "deleteAccount": "Delete My Account & Data",
-    "deleteConfirmTitle": "Permanently Delete Account?",
-    "deleteConfirmText": "This will irreversibly erase your profile, best scores, saved looks, and currency.",
+    "title": "Settings & Vanity Controls",
+    "sections": {
+      "audio": "Audio & Haptics",
+      "theme": "Vanity Ambiance",
+      "accessibility": "Accessibility",
+      "account": "Account & Security",
+      "about": "About Glam Blocks"
+    },
+    "sound": "Sound Effects (Pops & Chimes)",
+    "music": "Background Pentatonic Melodies",
+    "haptics": "Vibrations & Touch Feedback",
+    "themeMode": "Theme Appearance",
+    "themes": {
+      "light": "Rose Quartz Morning",
+      "dark": "Midnight Vanity",
+      "system": "Follow Device System"
+    },
+    "colorBlind": "Colorblind Accessibility Mode",
+    "colorBlindDesc": "Renders distinct icons and geometric patterns on all blocks",
+    "reduceMotion": "Reduce Animation Motion",
+    "reduceMotionDesc": "Softens placement shakes, particle explosions, and zooms",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
-    "support": "Contact Support",
-    "version": "Version"
-  },
-  "auth": {
-    "title": "Welcome to Glam Blocks",
-    "subtitle": "Sign in to save your beauty collection, high scores, and climb the leaderboard",
-    "google": "Continue with Google",
-    "or": "OR",
-    "emailLabel": "Email address",
-    "passwordLabel": "Password",
-    "login": "Sign In",
-    "signup": "Create Account",
-    "guest": "Play as Guest (Progress saved locally only)",
-    "needAccount": "Don't have an account? Sign up",
-    "haveAccount": "Already have an account? Sign in",
-    "forgotPassword": "Forgot password?",
-    "termsConsent": "I agree to the Terms of Service and Privacy Policy (Required)",
-    "marketingConsent": "Send me special offers, beauty updates, and event news (Optional)"
+    "deleteData": "Erase Account & Personal Data",
+    "deleteWarning": "Irreversibly deletes all cloud records, purchases, and ratings.",
+    "version": "Glam Blocks v1.0.0 (Production Build)"
   }
 }

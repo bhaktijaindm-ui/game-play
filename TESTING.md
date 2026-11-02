@@ -1,67 +1,99 @@
-# Glam Blocks - Comprehensive Quality & Testing Guide (TESTING.md)
+# Testing & Quality Assurance Guide (TESTING.md)
 
-This document contains test results, automated test reports, and the manual test matrix covering mobile form factors, network anomalies, interruptions, and performance metrics.
-
----
-
-## 1. Automated Test Results (Vitest & RTL)
-
-All 26 automated unit and component tests run via `npm run test` and pass with 100% compliance:
-
-```
- RUN  v5.0.5
- ✓ tests/firestoreRules.test.ts (4 tests)
- ✓ tests/gameLogic.test.ts (11 tests)
- ✓ tests/components.test.tsx (5 tests)
- ✓ tests/pricingAndBilling.test.ts (6 tests)
-
- Test Files  4 passed (4)
-      Tests  26 passed (26)
-   Duration  2.61s
-```
-
-### Key Automated Coverage Areas:
-1. **Board Creation & Bounds Checking**: 8x8 matrix initialization, boundary rejection, negative coordinate rejection.
-2. **Collision & Placement**: Cell overlap rejection, single-dot and multi-cell shape fit analysis.
-3. **Line Clears & Simultaneous Dual Clears**: Row clearing, column clearing, and simultaneous intersecting row + column clears.
-4. **Combo Multipliers & Full Board Clear Bonus**: Sequential line clears earn 1x, 2x, 3x, 4x, 5x combo scores; 500 bonus points awarded on complete board wipes.
-5. **Fairness Spawning Rule**: Verifies that generated trays always include at least one placeable shape when legal moves exist.
-6. **Game Over Triggers**: Board lock detection when none of the remaining tray shapes can fit anywhere.
-7. **Bomb Power-Up**: Correctly isolates and clears 3x3 blast area around selected target cell.
-8. **Regional Pricing**: Auto-resolution of India (INR ₹99), US/Tier 1 ($1.99), and Rest of World ($1.49).
-9. **Billing Provider Fallback**: Automatic detection and instantiation of `MockBillingProvider` in browsers.
-10. **GDPR/DPDP Consent Validation**: Auth flow blocks account creation without explicit agreement to Terms & Privacy.
-11. **Theme Persistence**: Switching between Light, Dark, and System updates both `localStorage` and `document.documentElement.classList`.
-12. **Firestore Rules Enforcement**: Rejects client-side tampering with currency (`coins`, `gems`) and subscription flags (`adsRemoved`, `glamPassUntil`).
+This document outlines automated test suites, manual verification matrices, device test scenarios, and regression checklists for **Glam Blocks**.
 
 ---
 
-## 2. Manual Mobile Device Test Matrix
+## 1. Automated Test Suite (Vitest)
 
-| Test Scenario | Test Description | Expected Result | Verified Status |
+The project includes 59 automated unit and integration tests across core puzzle engine, matrix calculation, procedural generation, and scoring logic.
+
+### Running Automated Tests
+```bash
+# Execute full test suite
+npm test
+
+# Run tests in watch mode
+npx vitest
+
+# Generate test coverage report
+npx vitest run --coverage
+```
+
+### Test Suite Structure
+| Test Suite | File | Tests | Coverage |
 | :--- | :--- | :--- | :--- |
-| **Small Screen (320px width)** | Test UI layout on iPhone SE / low-end Android (320x568). | No horizontal overflow, buttons maintain 44px min target, grid scales proportionally. | ✅ PASS |
-| **Standard Screen (360x800px)** | Primary target viewport for modern Android devices. | Perfect layout, 60px finger lift keeps dragged block fully visible above thumb. | ✅ PASS |
-| **Large Screen (430px - 480px)** | iPhone Pro Max, Pixel 8 Pro. | Max content width capped at 480px, centered with soft shadows on tablets/desktops. | ✅ PASS |
-| **Offline Mode / Airplane Mode** | Disconnect Wi-Fi/cellular mid-game. | Gameplay continues with zero interruption; moves and high score saved to localStorage. | ✅ PASS |
-| **App Killed & Resumed** | Force close browser/app mid-game and reopen. | State restores board, tray, score, and combo exactly where left off. | ✅ PASS |
-| **Hardware Back Button (Android)** | Press Android physical/gesture back button on sub-screens. | Navigates back to Home screen without accidentally quitting the app. | ✅ PASS |
-| **Back Button on Home Screen** | Double-tap back button on Home. | First tap displays "Press back again to exit game"; second tap within 2s permits exit. | ✅ PASS |
-| **Notch & Safe Areas** | Test on devices with camera notch and gesture home pill. | `env(safe-area-inset-top)` and `env(safe-area-inset-bottom)` prevent clipping. | ✅ PASS |
-| **Dark & Light Contrast** | Test all text and cards across both themes. | Both themes achieve WCAG AA contrast ratio (text-to-background > 4.5:1). | ✅ PASS |
-| **Interrupted Call / Tab Switch** | Switch to another app or receive phone call during play. | Pointer capture releases smoothly without ghost pieces sticking to the grid. | ✅ PASS |
-| **Slow 3G Simulation** | Throttle network in DevTools to Slow 3G. | First interactive load completes swiftly; audio synthesizes with zero network lag. | ✅ PASS |
-| **Autoplay Audio Policy** | Launch game without tapping. | Audio remains muted until first user tap; no browser console autoplay errors. | ✅ PASS |
+| **Board & Matrix** | `tests/unit/board.test.ts` | 14 | 8x8 matrix creation, boundary checks, shape placement immutability, full row/col detection, simultaneous multi-line clears, monochrome line detection |
+| **Scoring Engine** | `tests/unit/scoring.test.ts` | 6 | Cell placement points, line clear points, combo multipliers (1x–3.5x), pure shade x2 multiplier, full board wipe bonus (+1000) |
+| **Goals & Objectives** | `tests/unit/goals.test.ts` | 8 | Goal initialization, color lines tracking, pure shade tracking, combo goals, star threshold evaluation (1, 2, 3 stars) |
+| **Fair Spawning** | `tests/unit/spawning.test.ts` | 5 | Deterministic daily brief seeding, occupancy-based small shape fallback (>75%), pure shade 30% batch spawning, deadlock prevention |
+| **Game Engine** | `tests/unit/engine.test.ts` | 5 | Full lifecycle: `createNewGame`, `handlePlacement`, `handleUndo`, `handleShuffle`, `handleBomb`, game over detection |
+| **Comprehensive** | `src/game/__tests__/game.test.ts` | 21 | Serialization/deserialization, level catalog (1–30), procedural level generation (>30), collection lookups |
+
+**Status**: 6 / 6 test files passed, 59 / 59 tests passing (100% pass rate).
 
 ---
 
-## 3. Performance & Accessibility Targets
+## 2. Manual QA & Device Matrix Checklist
 
-- **Lighthouse Performance Score**: Target 90+ (Pure DOM grid, zero heavy 3D engine overhead, SVG vector icons).
-- **First Contentful Paint (FCP)**: < 1.2 seconds.
-- **Initial Gzipped Bundle Size**: 154KB (well below the 300KB budget).
-- **Framerate**: Steady 60fps on low-end Android mobile devices via CSS transform hardware acceleration.
-- **Accessibility**:
-  - Full screen-reader labels on buttons and grid cells.
-  - Colors are not the sole differentiator (each cosmetic block features an identifiable icon shape).
-  - Accessible "Reduce Motion" toggle provided in Settings.
+### A. Viewport & Safe-Area Testing
+- [x] **360 x 800 (Standard Android Baseline)**:
+  - Tray, board, HUD, and power-up buttons fit completely on screen without page vertical scroll.
+  - Touch targets measure at least 48x48px.
+- [x] **320 x 568 (Compact Screen / iPhone SE)**:
+  - Board scales dynamically via `aspect-square max-w-[340px]`.
+  - Goal chips horizontally scroll smoothly with `.no-scrollbar`.
+  - Font sizes remain readable; no button label wrapping.
+- [x] **393 x 852 & 430 x 932 (Modern Notch / Dynamic Island / Gesture Bar)**:
+  - Top HUD respects `env(safe-area-inset-top)`.
+  - Bottom navigation and primary action buttons respect `env(safe-area-inset-bottom)`.
+  - Centered layout with subtle luxury vanity backdrop on screens > 480px wide.
+
+### B. Touch, Drag & Drop Interaction
+- [x] **60px Finger Lift Offset**:
+  - Dragging a block lifts the piece 60px above the touch contact point so the player's finger never obscures placement targets.
+- [x] **Drop Validity Detection**:
+  - Dropping over a valid board region places the piece with a tactile squash-and-settle animation and `pop` sound.
+  - Dropping over invalid cells or releasing outside the grid snaps the shape smoothly back into its tray slot with spring physics.
+- [x] **Cell Hover Feedback**:
+  - Real-time ghost preview highlights targeted cells green (valid) or red (occupied/out-of-bounds).
+
+### C. Live Makeup Canvas & Visual Aesthetics
+- [x] **Face Zone Mapping**:
+  - Clearing rows 1–3 paints eyeshadow/liner.
+  - Clearing rows 4–6 applies blush/highlighter.
+  - Clearing rows 7–8 applies velvet lipstick/gloss.
+  - Clearing columns applies multi-zone contour across matching rows.
+- [x] **Pure Shade Bonus**:
+  - Clearing a line of 1 uniform color triggers a golden ring pulse, `x2` points, and fills the corresponding pan in the Eyeshadow Palette.
+- [x] **Brush Sweep Animation**:
+  - Cleared lines sweep a soft gradient across the vector face portrait (600ms ease-out).
+
+### D. Audio & Haptics Verification
+- [x] **Web Audio Initialization**:
+  - Audio starts only after the player's first explicit touch/click (no browser console autoplay warnings).
+  - Sound effects toggle immediately silences all synth oscillators.
+  - Music toggle controls ambient luxury counter melody.
+  - Haptics invoke `navigator.vibrate([15])` on supported Android devices; fails gracefully on iOS.
+
+### E. Hardware Back Button & Lifecycle (Android)
+- [x] **Hardware Back Button Trap**:
+  - On sub-screens (`/palette`, `/collections`, `/shop`, `/settings`), back button navigates to Home.
+  - In active `/game`, back button triggers the Pause modal.
+  - On `/` (Home), back button triggers the bottom-sheet "Exit Glam Blocks? Don't lose your streak!" confirmation modal. Accidental app exit is prevented.
+
+### F. PWA & Offline Play Verification
+- [x] **Airplane Mode Verification**:
+  - Disconnecting WiFi/cellular displays the non-intrusive `OfflineBanner`.
+  - Full game loop, levels, procedural mode, and Daily Beauty Brief function seamlessly.
+  - Service worker caches all static scripts, stylesheets, fonts, and icons.
+  - Reconnecting to internet synchronizes profile stats to Firestore without loss of progress.
+
+### G. Accessibility & Theming
+- [x] **Theme Switching**:
+  - Instant transition between "Rose Quartz Morning" (light) and "Midnight Vanity" (dark) with 250ms cross-fade.
+  - High WCAG AA contrast ratio (> 4.5:1) maintained for all text tokens in both modes.
+- [x] **Colorblind Friendly Mode**:
+  - Toggling in Settings enlarges shade pattern micro-icons by 125% and provides distinct icons (lips, sparkle, heart, drop, star, leaf, diamond).
+- [x] **Reduced Motion**:
+  - Respects OS `prefers-reduced-motion` and user in-game toggle; disables particle bursts and replaces spring animations with subtle cross-fades.

@@ -1,119 +1,189 @@
-/**
- * Glam Blocks - Ads Provider System
- * Strict compliance with game rules:
- * - Rewarded ads are always user-initiated and optional (Continue / Double coins)
- * - Interstitial ONLY after every 3rd game over, NEVER during play, NEVER in first 3 games
- * - Zero ads if adsRemoved === true or active Glam Pass
- */
+import type { AdsProvider } from '../types';
 
-export interface AdsProvider {
-  canShowAds(isAdFree: boolean): boolean;
-  showRewardedAd(onRewarded: () => void, onClose: () => void): void;
-  showInterstitial(onClose: () => void): void;
+/**
+ * Determines whether an interstitial advertisement should be displayed.
+ * Rules:
+ * - Never if player purchased "Remove Ads"
+ * - Never if player has active "Glam Pass"
+ * - Never in the first 3 games (player onboarding experience)
+ * - Shown strictly on game over, after every 3rd game completed
+ */
+export function shouldShowInterstitial(
+  gamesPlayed: number,
+  adsRemoved: boolean,
+  hasGlamPass: boolean
+): boolean {
+  if (adsRemoved || hasGlamPass) {
+    return false;
+  }
+
+  // Grace period for new players
+  if (gamesPlayed < 3) {
+    return false;
+  }
+
+  // Every 3rd game completed
+  return gamesPlayed % 3 === 0;
 }
 
+/**
+ * Mock Ads Provider with an interactive 3-second visual overlay.
+ * Simulates real rewarded video and interstitial ads for web testing and development.
+ */
 export class MockAdsProvider implements AdsProvider {
-  canShowAds(isAdFree: boolean): boolean {
+  private ready = true;
+
+  public async initialize(): Promise<void> {
+    this.ready = true;
+    return Promise.resolve();
+  }
+
+  public isReady(): boolean {
+    return this.ready;
+  }
+
+  public async showRewarded(placement: string): Promise<boolean> {
+    return this.displayAdModal({
+      title: 'Sponsored Beauty Spotlight',
+      type: 'rewarded',
+      placement,
+      durationSeconds: 3,
+    });
+  }
+
+  public async showInterstitial(): Promise<boolean> {
+    return this.displayAdModal({
+      title: 'Intermission Preview',
+      type: 'interstitial',
+      placement: 'game_over',
+      durationSeconds: 3,
+    });
+  }
+
+  /**
+   * Compatibility helpers for earlier interface signatures
+   */
+  public canShowAds(isAdFree: boolean): boolean {
     return !isAdFree;
   }
 
-  showRewardedAd(onRewarded: () => void, onClose: () => void): void {
-    const overlay = document.createElement('div');
-    overlay.className =
-      'fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 text-white font-body';
-
-    let countdown = 3;
-    overlay.innerHTML = `
-      <div class="bg-game-surface text-game-text p-6 rounded-3xl max-w-xs w-full text-center border border-game-border shadow-2xl">
-        <div class="w-12 h-12 rounded-full bg-pink-100 dark:bg-pink-900/40 text-game-primary flex items-center justify-center mx-auto mb-3 text-2xl animate-bounce">
-          🎬
-        </div>
-        <h4 class="text-lg font-heading font-bold mb-1">Sponsored Ad Preview</h4>
-        <p class="text-xs text-game-muted mb-4">Demo Ad Simulation (No real ads in preview)</p>
-        <div class="text-2xl font-heading font-bold text-game-primary mb-4" id="ad-timer">
-          Reward in: ${countdown}s
-        </div>
-        <div class="w-full bg-game-card h-2 rounded-full overflow-hidden mb-4">
-          <div id="ad-bar" class="h-full bg-game-primary transition-all duration-1000" style="width: 10%"></div>
-        </div>
-        <button id="ad-close-btn" disabled class="w-full py-2.5 rounded-xl bg-gray-300 dark:bg-gray-700 text-gray-500 font-medium text-sm cursor-not-allowed">
-          Please wait...
-        </button>
-      </div>
-    `;
-
-    document.body.appendChild(overlay);
-
-    const interval = setInterval(() => {
-      countdown--;
-      const timerEl = overlay.querySelector('#ad-timer');
-      const barEl = overlay.querySelector('#ad-bar') as HTMLElement | null;
-      const btn = overlay.querySelector('#ad-close-btn') as HTMLButtonElement | null;
-
-      if (timerEl) timerEl.textContent = `Reward in: ${countdown}s`;
-      if (barEl) barEl.style.width = `${((4 - countdown) / 3) * 100}%`;
-
-      if (countdown <= 0) {
-        clearInterval(interval);
-        if (timerEl) timerEl.textContent = '🎉 Reward Unlocked!';
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = 'Claim Reward';
-          btn.className =
-            'w-full py-2.5 rounded-xl bg-gradient-to-r from-game-primary to-pink-400 text-white font-medium text-sm cursor-pointer shadow-glossy-pink';
-          btn.onclick = () => {
-            document.body.removeChild(overlay);
-            onRewarded();
-            onClose();
-          };
+  public showRewardedAd(onRewarded: () => void, onClose: () => void): void {
+    this.showRewarded('game_reward')
+      .then((success) => {
+        if (success) {
+          onRewarded();
         }
-      }
-    }, 1000);
+        onClose();
+      })
+      .catch(() => {
+        onClose();
+      });
   }
 
-  showInterstitial(onClose: () => void): void {
-    const overlay = document.createElement('div');
-    overlay.className =
-      'fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 text-white font-body';
-
-    let countdown = 2;
-    overlay.innerHTML = `
-      <div class="bg-game-surface text-game-text p-6 rounded-3xl max-w-xs w-full text-center border border-game-border shadow-2xl">
-        <h4 class="text-lg font-heading font-bold mb-1">Glam Break</h4>
-        <p class="text-xs text-game-muted mb-4">Sponsored Interstitial</p>
-        <div class="text-sm font-semibold text-game-muted mb-4" id="interstitial-timer">
-          Skip in: ${countdown}s
-        </div>
-        <button id="interstitial-close-btn" disabled class="w-full py-2.5 rounded-xl bg-gray-300 dark:bg-gray-700 text-gray-500 font-medium text-sm">
-          Wait...
-        </button>
-      </div>
-    `;
-
-    document.body.appendChild(overlay);
-
-    const interval = setInterval(() => {
-      countdown--;
-      const timerEl = overlay.querySelector('#interstitial-timer');
-      const btn = overlay.querySelector('#interstitial-close-btn') as HTMLButtonElement | null;
-
-      if (timerEl) timerEl.textContent = `Skip in: ${countdown}s`;
-
-      if (countdown <= 0) {
-        clearInterval(interval);
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = 'Close';
-          btn.className =
-            'w-full py-2.5 rounded-xl bg-game-primary text-white font-medium text-sm cursor-pointer';
-          btn.onclick = () => {
-            document.body.removeChild(overlay);
-            onClose();
-          };
-        }
+  /**
+   * Creates and manages a 3-second animated mock ad banner overlay in the DOM.
+   */
+  private displayAdModal(options: {
+    title: string;
+    type: 'rewarded' | 'interstitial';
+    placement: string;
+    durationSeconds: number;
+  }): Promise<boolean> {
+    return new Promise((resolve) => {
+      if (typeof document === 'undefined') {
+        resolve(true);
+        return;
       }
-    }, 1000);
+
+      const overlay = document.createElement('div');
+      overlay.id = 'glam-mock-ad-overlay';
+      overlay.style.position = 'fixed';
+      overlay.style.inset = '0';
+      overlay.style.zIndex = '99999';
+      overlay.style.backgroundColor = 'rgba(15, 15, 20, 0.95)';
+      overlay.style.display = 'flex';
+      overlay.style.flexDirection = 'column';
+      overlay.style.alignItems = 'center';
+      overlay.style.justifyContent = 'center';
+      overlay.style.padding = '24px';
+      overlay.style.fontFamily = "'Fredoka', sans-serif";
+      overlay.style.color = '#ffffff';
+      overlay.style.backdropFilter = 'blur(10px)';
+
+      let secondsLeft = options.durationSeconds;
+
+      overlay.innerHTML = `
+        <div style="background: linear-gradient(135deg, #1f1f2e, #14141f); border: 2px solid #E6177F; border-radius: 20px; max-width: 380px; width: 100%; padding: 28px; text-align: center; box-shadow: 0 20px 40px rgba(230, 23, 127, 0.35); position: relative;">
+          <div style="position: absolute; top: 12px; right: 14px; background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #fbcfe8;">
+            Mock Ad [Demo]
+          </div>
+          <div style="font-size: 40px; margin-bottom: 12px;">✨💄💎</div>
+          <h2 style="font-size: 22px; margin: 0 0 8px; color: #ffffff; font-weight: 700;">${options.title}</h2>
+          <p style="font-size: 13px; color: #e4e4e7; margin: 0 0 16px; font-family: 'Poppins', sans-serif;">
+            ${
+              options.type === 'rewarded'
+                ? 'Watch this simulated sponsor message to claim your glamour reward!'
+                : 'Glam Blocks Intermission. Resume play in a moment.'
+            }
+          </p>
+          <div style="background: #272736; border-radius: 8px; height: 8px; overflow: hidden; margin-bottom: 20px; width: 100%;">
+            <div id="glam-ad-progress" style="background: linear-gradient(90deg, #E6177F, #a855f7); height: 100%; width: 0%; transition: width 1s linear;"></div>
+          </div>
+          <div id="glam-ad-timer" style="font-size: 14px; color: #a1a1aa; font-weight: 600;">
+            Reward in ${secondsLeft}s...
+          </div>
+          <button id="glam-ad-close" style="display: none; margin-top: 18px; width: 100%; background: linear-gradient(135deg, #E6177F, #c026d3); color: #ffffff; border: none; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 15px; cursor: pointer;">
+            Claim Reward & Continue
+          </button>
+        </div>
+      `;
+
+      document.body.appendChild(overlay);
+
+      const timerEl = overlay.querySelector('#glam-ad-timer') as HTMLDivElement;
+      const progressEl = overlay.querySelector('#glam-ad-progress') as HTMLDivElement;
+      const closeBtn = overlay.querySelector('#glam-ad-close') as HTMLButtonElement;
+
+      // Initial progress trigger
+      setTimeout(() => {
+        if (progressEl) progressEl.style.width = '33%';
+      }, 50);
+
+      const interval = setInterval(() => {
+        secondsLeft -= 1;
+        if (progressEl) {
+          const percent = Math.min(100, Math.round(((options.durationSeconds - secondsLeft) / options.durationSeconds) * 100));
+          progressEl.style.width = `${percent}%`;
+        }
+
+        if (secondsLeft <= 0) {
+          clearInterval(interval);
+          if (timerEl) timerEl.textContent = 'Ad Completed! 🎉';
+          if (closeBtn) {
+            closeBtn.style.display = 'block';
+            closeBtn.onclick = () => {
+              if (overlay.parentNode) {
+                overlay.parentNode.removeChild(overlay);
+              }
+              resolve(true);
+            };
+          }
+        } else if (timerEl) {
+          timerEl.textContent = `Reward in ${secondsLeft}s...`;
+        }
+      }, 1000);
+    });
   }
 }
 
-export const adsProvider: AdsProvider = new MockAdsProvider();
+let cachedAdsProvider: AdsProvider | null = null;
+
+/**
+ * Returns the singleton AdsProvider instance.
+ */
+export function getAdsProvider(): AdsProvider {
+  if (!cachedAdsProvider) {
+    cachedAdsProvider = new MockAdsProvider();
+  }
+  return cachedAdsProvider;
+}

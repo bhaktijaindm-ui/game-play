@@ -1,39 +1,50 @@
-import type { BoardMatrix, ShapeDefinition, TrayShape, MoveResult } from './types';
-import { SHAPES_LIBRARY } from './shapes';
-import { MAKEUP_THEME_ITEMS, GAME_RULES } from '../config/product.config';
+import type {
+  Board,
+  BoardCell,
+  Shape,
+  FaceZone,
+  ShadeId,
+  LineType,
+  ClearedLine,
+} from '../types';
 
 export const BOARD_SIZE = 8;
 
 /**
- * Creates an empty 8x8 game board
+ * Creates an empty 8x8 board filled with null.
  */
-export function createEmptyBoard(): BoardMatrix {
+export function createEmptyBoard(): Board {
   return Array.from({ length: BOARD_SIZE }, () =>
     Array.from({ length: BOARD_SIZE }, () => null)
   );
 }
 
 /**
- * Validates if a shape fits at the given row/col coordinate without collision or boundary violation
+ * Checks whether a shape can be placed on the board at the given top-left position.
+ * Verifies bounds and ensures no overlapping with existing filled cells.
  */
-export function canPlaceShape(
-  board: BoardMatrix,
-  shape: ShapeDefinition,
-  targetRow: number,
-  targetCol: number
+export function canPlace(
+  board: Board,
+  shape: Shape,
+  position: { row: number; col: number }
 ): boolean {
-  if (targetRow < 0 || targetCol < 0) return false;
-  if (targetRow + shape.rows > BOARD_SIZE || targetCol + shape.cols > BOARD_SIZE) return false;
+  for (const cell of shape.cells) {
+    const targetRow = position.row + cell.row;
+    const targetCol = position.col + cell.col;
 
-  for (let r = 0; r < shape.rows; r++) {
-    for (let c = 0; c < shape.cols; c++) {
-      if (shape.matrix[r][c] === 1) {
-        const boardRow = targetRow + r;
-        const boardCol = targetCol + c;
-        if (board[boardRow][boardCol] !== null) {
-          return false;
-        }
-      }
+    // Bounds check
+    if (
+      targetRow < 0 ||
+      targetRow >= BOARD_SIZE ||
+      targetCol < 0 ||
+      targetCol >= BOARD_SIZE
+    ) {
+      return false;
+    }
+
+    // Overlap check
+    if (board[targetRow][targetCol] !== null) {
+      return false;
     }
   }
 
@@ -41,275 +52,288 @@ export function canPlaceShape(
 }
 
 /**
- * Checks if a shape can be placed anywhere on the given board
- */
-export function canShapeFitAnywhere(
-  board: BoardMatrix,
-  shape: ShapeDefinition
-): boolean {
-  for (let r = 0; r <= BOARD_SIZE - shape.rows; r++) {
-    for (let c = 0; c <= BOARD_SIZE - shape.cols; c++) {
-      if (canPlaceShape(board, shape, r, c)) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-/**
- * Calculates current board fill percentage (0 to 1)
- */
-export function getBoardFillRatio(board: BoardMatrix): number {
-  let filled = 0;
-  for (let r = 0; r < BOARD_SIZE; r++) {
-    for (let c = 0; c < BOARD_SIZE; c++) {
-      if (board[r][c] !== null) filled++;
-    }
-  }
-  return filled / (BOARD_SIZE * BOARD_SIZE);
-}
-
-/**
- * Places a shape, evaluates simultaneous row and column clears, and computes score & combos
+ * Places a shape on the board at the specified position.
+ * Returns a new immutable copy of the board.
  */
 export function placeShape(
-  currentBoard: BoardMatrix,
-  shape: ShapeDefinition,
-  targetRow: number,
-  targetCol: number,
-  itemId: string,
-  color: string,
-  currentCombo: number = 0
-): MoveResult {
-  if (!canPlaceShape(currentBoard, shape, targetRow, targetCol)) {
-    return {
-      valid: false,
-      newBoard: currentBoard,
-      placedCellsCount: 0,
-      linesCleared: 0,
-      clearedRowIndices: [],
-      clearedColIndices: [],
-      scoreGained: 0,
-      comboCount: 0,
-      isBoardCleared: false,
-    };
+  board: Board,
+  shape: Shape,
+  position: { row: number; col: number }
+): Board {
+  const newBoard: Board = board.map(row => [...row]);
+  const cellData: BoardCell = { shade: shape.shade ?? 'rose' };
+
+  for (const cell of shape.cells) {
+    const targetRow = position.row + cell.row;
+    const targetCol = position.col + cell.col;
+    newBoard[targetRow][targetCol] = { ...cellData };
   }
 
-  // Clone board deeply
-  const newBoard: BoardMatrix = currentBoard.map((row) =>
-    row.map((cell) => (cell ? { ...cell } : null))
-  );
+  return newBoard;
+}
 
-  // 1. Stamp shape cells
-  let placedCellsCount = 0;
-  for (let r = 0; r < shape.rows; r++) {
-    for (let c = 0; c < shape.cols; c++) {
-      if (shape.matrix[r][c] === 1) {
-        newBoard[targetRow + r][targetCol + c] = { itemId, color };
-        placedCellsCount++;
+/**
+ * Finds all completely filled rows and columns on the board.
+ */
+export function findFullLines(board: Board): { rows: number[]; cols: number[] } {
+  const rows: number[] = [];
+  const cols: number[] = [];
+
+  // Check rows
+  for (let r = 0; r < BOARD_SIZE; r++) {
+    let full = true;
+    for (let c = 0; c < BOARD_SIZE; c++) {
+      if (board[r][c] === null) {
+        full = false;
+        break;
       }
+    }
+    if (full) {
+      rows.push(r);
     }
   }
 
-  // 2. Identify full rows and columns simultaneously
-  const fullRows: number[] = [];
-  const fullCols: number[] = [];
+  // Check columns
+  for (let c = 0; c < BOARD_SIZE; c++) {
+    let full = true;
+    for (let r = 0; r < BOARD_SIZE; r++) {
+      if (board[r][c] === null) {
+        full = false;
+        break;
+      }
+    }
+    if (full) {
+      cols.push(c);
+    }
+  }
+
+  return { rows, cols };
+}
+
+/**
+ * Clears the specified rows and columns simultaneously.
+ * Returns a new immutable copy of the board.
+ */
+export function clearLines(board: Board, rows: number[], cols: number[]): Board {
+  const newBoard: Board = board.map(row => [...row]);
+  const rowSet = new Set(rows);
+  const colSet = new Set(cols);
 
   for (let r = 0; r < BOARD_SIZE; r++) {
-    let rowFull = true;
     for (let c = 0; c < BOARD_SIZE; c++) {
-      if (newBoard[r][c] === null) {
-        rowFull = false;
-        break;
+      if (rowSet.has(r) || colSet.has(c)) {
+        newBoard[r][c] = null;
       }
     }
-    if (rowFull) fullRows.push(r);
   }
 
-  for (let c = 0; c < BOARD_SIZE; c++) {
-    let colFull = true;
-    for (let r = 0; r < BOARD_SIZE; r++) {
-      if (newBoard[r][c] === null) {
-        colFull = false;
-        break;
-      }
-    }
-    if (colFull) fullCols.push(c);
+  return newBoard;
+}
+
+/**
+ * Returns the facial makeup zone for a given row index.
+ * Rows 0-2 = eyes, 3-5 = cheeks, 6-7 = lips.
+ */
+export function getZoneForRow(row: number): FaceZone {
+  if (row <= 2) {
+    return 'eyes';
+  }
+  if (row <= 5) {
+    return 'cheeks';
+  }
+  return 'lips';
+}
+
+/**
+ * Returns all zones a column crosses based on specified row indices.
+ */
+export function getZonesForColumn(
+  col: number,
+  rows: number[] = [0, 1, 2, 3, 4, 5, 6, 7]
+): FaceZone[] {
+  void col;
+  const zoneOrder: FaceZone[] = ['eyes', 'cheeks', 'lips'];
+  const presentZones = new Set<FaceZone>();
+
+  for (const r of rows) {
+    presentZones.add(getZoneForRow(r));
   }
 
-  // 3. Clear identified rows and cols simultaneously
-  fullRows.forEach((r) => {
-    for (let c = 0; c < BOARD_SIZE; c++) {
-      newBoard[r][c] = null;
+  return zoneOrder.filter(z => presentZones.has(z));
+}
+
+export function getCellShade(cell: BoardCell): ShadeId | null {
+  if (!cell) return null;
+  if (typeof cell === 'string') return cell;
+  if (typeof cell === 'object' && 'shade' in cell) return cell.shade as ShadeId;
+  return null;
+}
+
+/**
+ * Checks whether a specified row or column is monochrome (all filled cells share the exact same shade).
+ */
+export function isLineMonochrome(
+  board: Board,
+  type: LineType,
+  index: number
+): { isPure: boolean; shade: ShadeId | null } {
+  const shades: ShadeId[] = [];
+
+  for (let i = 0; i < BOARD_SIZE; i++) {
+    const cell = type === 'row' ? board[index][i] : board[i][index];
+    const shade = getCellShade(cell);
+    if (shade === null) {
+      return { isPure: false, shade: null };
     }
-  });
-
-  fullCols.forEach((c) => {
-    for (let r = 0; r < BOARD_SIZE; r++) {
-      newBoard[r][c] = null;
-    }
-  });
-
-  const linesCleared = fullRows.length + fullCols.length;
-  let comboCount = 0;
-  let lineScore = 0;
-
-  if (linesCleared > 0) {
-    comboCount = currentCombo + 1;
-    const multiplierIndex = Math.min(comboCount, GAME_RULES.COMBO_MULTIPLIERS.length) - 1;
-    const multiplier = GAME_RULES.COMBO_MULTIPLIERS[multiplierIndex] || 1;
-    lineScore = linesCleared * GAME_RULES.POINTS_PER_LINE * multiplier;
-  } else {
-    comboCount = 0;
+    shades.push(shade);
   }
 
-  const placementScore = placedCellsCount * GAME_RULES.POINTS_PER_CELL;
+  if (shades.length === 0) {
+    return { isPure: false, shade: null };
+  }
 
-  // Check if board is completely cleared
-  let isBoardCleared = false;
-  if (linesCleared > 0) {
-    let remaining = 0;
+  const firstShade = shades[0];
+  const isPure = shades.every(s => s === firstShade);
+
+  return {
+    isPure,
+    shade: isPure ? firstShade : null,
+  };
+}
+
+/**
+ * Checks if ANY of the given shapes can fit ANYWHERE on the board.
+ */
+export function canAnyShapeFit(
+  board: Board,
+  shapes: (Shape | null)[]
+): boolean {
+  for (const shape of shapes) {
+    if (!shape) continue;
+
     for (let r = 0; r < BOARD_SIZE; r++) {
       for (let c = 0; c < BOARD_SIZE; c++) {
-        if (newBoard[r][c] !== null) remaining++;
-      }
-    }
-    if (remaining === 0) {
-      isBoardCleared = true;
-    }
-  }
-
-  const bonusScore = isBoardCleared ? GAME_RULES.BOARD_CLEAR_BONUS : 0;
-  const scoreGained = placementScore + lineScore + bonusScore;
-
-  return {
-    valid: true,
-    newBoard,
-    placedCellsCount,
-    linesCleared,
-    clearedRowIndices: fullRows,
-    clearedColIndices: fullCols,
-    scoreGained,
-    comboCount,
-    isBoardCleared,
-  };
-}
-
-/**
- * Random makeup item generator
- */
-export function getRandomMakeupItem(): { itemId: string; color: string } {
-  const itemKeys = Object.keys(MAKEUP_THEME_ITEMS);
-  const selectedKey = itemKeys[Math.floor(Math.random() * itemKeys.length)];
-  const item = MAKEUP_THEME_ITEMS[selectedKey];
-  return {
-    itemId: item.id,
-    color: item.colorHexLight,
-  };
-}
-
-/**
- * Spawns 3 random shapes adhering strictly to the fairness rule:
- * At least one of the 3 shapes MUST be placeable on the current board.
- * Weights shape sizes by difficulty (smaller shapes when board is fuller).
- */
-export function generateTrayShapes(
-  board: BoardMatrix,
-  movesCount: number = 0,
-  maxAttempts: number = 80
-): TrayShape[] {
-  const fillRatio = getBoardFillRatio(board);
-  const isEarlyGame = movesCount < 10;
-
-  for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    const candidates: ShapeDefinition[] = [];
-
-    for (let i = 0; i < GAME_RULES.TRAY_CAPACITY; i++) {
-      let pool = SHAPES_LIBRARY;
-
-      // Fairness weighting: when board is over 60% full or in early game, favor small shapes
-      const rand = Math.random();
-      if (fillRatio > 0.65 || (isEarlyGame && rand < 0.6)) {
-        pool = SHAPES_LIBRARY.filter((s) => s.category === 'small');
-      } else if (fillRatio > 0.45) {
-        pool = SHAPES_LIBRARY.filter((s) => s.category !== 'large');
-      }
-
-      if (pool.length === 0) pool = SHAPES_LIBRARY;
-      const picked = pool[Math.floor(Math.random() * pool.length)];
-      candidates.push(picked);
-    }
-
-    // Fairness rule: verify that AT LEAST ONE can fit
-    const hasFit = candidates.some((s) => canShapeFitAnywhere(board, s));
-
-    if (hasFit) {
-      return candidates.map((shape) => {
-        const makeup = getRandomMakeupItem();
-        return {
-          instanceId: `${shape.id}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-          shape,
-          itemId: makeup.itemId,
-          color: makeup.color,
-          canPlaceOnCurrentBoard: canShapeFitAnywhere(board, shape),
-        };
-      });
-    }
-  }
-
-  // Fallback guarantee: if 80 attempts didn't produce a fit, forcibly include a 1x1 dot
-  const smallDot = SHAPES_LIBRARY.find((s) => s.id === 'dot_1x1') || SHAPES_LIBRARY[0];
-  const candidates = [smallDot, SHAPES_LIBRARY[1], SHAPES_LIBRARY[2]];
-
-  return candidates.map((shape) => {
-    const makeup = getRandomMakeupItem();
-    return {
-      instanceId: `${shape.id}-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-      shape,
-      itemId: makeup.itemId,
-      color: makeup.color,
-      canPlaceOnCurrentBoard: canShapeFitAnywhere(board, shape),
-    };
-  });
-}
-
-/**
- * Checks whether any non-null shape remaining in the tray can fit on the board
- */
-export function hasAnyValidMoves(
-  board: BoardMatrix,
-  tray: (TrayShape | null)[]
-): boolean {
-  return tray.some((trayItem) => {
-    if (!trayItem) return false;
-    return canShapeFitAnywhere(board, trayItem.shape);
-  });
-}
-
-/**
- * Glam Bomb Power-Up: clears a 3x3 area around centerRow, centerCol
- */
-export function applyBomb(
-  board: BoardMatrix,
-  centerRow: number,
-  centerCol: number
-): { newBoard: BoardMatrix; clearedCellsCount: number } {
-  const newBoard: BoardMatrix = board.map((row) =>
-    row.map((cell) => (cell ? { ...cell } : null))
-  );
-
-  let clearedCellsCount = 0;
-  for (let r = centerRow - 1; r <= centerRow + 1; r++) {
-    for (let c = centerCol - 1; c <= centerCol + 1; c++) {
-      if (r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE) {
-        if (newBoard[r][c] !== null) {
-          newBoard[r][c] = null;
-          clearedCellsCount++;
+        if (canPlace(board, shape, { row: r, col: c })) {
+          return true;
         }
       }
     }
   }
 
-  return { newBoard, clearedCellsCount };
+  return false;
+}
+
+/**
+ * Finds all valid placements for a specific shape on the board.
+ */
+export function findValidPositions(
+  board: Board,
+  shape: Shape
+): { row: number; col: number }[] {
+  const positions: { row: number; col: number }[] = [];
+
+  for (let r = 0; r < BOARD_SIZE; r++) {
+    for (let c = 0; c < BOARD_SIZE; c++) {
+      if (canPlace(board, shape, { row: r, col: c })) {
+        positions.push({ row: r, col: c });
+      }
+    }
+  }
+
+  return positions;
+}
+
+/**
+ * Returns the count of filled cells on the board (0 to 64).
+ */
+export function getBoardOccupancy(board: Board): number {
+  let count = 0;
+  for (let r = 0; r < BOARD_SIZE; r++) {
+    for (let c = 0; c < BOARD_SIZE; c++) {
+      if (board[r][c] !== null) {
+        count++;
+      }
+    }
+  }
+  return count;
+}
+
+/**
+ * Helper to inspect and extract full line metadata before clearing.
+ */
+export function extractClearedLines(
+  board: Board,
+  rows: number[],
+  cols: number[]
+): ClearedLine[] {
+  const lines: ClearedLine[] = [];
+
+  for (const r of rows) {
+    const shades: ShadeId[] = [];
+    const counts: Record<string, number> = {};
+
+    for (let c = 0; c < BOARD_SIZE; c++) {
+      const shade = getCellShade(board[r][c]) ?? 'rose';
+      shades.push(shade);
+      counts[shade] = (counts[shade] ?? 0) + 1;
+    }
+
+    let dominantShade: ShadeId = shades[0];
+    let maxCount = 0;
+    for (const [shadeKey, count] of Object.entries(counts)) {
+      if (count > maxCount) {
+        maxCount = count;
+        dominantShade = shadeKey as ShadeId;
+      }
+    }
+
+    const isPure = shades.length === BOARD_SIZE && shades.every(s => s === shades[0]);
+
+    lines.push({
+      type: 'row',
+      index: r,
+      shades,
+      dominantShade,
+      isPure,
+      pureShade: isPure ? dominantShade : null,
+      zone: getZoneForRow(r),
+      zones: [getZoneForRow(r)],
+    });
+  }
+
+  for (const c of cols) {
+    const shades: ShadeId[] = [];
+    const counts: Record<string, number> = {};
+
+    for (let r = 0; r < BOARD_SIZE; r++) {
+      const shade = getCellShade(board[r][c]) ?? 'rose';
+      shades.push(shade);
+      counts[shade] = (counts[shade] ?? 0) + 1;
+    }
+
+    let dominantShade: ShadeId = shades[0];
+    let maxCount = 0;
+    for (const [shadeKey, count] of Object.entries(counts)) {
+      if (count > maxCount) {
+        maxCount = count;
+        dominantShade = shadeKey as ShadeId;
+      }
+    }
+
+    const isPure = shades.length === BOARD_SIZE && shades.every(s => s === shades[0]);
+    const columnZones = getZonesForColumn(c, [0, 1, 2, 3, 4, 5, 6, 7]);
+
+    lines.push({
+      type: 'col',
+      index: c,
+      shades,
+      dominantShade,
+      isPure,
+      pureShade: isPure ? dominantShade : null,
+      zone: columnZones[1] ?? 'cheeks', // middle zone fallback
+      zones: columnZones,
+    });
+  }
+
+  return lines;
 }

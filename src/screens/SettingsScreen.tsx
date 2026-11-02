@@ -1,359 +1,271 @@
 import React, { useState } from 'react';
-import { Button } from '../components/ui/Button';
-import { Card } from '../components/ui/Card';
-import { Toggle } from '../components/ui/Toggle';
-import { Modal } from '../components/ui/Modal';
-import { useTheme } from '../services/themeContext';
-import type { ThemePreference } from '../services/themeContext';
-import { useI18n } from '../i18n/i18nContext';
-import { useAuth } from '../services/authContext';
-import { useToast } from '../components/ui/Toast';
-import { soundSystem } from '../services/soundSystem';
-import {
-  ChevronLeft,
-  Moon,
-  Sun,
-  Monitor,
-  Globe,
-  User,
-  LogOut,
-  Trash2,
-  FileText,
-  Shield,
-  Mail,
-} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { IconButton } from '../components/IconButton';
+import { Toggle } from '../components/Toggle';
+import { ConfirmSheet } from '../components/ConfirmSheet';
+import { useGame } from '../context/GameContext';
+import { useTheme } from '../hooks/useTheme';
+import { signOut, deleteAccount } from '../services/auth';
 
-interface SettingsScreenProps {
-  onBack: () => void;
-  onOpenPrivacy: () => void;
-  onOpenTerms: () => void;
-  onLoggedOut: () => void;
-  onOpenAuth?: () => void;
-}
+const FACE_MODELS = [
+  { id: '1', name: 'Fair', tone: '#FDDCBF' },
+  { id: '2', name: 'Wheatish', tone: '#E8BA91' },
+  { id: '3', name: 'Medium', tone: '#D4956B' },
+  { id: '4', name: 'Tan', tone: '#B87A4F' },
+  { id: '5', name: 'Deep', tone: '#8B5E3C' },
+  { id: '6', name: 'Dark', tone: '#5C3D2E' },
+];
 
-export const SettingsScreen: React.FC<SettingsScreenProps> = ({
-  onBack,
-  onOpenPrivacy,
-  onOpenTerms,
-  onLoggedOut,
-  onOpenAuth,
-}) => {
+export const SettingsScreen: React.FC = () => {
+  const navigate = useNavigate();
+  const {
+    userProfile,
+    updateProfile,
+    soundEnabled,
+    toggleSound,
+    hapticsEnabled,
+    toggleHaptics,
+    reducedMotion,
+    toggleReducedMotion,
+  } = useGame();
+
   const { theme, setTheme } = useTheme();
-  const { language, setLanguage } = useI18n();
-  const { user, signOutUser, deleteAccountAndData } = useAuth();
-  const { showToast } = useToast();
 
-  const [soundOn, setSoundOn] = useState(() => soundSystem.isSoundOn());
-  const [musicOn, setMusicOn] = useState(() => soundSystem.isMusicOn());
-  const [hapticsOn, setHapticsOn] = useState(() => soundSystem.isHapticsOn());
-  const [reduceMotion, setReduceMotion] = useState(() => {
-    try {
-      return localStorage.getItem('glam_blocks_reduce_motion') === 'true';
-    } catch {
-      return false;
-    }
-  });
-
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [colorBlind, setColorBlind] = useState(userProfile.colorBlind || false);
+  const [musicEnabled, setMusicEnabled] = useState(userProfile.musicEnabled !== false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  const handleToggleSound = (enabled: boolean) => {
-    setSoundOn(enabled);
-    soundSystem.setSoundEnabled(enabled);
-    saveSettings({ sound: enabled });
+  const handleColorBlindToggle = () => {
+    const next = !colorBlind;
+    setColorBlind(next);
+    updateProfile({ colorBlind: next });
+    localStorage.setItem('glam_colorblind_mode', next ? 'true' : 'false');
   };
 
-  const handleToggleMusic = (enabled: boolean) => {
-    setMusicOn(enabled);
-    soundSystem.setMusicEnabled(enabled);
-    saveSettings({ music: enabled });
+  const handleMusicToggle = () => {
+    const next = !musicEnabled;
+    setMusicEnabled(next);
+    updateProfile({ musicEnabled: next });
   };
 
-  const handleToggleHaptics = (enabled: boolean) => {
-    setHapticsOn(enabled);
-    soundSystem.setHapticsEnabled(enabled);
-    saveSettings({ haptics: enabled });
-  };
-
-  const handleToggleReduceMotion = (enabled: boolean) => {
-    setReduceMotion(enabled);
-    try {
-      localStorage.setItem('glam_blocks_reduce_motion', String(enabled));
-      document.documentElement.classList.toggle('reduce-motion', enabled);
-    } catch {
-      // ignore
-    }
-    showToast(enabled ? 'Reduced motion enabled' : 'Smooth animations enabled', 'info');
-  };
-
-  const saveSettings = (partial: Record<string, boolean>) => {
-    try {
-      const stored = localStorage.getItem('glam_blocks_settings');
-      const parsed = stored ? JSON.parse(stored) : {};
-      localStorage.setItem('glam_blocks_settings', JSON.stringify({ ...parsed, ...partial }));
-    } catch {
-      // ignore
-    }
+  const handleFaceModelSelect = (id: string) => {
+    updateProfile({ faceModel: id });
   };
 
   const handleLogout = async () => {
-    soundSystem.playClick();
-    await signOutUser();
-    showToast('Signed out successfully.', 'info');
-    onLoggedOut();
+    await signOut();
+    navigate('/auth');
   };
 
   const handleDeleteAccount = async () => {
     setDeleting(true);
     try {
-      soundSystem.playClick();
-      await deleteAccountAndData();
-      showToast('All your account data has been permanently deleted.', 'warning');
-      setShowDeleteModal(false);
-      onLoggedOut();
-    } catch {
-      showToast('Error deleting account.', 'error');
+      await deleteAccount();
+      navigate('/auth');
+    } catch (err) {
+      console.error(err);
     } finally {
       setDeleting(false);
+      setShowDeleteConfirm(false);
     }
   };
 
   return (
-    <div className="flex-1 flex flex-col justify-between p-4 safe-top safe-bottom bg-game-bg">
-      {/* Header */}
-      <div>
-        <div className="flex items-center justify-between min-h-[44px] mb-3">
-          <button
-            onClick={onBack}
-            className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-2xl bg-game-surface border border-game-border text-game-muted hover:text-game-text"
-            aria-label="Back to home"
+    <div className="min-h-screen min-h-[100dvh] w-full max-w-[480px] mx-auto flex flex-col justify-between overflow-x-hidden bg-[var(--bg,#fff6f9)] dark:bg-[var(--bg,#140e19)] text-[var(--text)] select-none pb-8">
+      {/* Top Header */}
+      <header className="px-4 py-3 flex items-center justify-between border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-md sticky top-0 z-10">
+        <div className="flex items-center gap-3">
+          <IconButton
+            aria-label="Back"
+            onClick={() => navigate('/')}
+            className="w-9 h-9"
           >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <h2 className="text-xl font-heading font-bold text-game-text">
-            Settings
-          </h2>
-          <div className="w-11" />
+            <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+            </svg>
+          </IconButton>
+          <div>
+            <h1 className="text-xl font-black text-[var(--text)]">Settings</h1>
+            <p className="text-[10px] font-semibold text-[var(--text-muted)]">
+              Preferences & Accessibility
+            </p>
+          </div>
+        </div>
+      </header>
+
+      {/* Settings Sections */}
+      <div className="flex-1 p-4 space-y-5 overflow-y-auto">
+        {/* APPEARANCE */}
+        <div className="space-y-2">
+          <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">
+            Appearance & Accessibility
+          </span>
+          <div className="bg-[var(--surface)] rounded-2xl border border-[var(--border)] p-4 space-y-4">
+            {/* Theme Selector */}
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-sm font-bold text-[var(--text)]">Theme Mode</div>
+                <div className="text-[10px] text-[var(--text-muted)]">
+                  Rose Quartz Morning / Midnight Vanity
+                </div>
+              </div>
+              <div className="flex bg-[var(--surface-2)] p-1 rounded-xl text-xs font-bold">
+                {(['light', 'dark', 'system'] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    onClick={() => setTheme(mode)}
+                    className={`px-2.5 py-1 rounded-lg capitalize transition-all ${
+                      theme === mode
+                        ? 'bg-[var(--primary)] text-white shadow-sm'
+                        : 'text-[var(--text-muted)]'
+                    }`}
+                  >
+                    {mode}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Color-Blind Friendly Toggle */}
+            <div className="flex items-center justify-between border-t border-[var(--border)] pt-3">
+              <div>
+                <div className="text-sm font-bold text-[var(--text)]">Color-Blind Friendly</div>
+                <div className="text-[10px] text-[var(--text-muted)]">
+                  High-contrast larger cosmetic icons on all tiles
+                </div>
+              </div>
+              <Toggle checked={colorBlind} onChange={handleColorBlindToggle} />
+            </div>
+
+            {/* Reduce Motion Toggle */}
+            <div className="flex items-center justify-between border-t border-[var(--border)] pt-3">
+              <div>
+                <div className="text-sm font-bold text-[var(--text)]">Reduce Motion</div>
+                <div className="text-[10px] text-[var(--text-muted)]">
+                  Minimizes transitions and particle animations
+                </div>
+              </div>
+              <Toggle checked={reducedMotion} onChange={toggleReducedMotion} />
+            </div>
+          </div>
+        </div>
+
+        {/* AUDIO & SENSORY */}
+        <div className="space-y-2">
+          <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">
+            Audio & Haptics
+          </span>
+          <div className="bg-[var(--surface)] rounded-2xl border border-[var(--border)] p-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-bold text-[var(--text)]">Sound Effects (Pops & Chimes)</span>
+              <Toggle checked={soundEnabled} onChange={toggleSound} />
+            </div>
+
+            <div className="flex items-center justify-between border-t border-[var(--border)] pt-3">
+              <span className="text-sm font-bold text-[var(--text)]">Atmospheric Music</span>
+              <Toggle checked={musicEnabled} onChange={handleMusicToggle} />
+            </div>
+
+            <div className="flex items-center justify-between border-t border-[var(--border)] pt-3">
+              <span className="text-sm font-bold text-[var(--text)]">Tactile Haptics (Vibrations)</span>
+              <Toggle checked={hapticsEnabled} onChange={toggleHaptics} />
+            </div>
+          </div>
+        </div>
+
+        {/* INCLUSIVE FACE MODELS */}
+        <div className="space-y-2">
+          <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">
+            Default Face Model (Inclusive Tones)
+          </span>
+          <div className="bg-[var(--surface)] rounded-2xl border border-[var(--border)] p-4">
+            <div className="grid grid-cols-3 gap-2">
+              {FACE_MODELS.map((model) => {
+                const isSelected = (userProfile.faceModel || '1') === model.id;
+                return (
+                  <button
+                    key={model.id}
+                    type="button"
+                    onClick={() => handleFaceModelSelect(model.id)}
+                    className={`p-2.5 rounded-xl border flex flex-col items-center gap-1.5 transition-all ${
+                      isSelected
+                        ? 'border-pink-500 bg-pink-500/10 ring-2 ring-pink-500/20'
+                        : 'border-[var(--border)] bg-[var(--surface-2)]'
+                    }`}
+                  >
+                    <div
+                      className="w-7 h-7 rounded-full border border-black/20 shadow-sm"
+                      style={{ backgroundColor: model.tone }}
+                    />
+                    <span className="text-[11px] font-bold text-[var(--text)]">
+                      {model.name}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* ACCOUNT & PRIVACY */}
+        <div className="space-y-2">
+          <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">
+            Account & Security
+          </span>
+          <div className="bg-[var(--surface)] rounded-2xl border border-[var(--border)] p-4 space-y-3">
+            <div className="text-xs text-[var(--text-muted)]">
+              Logged in as: <strong className="text-[var(--text)]">{userProfile.email || 'Guest Player'}</strong>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="w-full py-2.5 rounded-xl bg-[var(--surface-2)] text-xs font-bold text-[var(--text)] hover:bg-[var(--border)] transition-colors"
+            >
+              Sign Out
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowDeleteConfirm(true)}
+              className="w-full py-2.5 rounded-xl text-xs font-bold text-red-500 hover:bg-red-500/10 transition-colors"
+            >
+              Delete My Account and Data
+            </button>
+          </div>
+        </div>
+
+        {/* ABOUT & LEGAL */}
+        <div className="text-center text-xs text-[var(--text-muted)] space-y-2 pt-2 pb-6">
+          <div className="flex justify-center gap-4">
+            <a href="/privacy" className="hover:underline">Privacy Policy</a>
+            <span>•</span>
+            <a href="/terms" className="hover:underline">Terms of Service</a>
+            <span>•</span>
+            <a href="mailto:support@glamblocks.game" className="hover:underline">Support</a>
+          </div>
+          <div className="text-[10px] text-zinc-400">
+            Glam Blocks v1.0.0 (Production Build)
+          </div>
         </div>
       </div>
 
-      {/* Settings Scrollable Content */}
-      <div className="flex-1 overflow-y-auto pr-1 space-y-4">
-        {/* Appearance / Theme Toggle */}
-        <Card variant="surface" padding="md">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-game-primary mb-3">
-            Appearance
-          </h4>
-          <div className="grid grid-cols-3 gap-2">
-            {(
-              [
-                { id: 'light', label: 'Light', icon: <Sun className="w-4 h-4" /> },
-                { id: 'dark', label: 'Dark', icon: <Moon className="w-4 h-4" /> },
-                { id: 'system', label: 'System', icon: <Monitor className="w-4 h-4" /> },
-              ] as const
-            ).map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  soundSystem.playClick();
-                  setTheme(item.id as ThemePreference);
-                }}
-                className={`
-                  min-h-[44px] rounded-xl flex items-center justify-center gap-2 text-xs font-heading font-semibold border transition-all
-                  ${
-                    theme === item.id
-                      ? 'bg-game-primary text-white border-pink-400 shadow-glossy-pink'
-                      : 'bg-game-card text-game-muted border-game-border hover:text-game-text'
-                  }
-                `}
-              >
-                {item.icon}
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </div>
-        </Card>
-
-        {/* Audio & Haptics Toggles */}
-        <Card variant="surface" padding="md" className="space-y-1">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-game-primary mb-2">
-            Audio & Feedback
-          </h4>
-          <Toggle
-            checked={soundOn}
-            onChange={handleToggleSound}
-            label="Sound Effects (Pops & Sparkles)"
-          />
-          <Toggle
-            checked={musicOn}
-            onChange={handleToggleMusic}
-            label="Background Chimes"
-          />
-          <Toggle
-            checked={hapticsOn}
-            onChange={handleToggleHaptics}
-            label="Vibration & Haptics"
-          />
-          <Toggle
-            checked={reduceMotion}
-            onChange={handleToggleReduceMotion}
-            label="Reduce Motion (Accessibility)"
-          />
-        </Card>
-
-        {/* Language Selection */}
-        <Card variant="surface" padding="md">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-game-primary mb-3 flex items-center gap-1.5">
-            <Globe className="w-4 h-4" /> Language / भाषा
-          </h4>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={() => {
-                soundSystem.playClick();
-                setLanguage('en');
-              }}
-              className={`min-h-[44px] rounded-xl text-xs font-heading font-semibold border transition-all ${
-                language === 'en'
-                  ? 'bg-game-primary text-white border-pink-400 shadow-soft'
-                  : 'bg-game-card text-game-muted border-game-border'
-              }`}
-            >
-              English
-            </button>
-            <button
-              onClick={() => {
-                soundSystem.playClick();
-                setLanguage('hi');
-              }}
-              className={`min-h-[44px] rounded-xl text-xs font-heading font-semibold border transition-all ${
-                language === 'hi'
-                  ? 'bg-game-primary text-white border-pink-400 shadow-soft'
-                  : 'bg-game-card text-game-muted border-game-border'
-              }`}
-            >
-              हिन्दी (Hindi)
-            </button>
-          </div>
-        </Card>
-
-        {/* Account Details & Management */}
-        <Card variant="surface" padding="md" className="space-y-3">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-game-primary mb-2 flex items-center gap-1.5">
-            <User className="w-4 h-4" /> Account & Cloud Sync
-          </h4>
-          <div className="text-xs text-game-text">
-            <span className="text-game-muted">Signed in as: </span>
-            <span className="font-semibold">
-              {user?.email || user?.displayName || 'Guest Player'}
-            </span>
-          </div>
-
-          {user?.isAnonymous && (
-            <button
-              onClick={onOpenAuth}
-              className="w-full min-h-[44px] rounded-2xl bg-game-primary hover:bg-game-primary-hover text-white text-xs font-heading font-bold shadow-soft flex items-center justify-center gap-2 transition-all cursor-pointer"
-            >
-              Sign In with Google / Email
-            </button>
-          )}
-
-          <div className="flex gap-2 pt-1">
-            {!user?.isAnonymous && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleLogout}
-                icon={<LogOut className="w-4 h-4" />}
-                className="flex-1 text-xs"
-              >
-                Sign Out
-              </Button>
-            )}
-            <Button
-              variant="danger"
-              size="sm"
-              onClick={() => setShowDeleteModal(true)}
-              icon={<Trash2 className="w-4 h-4" />}
-              className="flex-1 text-xs"
-            >
-              Reset Data
-            </Button>
-          </div>
-        </Card>
-
-        {/* Legal & Support Links */}
-        <Card variant="surface" padding="md" className="space-y-2">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-game-primary mb-2">
-            About & Compliance
-          </h4>
-          <button
-            onClick={onOpenPrivacy}
-            className="w-full min-h-[44px] flex items-center justify-between text-xs font-medium text-game-text hover:text-game-primary py-1 border-b border-game-border/60"
-          >
-            <span className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-purple-500" /> Privacy Policy (GDPR / DPDP)
-            </span>
-            <ChevronLeft className="w-4 h-4 rotate-180 text-game-muted" />
-          </button>
-          <button
-            onClick={onOpenTerms}
-            className="w-full min-h-[44px] flex items-center justify-between text-xs font-medium text-game-text hover:text-game-primary py-1 border-b border-game-border/60"
-          >
-            <span className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-pink-500" /> Terms of Service
-            </span>
-            <ChevronLeft className="w-4 h-4 rotate-180 text-game-muted" />
-          </button>
-          <a
-            href="mailto:support@glamblocks.game?subject=Glam%20Blocks%20Support%20Request"
-            className="w-full min-h-[44px] flex items-center justify-between text-xs font-medium text-game-text hover:text-game-primary py-1"
-          >
-            <span className="flex items-center gap-2">
-              <Mail className="w-4 h-4 text-amber-500" /> Contact Support
-            </span>
-            <ChevronLeft className="w-4 h-4 rotate-180 text-game-muted" />
-          </a>
-        </Card>
-
-        {/* App Version & Age Notice */}
-        <div className="text-center py-2 text-[11px] text-game-muted space-y-1">
-          <div>Glam Blocks v1.0.0 (Production PWA)</div>
-          <div>Rated for Ages 13+ • Made with ♥ for Beauty Enthusiasts</div>
-        </div>
-      </div>
-
-      {/* Account Deletion Confirmation Modal */}
-      <Modal
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
+      {/* Delete Account Confirmation Sheet */}
+      <ConfirmSheet
+        open={showDeleteConfirm}
         title="Delete Account & Data?"
-        maxWidth="max-w-xs"
-      >
-        <div className="pt-1 text-center">
-          <p className="text-xs text-game-muted mb-4 leading-relaxed">
-            In compliance with GDPR and India DPDP regulations, this will permanently delete your authentication record, saved scores, purchased looks, and inventory. This action cannot be undone.
-          </p>
-          <div className="flex gap-2">
-            <Button
-              variant="ghost"
-              size="md"
-              fullWidth
-              onClick={() => setShowDeleteModal(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="danger"
-              size="md"
-              fullWidth
-              loading={deleting}
-              onClick={handleDeleteAccount}
-            >
-              Delete All
-            </Button>
-          </div>
-        </div>
-      </Modal>
+        message="This action permanently deletes your game progress, stars, coins, and cloud vanity records according to GDPR & DPDP regulations. This cannot be undone."
+        confirmText="Permanently Delete"
+        cancelText="Cancel"
+        variant="danger"
+        loading={deleting}
+        onConfirm={handleDeleteAccount}
+        onCancel={() => setShowDeleteConfirm(false)}
+      />
     </div>
   );
 };
+
+export default SettingsScreen;
