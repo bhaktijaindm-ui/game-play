@@ -259,6 +259,25 @@ export interface UserProfile {
   soundEnabled?: boolean;
   musicEnabled?: boolean;
   hapticsEnabled?: boolean;
+
+  // Meta Game Progression (The Gulab Mahal Salon)
+  energy?: number;
+  maxEnergy?: number;
+  energyUpdatedAt?: number;
+  rooms?: Record<string, number>;
+  unlockedRangPages?: number[];
+  storyChapter?: number;
+  storyScene?: number;
+  dailyTaskPoints?: number;
+  claimedDailyMilestones?: number[];
+  passLevel?: number;
+  passXp?: number;
+  hasGoldPass?: boolean;
+  claimedPassFree?: number[];
+  claimedPassGold?: number[];
+  mapRegion?: string;
+  mapStop?: number;
+  notificationsEnabled?: boolean;
 }
 
 export interface Settings {

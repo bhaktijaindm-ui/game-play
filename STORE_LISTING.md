@@ -4,84 +4,82 @@
 
 ## 1. Store Metadata
 
-* **App Title**: Glam Blocks: Beauty Puzzle (27 / 30 chars)
-* **Short Description**: Drop blocks, clear lines & style stunning makeup looks in a luxury puzzle game! (79 / 80 chars)
+* **App Title**: Glam Blocks: Gulab Mahal Salon (30 / 30 chars)
+* **Short Description**: Drop blocks, style stunning makeup & restore Nani's salon in Rangpur! (68 / 80 chars)
 * **Category**: Puzzle / Casual / Lifestyle
-* **Content Rating**: Everyone / PEGI 3 / USK 0 (Family Friendly)
-* **Pricing**: Free-to-play with optional in-app purchases (₹19 / $0.99 base)
-* **Target Audience**: Casual puzzle lovers, fashion & beauty enthusiasts, block puzzle fans
+* **Content Rating**: Everyone / PEGI 3 / USK 0 (Family Friendly, strictly rated 13+)
+* **Pricing**: Free-to-play with optional in-app purchases (₹49 / $0.99 base)
+* **Target Audience**: Casual puzzle lovers, story meta-game fans, fashion & beauty enthusiasts
 
 ---
 
 ## 2. Full Store Description (Google Play Formatted)
 
-**Welcome to Glam Blocks — where the face is your puzzle board! ✨💄**
+**Welcome to Glam Blocks: The Gulab Mahal Salon — where the face is your puzzle board! ✨💄🌹**
 
-Step into the ultimate luxury vanity salon! Glam Blocks combines the satisfying, addictive mechanics of block puzzles with the creative artistry of high-fashion makeup styling. Drag jewel-toned cosmetic blocks onto an 8x8 glass vanity board, clear rows and columns, and watch as every clear paints real, breathtaking makeup onto an elegant stylized portrait!
+Step into the colorful heritage town of Rangpur! Inherit your beloved late grandmother Nani's faded beauty salon, "Gulab Mahal Salon", and discover her legendary "Rang Book" — a secret diary of 7 signature beauty looks. Team up with your bubbly nail artist best friend Zoya, cheerful town handyman Kabir, and wise retired mentor Tara-ji to restore the salon room by room!
 
-### 🌟 WHY YOU'LL LOVE GLAM BLOCKS:
+Glam Blocks combines the addictive, satisfying mechanics of block puzzles with a warm, heartwarming salon-restoration story and the creative artistry of live cosmetic styling.
 
-🎨 **THE FACE IS YOUR BOARD**
-Unlike generic block games, your glass puzzle grid rests gracefully over a stylized vector portrait. 
-- Rows 1–3 paint vibrant eyeshadow and sleek eyeliner.
-- Rows 4–6 apply soft radiant blush and glowing highlighter.
-- Rows 7–8 paint velvet lipsticks and glossy finishes.
-Stack and blend shades to create a one-of-a-kind finished look with every game you play!
+---
+
+### 🌟 WHY YOU'LL FALL IN LOVE WITH GLAM BLOCKS:
+
+🎨 **THE FACE IS YOUR PUZZLE BOARD**
+Unlike flat, generic block games, your semi-transparent glass puzzle grid rests over an elegant vector beauty portrait.
+- **Rows 1–3**: Paint vibrant eyeshadow and sleek eyeliner.
+- **Rows 4–6**: Apply radiant blush and glowing cheekbone highlighter.
+- **Rows 7–8**: Paint velvety lipsticks and glossy finishes.
+Every line clear sweeps a soft, animated brush across the face. Watch as your tactical puzzle clears build a breathtaking, finished makeup look!
+
+🏛 **RESTORE THE GULAB MAHAL SALON**
+Use the coins you earn from puzzle clears to restore 7 charming salon spaces:
+- The Welcoming Heritage Reception
+- The Radiant Makeup Studio
+- Zoya's Pastel Nail Art Bar
+- The Relaxing Hair Lounge
+- The Ayurvedic Herbal Spa
+- The Sunny Rooftop Terrace Cafe
+- The Grand Royal Bridal Suite
+Each restored room unlocks permanent in-game bonuses like extra coins, score multipliers, and free undos!
+
+🗺 **AN EPIC RANGPUR ADVENTURE MAP**
+Journey across 5 picturesque regions in Rangpur — from bustling Salon Street and the vibrant Bazaar Quarter, through the palace Lotus Gardens, up the ancient Heritage Fort, and into the grand Royal Haveli! Overcome 25 puzzle stops, open reward chests, and unlock chapters in Anaya's heartwarming story.
 
 💎 **PURE SHADE BONUSES & PALETTE COLLECTION**
-Clear a row or column using blocks of one uniform color to achieve a **Pure Shade**! Score double points, trigger a shimmering golden aura, and fill a pan in your 12-pan Eyeshadow Palette to unlock exclusive collections and rewards.
+Clear a row or column using blocks of one uniform shade to trigger a **Pure Shade**! Score double points, watch celebratory golden sparkles burst across the board, and fill a pan in your 12-pan Eyeshadow Palette to unlock exclusive beauty collections and gem rewards.
 
-👑 **CELEBRATE FESTIVE OCCASIONS**
-Complete over 30 bespoke client briefs featuring exquisite styling for global and Indian festive occasions:
-- 🌸 **Everyday Glow**: Soft dewy daytime minimalism
-- ☀️ **Haldi Day**: Sunlit marigold turmeric tones
-- 🌿 **Mehendi Night**: Deep earthy henna and terracotta
-- 🍇 **Sangeet Sparkle**: Radiant berry shimmer and music glamour
-- 💋 **Bridal Red**: Regal crimson and royal gold bridal couture
-- 🥂 **Diwali Gold**: Luminous champagne highlighter celebration
+👑 **SERVE CHARMING COMIC CUSTOMERS**
+Over 60 handcrafted levels featuring unique customer orders! Help recurring Rangpur residents like Mrs. Kapoor, college fashionista Priya, and theater star Simran look their very best for weddings, festivals, and celebrations.
 
-📅 **DAILY BEAUTY BRIEF**
-Play a fresh, shared puzzle every day! Everyone around the world receives the exact same sequence of shapes. Test your styling strategy, climb the daily global leaderboard, and keep your styling streak burning bright!
+📅 **DAILY BEAUTY BRIEF & STREAK REWARDS**
+- Play a fresh, shared daily challenge puzzle seeded identically for players worldwide!
+- Climb the daily global leaderboard and compete with friends.
+- Log in each morning to collect escalating streak gifts and unlock the Day 7 Diamond Chest.
 
 📸 **SHAREABLE BEFORE & AFTER LOOK CARDS**
-Created a show-stopping makeup look? Generate an instant high-resolution Before & After look card tailored for Instagram Stories (1080x1920) or feed posts (1080x1080) with one tap!
+Created a showstopping makeover? Export an instant high-resolution Before & After look card tailored for Instagram Stories (1080x1920) or Feed posts (1080x1080). Show off your score and beauty artistry, or toggle the "Hide Name" switch for privacy!
 
-💖 **ACCESSIBLE & PLAYABLE ANYWHERE**
-- **100% Offline Play**: Works without WiFi or cellular data — perfect for flights, commutes, and low-connectivity areas.
-- **Colorblind Friendly Mode**: Clear distinct icons (lips, sparkle, heart, drop, star, leaf, diamond) ensure effortless play for everyone.
-- **Battery-Friendly & Fast**: Designed to run silky smooth at 60fps on all Android phones without draining your battery.
+💖 **ACCESSIBLE, OFFLINE & BATTERY FRIENDLY**
+- **100% Offline Gameplay**: Play on trains, flights, or off the grid — no WiFi or data required.
+- **Fairness Guarantee**: Smart spawning ensures at least one placeable piece is always available to prevent unfair deadlocks.
+- **Colorblind Friendly Mode**: High-contrast cosmetic icons (lips, sparkles, hearts, drops, stars, leaves, diamonds) ensure effortless play for everyone.
+- **Silky Smooth 60 FPS**: Engineered with lightweight plain DOM and vector SVGs to run smoothly on low-end phones without battery drain.
 - **Dual Themes**: Switch seamlessly between "Rose Quartz Morning" and "Midnight Vanity" dark mode.
 
 ---
 
 ## 3. Key Feature Bullets
-* Satisfying 8x8 block puzzle with zero time limits and relaxing, tactical gameplay.
-* Unique live makeup canvas where puzzle clears paint eyeshadow, blush, and lips.
-* 30+ hand-crafted client briefs plus infinite procedural scaling stages.
-* Pure Shade multiplier and 12-pan customizable vanity palette.
-* 6 diverse, inclusive face models across all skin tones.
-* Daily seeded puzzle with global leaderboards and streak rewards.
-* Works completely offline; installable PWA with ultra-low download footprint.
+* Addictive 8x8 block puzzle gameplay with zero time limits and relaxing tactical placement.
+* Unique live makeup canvas where puzzle clears paint real eyeshadow, blush, and lips.
+* Heartwarming salon-restoration story with 4 chapters, 48 skippable dialogue scenes, and 100% original characters.
+* 60 handcrafted levels with customer orders and infinite procedural scaling.
+* Adventure map across 5 historic regions with 25 milestone stops.
+* 7 customizable salon rooms with Before/After reveals and permanent passive perks.
+* 12-pan Eyeshadow Palette, seasonal Festival Pass, and limited-time mini-games.
+* 100% offline-ready PWA with fast resume and cloud sync.
 
 ---
 
-## 4. Screenshot Concept Descriptions
-
-1. **Screenshot 1: The Face is Your Board**
-   * *Headline*: "THE FACE IS YOUR PUZZLE BOARD"
-   * *Visual*: Hero view of the 8x8 glass grid over an elegant wheatish model with glowing Rose Pink & Champagne Gold blocks.
-2. **Screenshot 2: Every Clear Paints a Look**
-   * *Headline*: "EVERY CLEAR PAINTS REAL MAKEUP"
-   * *Visual*: Animated brush sweep applying dewy blush and glossy lips across the facial zones upon line clear.
-3. **Screenshot 3: Pure Shade Multiplier**
-   * *Headline*: "CLEAR PURE SHADES FOR 2X POINTS"
-   * *Visual*: Golden ring sparkle around a monochrome line clear with floating "+640 PURE SHADE!" popup.
-4. **Screenshot 4: Festive Indian Occasions**
-   * *Headline*: "DISCOVER FESTIVE OCCASIONS"
-   * *Visual*: Carousel showing Haldi Day, Mehendi Night, and Bridal Red couture face styling.
-5. **Screenshot 5: Daily Beauty Brief**
-   * *Headline*: "DAILY SEEDED BRIEF & LEADERBOARDS"
-   * *Visual*: Daily puzzle calendar screen displaying active streak flame and global top ranking.
-6. **Screenshot 6: Export & Share**
-   * *Headline*: "SHARE YOUR FINISHED LOOK"
-   * *Visual*: High-fashion 1080x1920 Before/After split card with player score and Instagram share sheet.
+## 4. Promo Keyword Tags
+`block puzzle, beauty salon, makeover game, makeup puzzle, salon renovation, casual puzzle, offline games, story game, tile matching, face painting, casual games, brain teaser, relaxing puzzle, Indian festive, cosmetic game`

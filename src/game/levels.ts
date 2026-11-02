@@ -550,7 +550,7 @@ export const CLIENTS: Client[] = [
 
 /**
  * Returns the client and goals for a specific 1-indexed level.
- * Automatically switches to procedural generation for levels beyond 30.
+ * Uses CLIENTS for 1-30 and procedural generation beyond 30.
  */
 export function getLevel(levelNumber: number): Client {
   if (levelNumber >= 1 && levelNumber <= CLIENTS.length) {
@@ -669,5 +669,78 @@ export function getDailyClient(date: string | Date): Client {
       success: `Congratulations on conquering the Daily Challenge for ${dateStr}!`,
       failure: `Try again! The Daily Challenge is available all day.`,
     },
+  };
+}
+
+export interface CustomerOrder {
+  id: string;
+  customerId: string;
+  customerName: string;
+  avatarKey: string;
+  goalType: string;
+  shade?: ShadeId;
+  target: number;
+  rewardCoins: number;
+  description: string;
+}
+
+export interface HandcraftedLevel {
+  level: number;
+  title: string;
+  maxMoves: number;
+  customers: CustomerOrder[];
+  starThresholds: [number, number, number];
+  difficulty: 'gentle' | 'easy' | 'medium' | 'festive' | 'expert';
+}
+
+import levelsData from '../data/levels.json';
+
+export const HANDCRAFTED_LEVELS: HandcraftedLevel[] = levelsData as HandcraftedLevel[];
+
+export function getLevelData(levelNum: number): HandcraftedLevel {
+  const found = HANDCRAFTED_LEVELS.find((l) => l.level === levelNum);
+  if (found) return found;
+
+  // Procedural generator for levels > 60
+  const maxMoves = Math.max(16, 26 - (levelNum % 6));
+  const baseTarget = 600 + levelNum * 150;
+  return {
+    level: levelNum,
+    title: `Salon Prestige ${levelNum}`,
+    maxMoves,
+    customers: [
+      {
+        id: 'o1',
+        customerId: 'priya',
+        customerName: 'Priya',
+        avatarKey: 'customer_2',
+        goalType: 'clearLines',
+        target: 4,
+        rewardCoins: 120 + levelNum,
+        description: 'Clear 4 puzzle lines',
+      },
+      {
+        id: 'o2',
+        customerId: 'simran',
+        customerName: 'Simran',
+        avatarKey: 'customer_3',
+        goalType: 'score',
+        target: baseTarget,
+        rewardCoins: 150 + levelNum,
+        description: `Score ${baseTarget} points`,
+      },
+      {
+        id: 'o3',
+        customerId: 'mrs_kapoor',
+        customerName: 'Mrs. Kapoor',
+        avatarKey: 'customer_1',
+        goalType: 'pureShade',
+        target: 1,
+        rewardCoins: 180 + levelNum,
+        description: 'Make 1 Pure Shade line',
+      },
+    ],
+    starThresholds: [baseTarget, Math.round(baseTarget * 1.8), Math.round(baseTarget * 2.8)],
+    difficulty: 'expert',
   };
 }

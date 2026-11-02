@@ -1,0 +1,2642 @@
+[
+  {
+    "level": 1,
+    "title": "Morning Awakening",
+    "maxMoves": 30,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "mrs_kapoor",
+        "customerName": "Mrs. Kapoor",
+        "avatarKey": "customer_1",
+        "goalType": "clearLines",
+        "shade": "ruby",
+        "target": 2,
+        "rewardCoins": 52,
+        "description": "Clear 2 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "priya",
+        "customerName": "Priya",
+        "avatarKey": "customer_2",
+        "goalType": "score",
+        "target": 720,
+        "rewardCoins": 67,
+        "description": "Score 720 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "simran",
+        "customerName": "Simran",
+        "avatarKey": "customer_3",
+        "goalType": "clearLines",
+        "target": 2,
+        "rewardCoins": 83,
+        "description": "Clear 2 lines"
+      }
+    ],
+    "starThresholds": [
+      720,
+      1296,
+      2016
+    ],
+    "difficulty": "gentle"
+  },
+  {
+    "level": 2,
+    "title": "Rosewater Dew",
+    "maxMoves": 30,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "priya",
+        "customerName": "Priya",
+        "avatarKey": "customer_2",
+        "goalType": "clearColor",
+        "shade": "peach",
+        "target": 2,
+        "rewardCoins": 54,
+        "description": "Clear 2 peach lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "simran",
+        "customerName": "Simran",
+        "avatarKey": "customer_3",
+        "goalType": "score",
+        "target": 840,
+        "rewardCoins": 69,
+        "description": "Score 840 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "meera",
+        "customerName": "Meera",
+        "avatarKey": "customer_4",
+        "goalType": "clearLines",
+        "target": 2,
+        "rewardCoins": 86,
+        "description": "Clear 2 lines"
+      }
+    ],
+    "starThresholds": [
+      840,
+      1512,
+      2352
+    ],
+    "difficulty": "gentle"
+  },
+  {
+    "level": 3,
+    "title": "First Brushstrokes",
+    "maxMoves": 30,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "simran",
+        "customerName": "Simran",
+        "avatarKey": "customer_3",
+        "goalType": "clearLines",
+        "shade": "ruby",
+        "target": 2,
+        "rewardCoins": 56,
+        "description": "Clear 2 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "meera",
+        "customerName": "Meera",
+        "avatarKey": "customer_4",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 71,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "uncle_dev",
+        "customerName": "Uncle Dev",
+        "avatarKey": "customer_5",
+        "goalType": "clearLines",
+        "target": 2,
+        "rewardCoins": 89,
+        "description": "Clear 2 lines"
+      }
+    ],
+    "starThresholds": [
+      960,
+      1728,
+      2688
+    ],
+    "difficulty": "gentle"
+  },
+  {
+    "level": 4,
+    "title": "Bazaar Jasmine",
+    "maxMoves": 30,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "meera",
+        "customerName": "Meera",
+        "avatarKey": "customer_4",
+        "goalType": "clearColor",
+        "shade": "champagne",
+        "target": 2,
+        "rewardCoins": 58,
+        "description": "Clear 2 champagne lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "uncle_dev",
+        "customerName": "Uncle Dev",
+        "avatarKey": "customer_5",
+        "goalType": "score",
+        "target": 1080,
+        "rewardCoins": 73,
+        "description": "Score 1080 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "diya",
+        "customerName": "Diya",
+        "avatarKey": "customer_6",
+        "goalType": "combo",
+        "target": 2,
+        "rewardCoins": 92,
+        "description": "Perform a 2-line combo"
+      }
+    ],
+    "starThresholds": [
+      1080,
+      1944,
+      3024
+    ],
+    "difficulty": "gentle"
+  },
+  {
+    "level": 5,
+    "title": "Velvet Radiance",
+    "maxMoves": 30,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "uncle_dev",
+        "customerName": "Uncle Dev",
+        "avatarKey": "customer_5",
+        "goalType": "clearLines",
+        "shade": "mint",
+        "target": 2,
+        "rewardCoins": 60,
+        "description": "Clear 2 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "diya",
+        "customerName": "Diya",
+        "avatarKey": "customer_6",
+        "goalType": "score",
+        "target": 1200,
+        "rewardCoins": 75,
+        "description": "Score 1200 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "shanti",
+        "customerName": "Grandma Shanti",
+        "avatarKey": "customer_7",
+        "goalType": "clearLines",
+        "target": 2,
+        "rewardCoins": 95,
+        "description": "Clear 2 lines"
+      }
+    ],
+    "starThresholds": [
+      1200,
+      2160,
+      3360
+    ],
+    "difficulty": "gentle"
+  },
+  {
+    "level": 6,
+    "title": "Mirror Shine",
+    "maxMoves": 29,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "diya",
+        "customerName": "Diya",
+        "avatarKey": "customer_6",
+        "goalType": "clearColor",
+        "shade": "lavender",
+        "target": 2,
+        "rewardCoins": 62,
+        "description": "Clear 2 lavender lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "shanti",
+        "customerName": "Grandma Shanti",
+        "avatarKey": "customer_7",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 77,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "rohit",
+        "customerName": "Rohit",
+        "avatarKey": "customer_8",
+        "goalType": "clearLines",
+        "target": 2,
+        "rewardCoins": 98,
+        "description": "Clear 2 lines"
+      }
+    ],
+    "starThresholds": [
+      1320,
+      2376,
+      3696
+    ],
+    "difficulty": "gentle"
+  },
+  {
+    "level": 7,
+    "title": "Peach Glow",
+    "maxMoves": 29,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "shanti",
+        "customerName": "Grandma Shanti",
+        "avatarKey": "customer_7",
+        "goalType": "clearLines",
+        "shade": "rose",
+        "target": 2,
+        "rewardCoins": 64,
+        "description": "Clear 2 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "rohit",
+        "customerName": "Rohit",
+        "avatarKey": "customer_8",
+        "goalType": "score",
+        "target": 1440,
+        "rewardCoins": 79,
+        "description": "Score 1440 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "fatima",
+        "customerName": "Fatima",
+        "avatarKey": "customer_9",
+        "goalType": "clearLines",
+        "target": 2,
+        "rewardCoins": 101,
+        "description": "Clear 2 lines"
+      }
+    ],
+    "starThresholds": [
+      1440,
+      2592,
+      4032
+    ],
+    "difficulty": "gentle"
+  },
+  {
+    "level": 8,
+    "title": "Campus Confidence",
+    "maxMoves": 29,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "rohit",
+        "customerName": "Rohit",
+        "avatarKey": "customer_8",
+        "goalType": "clearColor",
+        "shade": "peach",
+        "target": 2,
+        "rewardCoins": 66,
+        "description": "Clear 2 peach lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "fatima",
+        "customerName": "Fatima",
+        "avatarKey": "customer_9",
+        "goalType": "score",
+        "target": 1560,
+        "rewardCoins": 81,
+        "description": "Score 1560 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "aisha",
+        "customerName": "Aisha",
+        "avatarKey": "customer_10",
+        "goalType": "combo",
+        "target": 2,
+        "rewardCoins": 104,
+        "description": "Perform a 2-line combo"
+      }
+    ],
+    "starThresholds": [
+      1560,
+      2808,
+      4368
+    ],
+    "difficulty": "gentle"
+  },
+  {
+    "level": 9,
+    "title": "Afternoon Chai",
+    "maxMoves": 29,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "fatima",
+        "customerName": "Fatima",
+        "avatarKey": "customer_9",
+        "goalType": "clearLines",
+        "shade": "sky",
+        "target": 2,
+        "rewardCoins": 68,
+        "description": "Clear 2 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "aisha",
+        "customerName": "Aisha",
+        "avatarKey": "customer_10",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 83,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "dr_neha",
+        "customerName": "Dr. Neha",
+        "avatarKey": "customer_11",
+        "goalType": "clearLines",
+        "target": 2,
+        "rewardCoins": 107,
+        "description": "Clear 2 lines"
+      }
+    ],
+    "starThresholds": [
+      1680,
+      3024,
+      4704
+    ],
+    "difficulty": "gentle"
+  },
+  {
+    "level": 10,
+    "title": "Golden Sconces",
+    "maxMoves": 29,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "aisha",
+        "customerName": "Aisha",
+        "avatarKey": "customer_10",
+        "goalType": "clearColor",
+        "shade": "peach",
+        "target": 2,
+        "rewardCoins": 70,
+        "description": "Clear 2 peach lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "dr_neha",
+        "customerName": "Dr. Neha",
+        "avatarKey": "customer_11",
+        "goalType": "score",
+        "target": 1800,
+        "rewardCoins": 85,
+        "description": "Score 1800 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "babli",
+        "customerName": "Babli",
+        "avatarKey": "customer_12",
+        "goalType": "clearLines",
+        "target": 2,
+        "rewardCoins": 110,
+        "description": "Clear 2 lines"
+      }
+    ],
+    "starThresholds": [
+      1800,
+      3240,
+      5040
+    ],
+    "difficulty": "gentle"
+  },
+  {
+    "level": 11,
+    "title": "Silk Swatches",
+    "maxMoves": 29,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "dr_neha",
+        "customerName": "Dr. Neha",
+        "avatarKey": "customer_11",
+        "goalType": "clearLines",
+        "shade": "lavender",
+        "target": 2,
+        "rewardCoins": 72,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "babli",
+        "customerName": "Babli",
+        "avatarKey": "customer_12",
+        "goalType": "score",
+        "target": 1920,
+        "rewardCoins": 87,
+        "description": "Score 1920 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "mrs_kapoor",
+        "customerName": "Mrs. Kapoor",
+        "avatarKey": "customer_1",
+        "goalType": "clearLines",
+        "target": 2,
+        "rewardCoins": 113,
+        "description": "Clear 2 lines"
+      }
+    ],
+    "starThresholds": [
+      1920,
+      3456,
+      5376
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "level": 12,
+    "title": "Zari Reflections",
+    "maxMoves": 28,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "babli",
+        "customerName": "Babli",
+        "avatarKey": "customer_12",
+        "goalType": "clearColor",
+        "shade": "rose",
+        "target": 2,
+        "rewardCoins": 74,
+        "description": "Clear 3 rose lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "mrs_kapoor",
+        "customerName": "Mrs. Kapoor",
+        "avatarKey": "customer_1",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 89,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "priya",
+        "customerName": "Priya",
+        "avatarKey": "customer_2",
+        "goalType": "combo",
+        "target": 2,
+        "rewardCoins": 116,
+        "description": "Perform a 2-line combo"
+      }
+    ],
+    "starThresholds": [
+      2040,
+      3672,
+      5712
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "level": 13,
+    "title": "Kathak Rhythms",
+    "maxMoves": 28,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "mrs_kapoor",
+        "customerName": "Mrs. Kapoor",
+        "avatarKey": "customer_1",
+        "goalType": "clearLines",
+        "shade": "ruby",
+        "target": 2,
+        "rewardCoins": 76,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "priya",
+        "customerName": "Priya",
+        "avatarKey": "customer_2",
+        "goalType": "score",
+        "target": 2160,
+        "rewardCoins": 91,
+        "description": "Score 2160 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "simran",
+        "customerName": "Simran",
+        "avatarKey": "customer_3",
+        "goalType": "clearLines",
+        "target": 3,
+        "rewardCoins": 119,
+        "description": "Clear 3 lines"
+      }
+    ],
+    "starThresholds": [
+      2160,
+      3888,
+      6048
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "level": 14,
+    "title": "Smudge-Proof Wings",
+    "maxMoves": 28,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "priya",
+        "customerName": "Priya",
+        "avatarKey": "customer_2",
+        "goalType": "clearColor",
+        "shade": "peach",
+        "target": 2,
+        "rewardCoins": 78,
+        "description": "Clear 3 peach lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "simran",
+        "customerName": "Simran",
+        "avatarKey": "customer_3",
+        "goalType": "score",
+        "target": 2280,
+        "rewardCoins": 93,
+        "description": "Score 2280 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "meera",
+        "customerName": "Meera",
+        "avatarKey": "customer_4",
+        "goalType": "clearLines",
+        "target": 3,
+        "rewardCoins": 122,
+        "description": "Clear 3 lines"
+      }
+    ],
+    "starThresholds": [
+      2280,
+      4104,
+      6384
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "level": 15,
+    "title": "Courtyard Breeze",
+    "maxMoves": 28,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "simran",
+        "customerName": "Simran",
+        "avatarKey": "customer_3",
+        "goalType": "clearLines",
+        "shade": "ruby",
+        "target": 3,
+        "rewardCoins": 80,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "meera",
+        "customerName": "Meera",
+        "avatarKey": "customer_4",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 95,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "uncle_dev",
+        "customerName": "Uncle Dev",
+        "avatarKey": "customer_5",
+        "goalType": "clearLines",
+        "target": 3,
+        "rewardCoins": 125,
+        "description": "Clear 3 lines"
+      }
+    ],
+    "starThresholds": [
+      2400,
+      4320,
+      6720
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "level": 16,
+    "title": "Cedar Cabinet",
+    "maxMoves": 28,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "meera",
+        "customerName": "Meera",
+        "avatarKey": "customer_4",
+        "goalType": "clearColor",
+        "shade": "champagne",
+        "target": 3,
+        "rewardCoins": 82,
+        "description": "Clear 3 champagne lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "uncle_dev",
+        "customerName": "Uncle Dev",
+        "avatarKey": "customer_5",
+        "goalType": "score",
+        "target": 2520,
+        "rewardCoins": 97,
+        "description": "Score 2520 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "diya",
+        "customerName": "Diya",
+        "avatarKey": "customer_6",
+        "goalType": "combo",
+        "target": 2,
+        "rewardCoins": 128,
+        "description": "Perform a 2-line combo"
+      }
+    ],
+    "starThresholds": [
+      2520,
+      4536,
+      7056
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "level": 17,
+    "title": "Jittery Groom",
+    "maxMoves": 28,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "uncle_dev",
+        "customerName": "Uncle Dev",
+        "avatarKey": "customer_5",
+        "goalType": "clearLines",
+        "shade": "mint",
+        "target": 3,
+        "rewardCoins": 84,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "diya",
+        "customerName": "Diya",
+        "avatarKey": "customer_6",
+        "goalType": "score",
+        "target": 2640,
+        "rewardCoins": 99,
+        "description": "Score 2640 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "shanti",
+        "customerName": "Grandma Shanti",
+        "avatarKey": "customer_7",
+        "goalType": "clearLines",
+        "target": 3,
+        "rewardCoins": 131,
+        "description": "Clear 3 lines"
+      }
+    ],
+    "starThresholds": [
+      2640,
+      4752,
+      7392
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "level": 18,
+    "title": "High-Beam Glow",
+    "maxMoves": 27,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "diya",
+        "customerName": "Diya",
+        "avatarKey": "customer_6",
+        "goalType": "clearColor",
+        "shade": "lavender",
+        "target": 3,
+        "rewardCoins": 86,
+        "description": "Clear 3 lavender lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "shanti",
+        "customerName": "Grandma Shanti",
+        "avatarKey": "customer_7",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 101,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "rohit",
+        "customerName": "Rohit",
+        "avatarKey": "customer_8",
+        "goalType": "clearLines",
+        "target": 3,
+        "rewardCoins": 134,
+        "description": "Clear 3 lines"
+      }
+    ],
+    "starThresholds": [
+      2760,
+      4968,
+      7728
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "level": 19,
+    "title": "Lumiere Encounter",
+    "maxMoves": 27,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "shanti",
+        "customerName": "Grandma Shanti",
+        "avatarKey": "customer_7",
+        "goalType": "clearLines",
+        "shade": "rose",
+        "target": 3,
+        "rewardCoins": 88,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "rohit",
+        "customerName": "Rohit",
+        "avatarKey": "customer_8",
+        "goalType": "score",
+        "target": 2880,
+        "rewardCoins": 103,
+        "description": "Score 2880 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "fatima",
+        "customerName": "Fatima",
+        "avatarKey": "customer_9",
+        "goalType": "clearLines",
+        "target": 3,
+        "rewardCoins": 137,
+        "description": "Clear 3 lines"
+      }
+    ],
+    "starThresholds": [
+      2880,
+      5184,
+      8064
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "level": 20,
+    "title": "Sangeet Sparkle",
+    "maxMoves": 27,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "rohit",
+        "customerName": "Rohit",
+        "avatarKey": "customer_8",
+        "goalType": "clearColor",
+        "shade": "peach",
+        "target": 3,
+        "rewardCoins": 90,
+        "description": "Clear 3 peach lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "fatima",
+        "customerName": "Fatima",
+        "avatarKey": "customer_9",
+        "goalType": "score",
+        "target": 3000,
+        "rewardCoins": 105,
+        "description": "Score 3000 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "aisha",
+        "customerName": "Aisha",
+        "avatarKey": "customer_10",
+        "goalType": "combo",
+        "target": 2,
+        "rewardCoins": 140,
+        "description": "Perform a 2-line combo"
+      }
+    ],
+    "starThresholds": [
+      3000,
+      5400,
+      8400
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "level": 21,
+    "title": "Midnight Manicure",
+    "maxMoves": 27,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "fatima",
+        "customerName": "Fatima",
+        "avatarKey": "customer_9",
+        "goalType": "clearLines",
+        "shade": "sky",
+        "target": 3,
+        "rewardCoins": 92,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "aisha",
+        "customerName": "Aisha",
+        "avatarKey": "customer_10",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 107,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "dr_neha",
+        "customerName": "Dr. Neha",
+        "avatarKey": "customer_11",
+        "goalType": "clearLines",
+        "target": 3,
+        "rewardCoins": 143,
+        "description": "Clear 3 lines"
+      }
+    ],
+    "starThresholds": [
+      3120,
+      5616,
+      8736
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "level": 22,
+    "title": "Stage Lights",
+    "maxMoves": 27,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "aisha",
+        "customerName": "Aisha",
+        "avatarKey": "customer_10",
+        "goalType": "clearColor",
+        "shade": "peach",
+        "target": 3,
+        "rewardCoins": 94,
+        "description": "Clear 3 peach lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "dr_neha",
+        "customerName": "Dr. Neha",
+        "avatarKey": "customer_11",
+        "goalType": "score",
+        "target": 3240,
+        "rewardCoins": 109,
+        "description": "Score 3240 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "babli",
+        "customerName": "Babli",
+        "avatarKey": "customer_12",
+        "goalType": "clearLines",
+        "target": 3,
+        "rewardCoins": 146,
+        "description": "Clear 3 lines"
+      }
+    ],
+    "starThresholds": [
+      3240,
+      5832,
+      9072
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "level": 23,
+    "title": "Monsoon Scalp Tonic",
+    "maxMoves": 27,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "dr_neha",
+        "customerName": "Dr. Neha",
+        "avatarKey": "customer_11",
+        "goalType": "clearLines",
+        "shade": "lavender",
+        "target": 3,
+        "rewardCoins": 96,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "babli",
+        "customerName": "Babli",
+        "avatarKey": "customer_12",
+        "goalType": "score",
+        "target": 3360,
+        "rewardCoins": 111,
+        "description": "Score 3360 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "mrs_kapoor",
+        "customerName": "Mrs. Kapoor",
+        "avatarKey": "customer_1",
+        "goalType": "clearLines",
+        "target": 3,
+        "rewardCoins": 149,
+        "description": "Clear 3 lines"
+      }
+    ],
+    "starThresholds": [
+      3360,
+      6048,
+      9408
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "level": 24,
+    "title": "Auntie Special",
+    "maxMoves": 26,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "babli",
+        "customerName": "Babli",
+        "avatarKey": "customer_12",
+        "goalType": "clearColor",
+        "shade": "rose",
+        "target": 3,
+        "rewardCoins": 98,
+        "description": "Clear 3 rose lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "mrs_kapoor",
+        "customerName": "Mrs. Kapoor",
+        "avatarKey": "customer_1",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 113,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "priya",
+        "customerName": "Priya",
+        "avatarKey": "customer_2",
+        "goalType": "combo",
+        "target": 2,
+        "rewardCoins": 152,
+        "description": "Perform a 2-line combo"
+      }
+    ],
+    "starThresholds": [
+      3480,
+      6264,
+      9744
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "level": 25,
+    "title": "Bridal Suite Prep",
+    "maxMoves": 26,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "mrs_kapoor",
+        "customerName": "Mrs. Kapoor",
+        "avatarKey": "customer_1",
+        "goalType": "clearLines",
+        "shade": "ruby",
+        "target": 3,
+        "rewardCoins": 100,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "priya",
+        "customerName": "Priya",
+        "avatarKey": "customer_2",
+        "goalType": "score",
+        "target": 3600,
+        "rewardCoins": 115,
+        "description": "Score 3600 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "simran",
+        "customerName": "Simran",
+        "avatarKey": "customer_3",
+        "goalType": "clearLines",
+        "target": 4,
+        "rewardCoins": 155,
+        "description": "Clear 4 lines"
+      }
+    ],
+    "starThresholds": [
+      3600,
+      6480,
+      10080
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "level": 26,
+    "title": "Gulal Morning",
+    "maxMoves": 26,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "priya",
+        "customerName": "Priya",
+        "avatarKey": "customer_2",
+        "goalType": "clearColor",
+        "shade": "peach",
+        "target": 3,
+        "rewardCoins": 102,
+        "description": "Clear 3 peach lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "simran",
+        "customerName": "Simran",
+        "avatarKey": "customer_3",
+        "goalType": "score",
+        "target": 3720,
+        "rewardCoins": 117,
+        "description": "Score 3720 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "meera",
+        "customerName": "Meera",
+        "avatarKey": "customer_4",
+        "goalType": "clearLines",
+        "target": 4,
+        "rewardCoins": 158,
+        "description": "Clear 4 lines"
+      }
+    ],
+    "starThresholds": [
+      3720,
+      6696,
+      10416
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 27,
+    "title": "Spring Powders",
+    "maxMoves": 26,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "simran",
+        "customerName": "Simran",
+        "avatarKey": "customer_3",
+        "goalType": "clearLines",
+        "shade": "ruby",
+        "target": 3,
+        "rewardCoins": 104,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "meera",
+        "customerName": "Meera",
+        "avatarKey": "customer_4",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 119,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "uncle_dev",
+        "customerName": "Uncle Dev",
+        "avatarKey": "customer_5",
+        "goalType": "clearLines",
+        "target": 4,
+        "rewardCoins": 161,
+        "description": "Clear 4 lines"
+      }
+    ],
+    "starThresholds": [
+      3840,
+      6912,
+      10752
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 28,
+    "title": "Pergola Vines",
+    "maxMoves": 26,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "meera",
+        "customerName": "Meera",
+        "avatarKey": "customer_4",
+        "goalType": "clearColor",
+        "shade": "champagne",
+        "target": 3,
+        "rewardCoins": 106,
+        "description": "Clear 3 champagne lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "uncle_dev",
+        "customerName": "Uncle Dev",
+        "avatarKey": "customer_5",
+        "goalType": "score",
+        "target": 3960,
+        "rewardCoins": 121,
+        "description": "Score 3960 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "diya",
+        "customerName": "Diya",
+        "avatarKey": "customer_6",
+        "goalType": "combo",
+        "target": 2,
+        "rewardCoins": 164,
+        "description": "Perform a 2-line combo"
+      }
+    ],
+    "starThresholds": [
+      3960,
+      7128,
+      11088
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 29,
+    "title": "Sandalwood Mortar",
+    "maxMoves": 26,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "uncle_dev",
+        "customerName": "Uncle Dev",
+        "avatarKey": "customer_5",
+        "goalType": "clearLines",
+        "shade": "mint",
+        "target": 3,
+        "rewardCoins": 108,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "diya",
+        "customerName": "Diya",
+        "avatarKey": "customer_6",
+        "goalType": "score",
+        "target": 4080,
+        "rewardCoins": 123,
+        "description": "Score 4080 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "shanti",
+        "customerName": "Grandma Shanti",
+        "avatarKey": "customer_7",
+        "goalType": "clearLines",
+        "target": 4,
+        "rewardCoins": 167,
+        "description": "Clear 4 lines"
+      }
+    ],
+    "starThresholds": [
+      4080,
+      7344,
+      11424
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 30,
+    "title": "Chai on the Roof",
+    "maxMoves": 25,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "diya",
+        "customerName": "Diya",
+        "avatarKey": "customer_6",
+        "goalType": "clearColor",
+        "shade": "lavender",
+        "target": 4,
+        "rewardCoins": 110,
+        "description": "Clear 3 lavender lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "shanti",
+        "customerName": "Grandma Shanti",
+        "avatarKey": "customer_7",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 125,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "rohit",
+        "customerName": "Rohit",
+        "avatarKey": "customer_8",
+        "goalType": "clearLines",
+        "target": 4,
+        "rewardCoins": 170,
+        "description": "Clear 4 lines"
+      }
+    ],
+    "starThresholds": [
+      4200,
+      7560,
+      11760
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 31,
+    "title": "Marathon Sprinter",
+    "maxMoves": 25,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "shanti",
+        "customerName": "Grandma Shanti",
+        "avatarKey": "customer_7",
+        "goalType": "clearLines",
+        "shade": "rose",
+        "target": 4,
+        "rewardCoins": 112,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "rohit",
+        "customerName": "Rohit",
+        "avatarKey": "customer_8",
+        "goalType": "score",
+        "target": 4320,
+        "rewardCoins": 127,
+        "description": "Score 4320 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "fatima",
+        "customerName": "Fatima",
+        "avatarKey": "customer_9",
+        "goalType": "clearLines",
+        "target": 4,
+        "rewardCoins": 173,
+        "description": "Clear 4 lines"
+      }
+    ],
+    "starThresholds": [
+      4320,
+      7776,
+      12096
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 32,
+    "title": "Rose Compress",
+    "maxMoves": 25,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "rohit",
+        "customerName": "Rohit",
+        "avatarKey": "customer_8",
+        "goalType": "clearColor",
+        "shade": "peach",
+        "target": 4,
+        "rewardCoins": 114,
+        "description": "Clear 3 peach lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "fatima",
+        "customerName": "Fatima",
+        "avatarKey": "customer_9",
+        "goalType": "score",
+        "target": 4440,
+        "rewardCoins": 129,
+        "description": "Score 4440 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "aisha",
+        "customerName": "Aisha",
+        "avatarKey": "customer_10",
+        "goalType": "combo",
+        "target": 2,
+        "rewardCoins": 176,
+        "description": "Perform a 2-line combo"
+      }
+    ],
+    "starThresholds": [
+      4440,
+      7992,
+      12432
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 33,
+    "title": "Eyeliner Geometry",
+    "maxMoves": 25,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "fatima",
+        "customerName": "Fatima",
+        "avatarKey": "customer_9",
+        "goalType": "clearLines",
+        "shade": "sky",
+        "target": 4,
+        "rewardCoins": 116,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "aisha",
+        "customerName": "Aisha",
+        "avatarKey": "customer_10",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 131,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "dr_neha",
+        "customerName": "Dr. Neha",
+        "avatarKey": "customer_11",
+        "goalType": "clearLines",
+        "target": 4,
+        "rewardCoins": 179,
+        "description": "Clear 4 lines"
+      }
+    ],
+    "starThresholds": [
+      4560,
+      8208,
+      12768
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 34,
+    "title": "Pastel Harmony",
+    "maxMoves": 25,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "aisha",
+        "customerName": "Aisha",
+        "avatarKey": "customer_10",
+        "goalType": "clearColor",
+        "shade": "peach",
+        "target": 4,
+        "rewardCoins": 118,
+        "description": "Clear 3 peach lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "dr_neha",
+        "customerName": "Dr. Neha",
+        "avatarKey": "customer_11",
+        "goalType": "score",
+        "target": 4680,
+        "rewardCoins": 133,
+        "description": "Score 4680 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "babli",
+        "customerName": "Babli",
+        "avatarKey": "customer_12",
+        "goalType": "clearLines",
+        "target": 4,
+        "rewardCoins": 182,
+        "description": "Clear 4 lines"
+      }
+    ],
+    "starThresholds": [
+      4680,
+      8424,
+      13104
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 35,
+    "title": "Rivalry Thawed",
+    "maxMoves": 25,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "dr_neha",
+        "customerName": "Dr. Neha",
+        "avatarKey": "customer_11",
+        "goalType": "clearLines",
+        "shade": "lavender",
+        "target": 4,
+        "rewardCoins": 120,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "babli",
+        "customerName": "Babli",
+        "avatarKey": "customer_12",
+        "goalType": "score",
+        "target": 4800,
+        "rewardCoins": 135,
+        "description": "Score 4800 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "mrs_kapoor",
+        "customerName": "Mrs. Kapoor",
+        "avatarKey": "customer_1",
+        "goalType": "clearLines",
+        "target": 4,
+        "rewardCoins": 185,
+        "description": "Clear 4 lines"
+      }
+    ],
+    "starThresholds": [
+      4800,
+      8640,
+      13440
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 36,
+    "title": "Sisterhood Tea",
+    "maxMoves": 24,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "babli",
+        "customerName": "Babli",
+        "avatarKey": "customer_12",
+        "goalType": "clearColor",
+        "shade": "rose",
+        "target": 4,
+        "rewardCoins": 122,
+        "description": "Clear 3 rose lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "mrs_kapoor",
+        "customerName": "Mrs. Kapoor",
+        "avatarKey": "customer_1",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 137,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "priya",
+        "customerName": "Priya",
+        "avatarKey": "customer_2",
+        "goalType": "combo",
+        "target": 2,
+        "rewardCoins": 188,
+        "description": "Perform a 2-line combo"
+      }
+    ],
+    "starThresholds": [
+      4920,
+      8856,
+      13776
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 37,
+    "title": "Diya Flickers",
+    "maxMoves": 24,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "mrs_kapoor",
+        "customerName": "Mrs. Kapoor",
+        "avatarKey": "customer_1",
+        "goalType": "clearLines",
+        "shade": "ruby",
+        "target": 4,
+        "rewardCoins": 124,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "priya",
+        "customerName": "Priya",
+        "avatarKey": "customer_2",
+        "goalType": "score",
+        "target": 5040,
+        "rewardCoins": 139,
+        "description": "Score 5040 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "simran",
+        "customerName": "Simran",
+        "avatarKey": "customer_3",
+        "goalType": "clearLines",
+        "target": 5,
+        "rewardCoins": 191,
+        "description": "Clear 5 lines"
+      }
+    ],
+    "starThresholds": [
+      5040,
+      9072,
+      14112
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 38,
+    "title": "Molten Gold Leaf",
+    "maxMoves": 24,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "priya",
+        "customerName": "Priya",
+        "avatarKey": "customer_2",
+        "goalType": "clearColor",
+        "shade": "peach",
+        "target": 4,
+        "rewardCoins": 126,
+        "description": "Clear 3 peach lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "simran",
+        "customerName": "Simran",
+        "avatarKey": "customer_3",
+        "goalType": "score",
+        "target": 5160,
+        "rewardCoins": 141,
+        "description": "Score 5160 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "meera",
+        "customerName": "Meera",
+        "avatarKey": "customer_4",
+        "goalType": "clearLines",
+        "target": 5,
+        "rewardCoins": 194,
+        "description": "Clear 5 lines"
+      }
+    ],
+    "starThresholds": [
+      5160,
+      9288,
+      14448
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 39,
+    "title": "Evening Bells",
+    "maxMoves": 24,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "simran",
+        "customerName": "Simran",
+        "avatarKey": "customer_3",
+        "goalType": "clearLines",
+        "shade": "ruby",
+        "target": 4,
+        "rewardCoins": 128,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "meera",
+        "customerName": "Meera",
+        "avatarKey": "customer_4",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 143,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "uncle_dev",
+        "customerName": "Uncle Dev",
+        "avatarKey": "customer_5",
+        "goalType": "clearLines",
+        "target": 5,
+        "rewardCoins": 197,
+        "description": "Clear 5 lines"
+      }
+    ],
+    "starThresholds": [
+      5280,
+      9504,
+      14784
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 40,
+    "title": "Diwali Gold Page",
+    "maxMoves": 24,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "meera",
+        "customerName": "Meera",
+        "avatarKey": "customer_4",
+        "goalType": "clearColor",
+        "shade": "champagne",
+        "target": 4,
+        "rewardCoins": 130,
+        "description": "Clear 3 champagne lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "uncle_dev",
+        "customerName": "Uncle Dev",
+        "avatarKey": "customer_5",
+        "goalType": "score",
+        "target": 5400,
+        "rewardCoins": 145,
+        "description": "Score 5400 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "diya",
+        "customerName": "Diya",
+        "avatarKey": "customer_6",
+        "goalType": "combo",
+        "target": 2,
+        "rewardCoins": 200,
+        "description": "Perform a 2-line combo"
+      }
+    ],
+    "starThresholds": [
+      5400,
+      9720,
+      15120
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 41,
+    "title": "Town Council Note",
+    "maxMoves": 24,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "uncle_dev",
+        "customerName": "Uncle Dev",
+        "avatarKey": "customer_5",
+        "goalType": "clearLines",
+        "shade": "mint",
+        "target": 4,
+        "rewardCoins": 132,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "diya",
+        "customerName": "Diya",
+        "avatarKey": "customer_6",
+        "goalType": "score",
+        "target": 5520,
+        "rewardCoins": 147,
+        "description": "Score 5520 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "shanti",
+        "customerName": "Grandma Shanti",
+        "avatarKey": "customer_7",
+        "goalType": "clearLines",
+        "target": 5,
+        "rewardCoins": 203,
+        "description": "Clear 5 lines"
+      }
+    ],
+    "starThresholds": [
+      5520,
+      9936,
+      15456
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 42,
+    "title": "Heritage Invitation",
+    "maxMoves": 23,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "diya",
+        "customerName": "Diya",
+        "avatarKey": "customer_6",
+        "goalType": "clearColor",
+        "shade": "lavender",
+        "target": 4,
+        "rewardCoins": 134,
+        "description": "Clear 3 lavender lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "shanti",
+        "customerName": "Grandma Shanti",
+        "avatarKey": "customer_7",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 149,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "rohit",
+        "customerName": "Rohit",
+        "avatarKey": "customer_8",
+        "goalType": "clearLines",
+        "target": 5,
+        "rewardCoins": 206,
+        "description": "Clear 5 lines"
+      }
+    ],
+    "starThresholds": [
+      5640,
+      10152,
+      15792
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 43,
+    "title": "VIP Rose Curtain",
+    "maxMoves": 23,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "shanti",
+        "customerName": "Grandma Shanti",
+        "avatarKey": "customer_7",
+        "goalType": "clearLines",
+        "shade": "rose",
+        "target": 4,
+        "rewardCoins": 136,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "rohit",
+        "customerName": "Rohit",
+        "avatarKey": "customer_8",
+        "goalType": "score",
+        "target": 5760,
+        "rewardCoins": 151,
+        "description": "Score 5760 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "fatima",
+        "customerName": "Fatima",
+        "avatarKey": "customer_9",
+        "goalType": "clearLines",
+        "target": 5,
+        "rewardCoins": 209,
+        "description": "Clear 5 lines"
+      }
+    ],
+    "starThresholds": [
+      5760,
+      10368,
+      16128
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 44,
+    "title": "Joint Exhibition",
+    "maxMoves": 23,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "rohit",
+        "customerName": "Rohit",
+        "avatarKey": "customer_8",
+        "goalType": "clearColor",
+        "shade": "peach",
+        "target": 4,
+        "rewardCoins": 138,
+        "description": "Clear 3 peach lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "fatima",
+        "customerName": "Fatima",
+        "avatarKey": "customer_9",
+        "goalType": "score",
+        "target": 5880,
+        "rewardCoins": 153,
+        "description": "Score 5880 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "aisha",
+        "customerName": "Aisha",
+        "avatarKey": "customer_10",
+        "goalType": "combo",
+        "target": 2,
+        "rewardCoins": 212,
+        "description": "Perform a 2-line combo"
+      }
+    ],
+    "starThresholds": [
+      5880,
+      10584,
+      16464
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 45,
+    "title": "Classical Raga",
+    "maxMoves": 23,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "fatima",
+        "customerName": "Fatima",
+        "avatarKey": "customer_9",
+        "goalType": "clearLines",
+        "shade": "sky",
+        "target": 5,
+        "rewardCoins": 140,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "aisha",
+        "customerName": "Aisha",
+        "avatarKey": "customer_10",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 155,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "dr_neha",
+        "customerName": "Dr. Neha",
+        "avatarKey": "customer_11",
+        "goalType": "clearLines",
+        "target": 5,
+        "rewardCoins": 215,
+        "description": "Clear 5 lines"
+      }
+    ],
+    "starThresholds": [
+      6000,
+      10800,
+      16800
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "level": 46,
+    "title": "Rose Wax Riddle",
+    "maxMoves": 23,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "aisha",
+        "customerName": "Aisha",
+        "avatarKey": "customer_10",
+        "goalType": "clearColor",
+        "shade": "peach",
+        "target": 5,
+        "rewardCoins": 142,
+        "description": "Clear 3 peach lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "dr_neha",
+        "customerName": "Dr. Neha",
+        "avatarKey": "customer_11",
+        "goalType": "score",
+        "target": 6120,
+        "rewardCoins": 157,
+        "description": "Score 6120 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "babli",
+        "customerName": "Babli",
+        "avatarKey": "customer_12",
+        "goalType": "clearLines",
+        "target": 5,
+        "rewardCoins": 218,
+        "description": "Clear 5 lines"
+      }
+    ],
+    "starThresholds": [
+      6120,
+      11016,
+      17136
+    ],
+    "difficulty": "festive"
+  },
+  {
+    "level": 47,
+    "title": "The Missing Proportion",
+    "maxMoves": 23,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "dr_neha",
+        "customerName": "Dr. Neha",
+        "avatarKey": "customer_11",
+        "goalType": "clearLines",
+        "shade": "lavender",
+        "target": 5,
+        "rewardCoins": 144,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "babli",
+        "customerName": "Babli",
+        "avatarKey": "customer_12",
+        "goalType": "score",
+        "target": 6240,
+        "rewardCoins": 159,
+        "description": "Score 6240 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "mrs_kapoor",
+        "customerName": "Mrs. Kapoor",
+        "avatarKey": "customer_1",
+        "goalType": "clearLines",
+        "target": 5,
+        "rewardCoins": 221,
+        "description": "Clear 5 lines"
+      }
+    ],
+    "starThresholds": [
+      6240,
+      11232,
+      17472
+    ],
+    "difficulty": "festive"
+  },
+  {
+    "level": 48,
+    "title": "Unsealed Script",
+    "maxMoves": 22,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "babli",
+        "customerName": "Babli",
+        "avatarKey": "customer_12",
+        "goalType": "clearColor",
+        "shade": "rose",
+        "target": 5,
+        "rewardCoins": 146,
+        "description": "Clear 3 rose lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "mrs_kapoor",
+        "customerName": "Mrs. Kapoor",
+        "avatarKey": "customer_1",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 161,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "priya",
+        "customerName": "Priya",
+        "avatarKey": "customer_2",
+        "goalType": "combo",
+        "target": 2,
+        "rewardCoins": 224,
+        "description": "Perform a 2-line combo"
+      }
+    ],
+    "starThresholds": [
+      6360,
+      11448,
+      17808
+    ],
+    "difficulty": "festive"
+  },
+  {
+    "level": 49,
+    "title": "Pavilion Runway",
+    "maxMoves": 22,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "mrs_kapoor",
+        "customerName": "Mrs. Kapoor",
+        "avatarKey": "customer_1",
+        "goalType": "clearLines",
+        "shade": "ruby",
+        "target": 5,
+        "rewardCoins": 148,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "priya",
+        "customerName": "Priya",
+        "avatarKey": "customer_2",
+        "goalType": "score",
+        "target": 6480,
+        "rewardCoins": 163,
+        "description": "Score 6480 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "simran",
+        "customerName": "Simran",
+        "avatarKey": "customer_3",
+        "goalType": "clearLines",
+        "target": 5,
+        "rewardCoins": 227,
+        "description": "Clear 5 lines"
+      }
+    ],
+    "starThresholds": [
+      6480,
+      11664,
+      18144
+    ],
+    "difficulty": "festive"
+  },
+  {
+    "level": 50,
+    "title": "Showcase Lights",
+    "maxMoves": 22,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "priya",
+        "customerName": "Priya",
+        "avatarKey": "customer_2",
+        "goalType": "clearColor",
+        "shade": "peach",
+        "target": 5,
+        "rewardCoins": 150,
+        "description": "Clear 3 peach lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "simran",
+        "customerName": "Simran",
+        "avatarKey": "customer_3",
+        "goalType": "score",
+        "target": 6600,
+        "rewardCoins": 165,
+        "description": "Score 6600 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "meera",
+        "customerName": "Meera",
+        "avatarKey": "customer_4",
+        "goalType": "clearLines",
+        "target": 5,
+        "rewardCoins": 230,
+        "description": "Clear 5 lines"
+      }
+    ],
+    "starThresholds": [
+      6600,
+      11880,
+      18480
+    ],
+    "difficulty": "festive"
+  },
+  {
+    "level": 51,
+    "title": "Velvet Ruby Lip",
+    "maxMoves": 22,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "simran",
+        "customerName": "Simran",
+        "avatarKey": "customer_3",
+        "goalType": "clearLines",
+        "shade": "ruby",
+        "target": 5,
+        "rewardCoins": 152,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "meera",
+        "customerName": "Meera",
+        "avatarKey": "customer_4",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 167,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "uncle_dev",
+        "customerName": "Uncle Dev",
+        "avatarKey": "customer_5",
+        "goalType": "clearLines",
+        "target": 5,
+        "rewardCoins": 233,
+        "description": "Clear 5 lines"
+      }
+    ],
+    "starThresholds": [
+      6720,
+      12096,
+      18816
+    ],
+    "difficulty": "festive"
+  },
+  {
+    "level": 52,
+    "title": "Singing Soul",
+    "maxMoves": 22,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "meera",
+        "customerName": "Meera",
+        "avatarKey": "customer_4",
+        "goalType": "clearColor",
+        "shade": "champagne",
+        "target": 5,
+        "rewardCoins": 154,
+        "description": "Clear 3 champagne lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "uncle_dev",
+        "customerName": "Uncle Dev",
+        "avatarKey": "customer_5",
+        "goalType": "score",
+        "target": 6840,
+        "rewardCoins": 169,
+        "description": "Score 6840 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "diya",
+        "customerName": "Diya",
+        "avatarKey": "customer_6",
+        "goalType": "combo",
+        "target": 2,
+        "rewardCoins": 236,
+        "description": "Perform a 2-line combo"
+      }
+    ],
+    "starThresholds": [
+      6840,
+      12312,
+      19152
+    ],
+    "difficulty": "festive"
+  },
+  {
+    "level": 53,
+    "title": "Quiet Wonder",
+    "maxMoves": 22,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "uncle_dev",
+        "customerName": "Uncle Dev",
+        "avatarKey": "customer_5",
+        "goalType": "clearLines",
+        "shade": "mint",
+        "target": 5,
+        "rewardCoins": 156,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "diya",
+        "customerName": "Diya",
+        "avatarKey": "customer_6",
+        "goalType": "score",
+        "target": 6960,
+        "rewardCoins": 171,
+        "description": "Score 6960 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "shanti",
+        "customerName": "Grandma Shanti",
+        "avatarKey": "customer_7",
+        "goalType": "clearLines",
+        "target": 5,
+        "rewardCoins": 239,
+        "description": "Clear 5 lines"
+      }
+    ],
+    "starThresholds": [
+      6960,
+      12528,
+      19488
+    ],
+    "difficulty": "festive"
+  },
+  {
+    "level": 54,
+    "title": "Unanimous Vote",
+    "maxMoves": 21,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "diya",
+        "customerName": "Diya",
+        "avatarKey": "customer_6",
+        "goalType": "clearColor",
+        "shade": "lavender",
+        "target": 5,
+        "rewardCoins": 158,
+        "description": "Clear 3 lavender lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "shanti",
+        "customerName": "Grandma Shanti",
+        "avatarKey": "customer_7",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 173,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "rohit",
+        "customerName": "Rohit",
+        "avatarKey": "customer_8",
+        "goalType": "clearLines",
+        "target": 5,
+        "rewardCoins": 242,
+        "description": "Clear 5 lines"
+      }
+    ],
+    "starThresholds": [
+      7080,
+      12744,
+      19824
+    ],
+    "difficulty": "festive"
+  },
+  {
+    "level": 55,
+    "title": "Heritage Trophy",
+    "maxMoves": 21,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "shanti",
+        "customerName": "Grandma Shanti",
+        "avatarKey": "customer_7",
+        "goalType": "clearLines",
+        "shade": "rose",
+        "target": 5,
+        "rewardCoins": 160,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "rohit",
+        "customerName": "Rohit",
+        "avatarKey": "customer_8",
+        "goalType": "score",
+        "target": 7200,
+        "rewardCoins": 175,
+        "description": "Score 7200 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "fatima",
+        "customerName": "Fatima",
+        "avatarKey": "customer_9",
+        "goalType": "clearLines",
+        "target": 5,
+        "rewardCoins": 245,
+        "description": "Clear 5 lines"
+      }
+    ],
+    "starThresholds": [
+      7200,
+      12960,
+      20160
+    ],
+    "difficulty": "festive"
+  },
+  {
+    "level": 56,
+    "title": "Silver Hand Mirror",
+    "maxMoves": 21,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "rohit",
+        "customerName": "Rohit",
+        "avatarKey": "customer_8",
+        "goalType": "clearColor",
+        "shade": "peach",
+        "target": 5,
+        "rewardCoins": 162,
+        "description": "Clear 3 peach lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "fatima",
+        "customerName": "Fatima",
+        "avatarKey": "customer_9",
+        "goalType": "score",
+        "target": 7320,
+        "rewardCoins": 177,
+        "description": "Score 7320 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "aisha",
+        "customerName": "Aisha",
+        "avatarKey": "customer_10",
+        "goalType": "combo",
+        "target": 2,
+        "rewardCoins": 248,
+        "description": "Perform a 2-line combo"
+      }
+    ],
+    "starThresholds": [
+      7320,
+      13176,
+      20496
+    ],
+    "difficulty": "expert"
+  },
+  {
+    "level": 57,
+    "title": "The Master Artist",
+    "maxMoves": 21,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "fatima",
+        "customerName": "Fatima",
+        "avatarKey": "customer_9",
+        "goalType": "clearLines",
+        "shade": "sky",
+        "target": 5,
+        "rewardCoins": 164,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "aisha",
+        "customerName": "Aisha",
+        "avatarKey": "customer_10",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 179,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "dr_neha",
+        "customerName": "Dr. Neha",
+        "avatarKey": "customer_11",
+        "goalType": "clearLines",
+        "target": 5,
+        "rewardCoins": 251,
+        "description": "Clear 5 lines"
+      }
+    ],
+    "starThresholds": [
+      7440,
+      13392,
+      20832
+    ],
+    "difficulty": "expert"
+  },
+  {
+    "level": 58,
+    "title": "Seven Secret Looks",
+    "maxMoves": 21,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "aisha",
+        "customerName": "Aisha",
+        "avatarKey": "customer_10",
+        "goalType": "clearColor",
+        "shade": "peach",
+        "target": 5,
+        "rewardCoins": 166,
+        "description": "Clear 3 peach lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "dr_neha",
+        "customerName": "Dr. Neha",
+        "avatarKey": "customer_11",
+        "goalType": "score",
+        "target": 7560,
+        "rewardCoins": 181,
+        "description": "Score 7560 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "babli",
+        "customerName": "Babli",
+        "avatarKey": "customer_12",
+        "goalType": "clearLines",
+        "target": 5,
+        "rewardCoins": 254,
+        "description": "Clear 5 lines"
+      }
+    ],
+    "starThresholds": [
+      7560,
+      13608,
+      21168
+    ],
+    "difficulty": "expert"
+  },
+  {
+    "level": 59,
+    "title": "Everlasting Sparkle",
+    "maxMoves": 21,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "dr_neha",
+        "customerName": "Dr. Neha",
+        "avatarKey": "customer_11",
+        "goalType": "clearLines",
+        "shade": "lavender",
+        "target": 5,
+        "rewardCoins": 168,
+        "description": "Clear 3 lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "babli",
+        "customerName": "Babli",
+        "avatarKey": "customer_12",
+        "goalType": "score",
+        "target": 7680,
+        "rewardCoins": 183,
+        "description": "Score 7680 points"
+      },
+      {
+        "id": "o3",
+        "customerId": "mrs_kapoor",
+        "customerName": "Mrs. Kapoor",
+        "avatarKey": "customer_1",
+        "goalType": "clearLines",
+        "target": 5,
+        "rewardCoins": 257,
+        "description": "Clear 5 lines"
+      }
+    ],
+    "starThresholds": [
+      7680,
+      13824,
+      21504
+    ],
+    "difficulty": "expert"
+  },
+  {
+    "level": 60,
+    "title": "The Living Salon",
+    "maxMoves": 20,
+    "customers": [
+      {
+        "id": "o1",
+        "customerId": "babli",
+        "customerName": "Babli",
+        "avatarKey": "customer_12",
+        "goalType": "clearColor",
+        "shade": "rose",
+        "target": 6,
+        "rewardCoins": 170,
+        "description": "Clear 3 rose lines"
+      },
+      {
+        "id": "o2",
+        "customerId": "mrs_kapoor",
+        "customerName": "Mrs. Kapoor",
+        "avatarKey": "customer_1",
+        "goalType": "pureShade",
+        "target": 1,
+        "rewardCoins": 185,
+        "description": "Make 1 Pure Shade line"
+      },
+      {
+        "id": "o3",
+        "customerId": "priya",
+        "customerName": "Priya",
+        "avatarKey": "customer_2",
+        "goalType": "combo",
+        "target": 2,
+        "rewardCoins": 260,
+        "description": "Perform a 2-line combo"
+      }
+    ],
+    "starThresholds": [
+      7800,
+      14040,
+      21840
+    ],
+    "difficulty": "expert"
+  }
+]

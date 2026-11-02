@@ -21,7 +21,7 @@ function getStoredTheme(): Theme {
 }
 
 function getSystemPrefersDark(): boolean {
-  if (typeof window === 'undefined') return false;
+  if (typeof window === 'undefined' || !window.matchMedia) return false;
   return window.matchMedia('(prefers-color-scheme: dark)').matches;
 }
 
@@ -58,7 +58,7 @@ export function useTheme(): UseThemeResult {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const mediaQuery = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
 
     const handleSystemChange = (e: MediaQueryListEvent) => {
       setSystemIsDark(e.matches);
@@ -79,12 +79,16 @@ export function useTheme(): UseThemeResult {
       }
     };
 
-    mediaQuery.addEventListener('change', handleSystemChange);
+    if (mediaQuery) {
+      mediaQuery.addEventListener('change', handleSystemChange);
+    }
     window.addEventListener(EVENT_NAME, handleCustomChange);
     window.addEventListener('storage', handleStorageChange);
 
     return () => {
-      mediaQuery.removeEventListener('change', handleSystemChange);
+      if (mediaQuery) {
+        mediaQuery.removeEventListener('change', handleSystemChange);
+      }
       window.removeEventListener(EVENT_NAME, handleCustomChange);
       window.removeEventListener('storage', handleStorageChange);
     };

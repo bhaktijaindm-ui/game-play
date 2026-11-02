@@ -269,7 +269,8 @@ export async function generateLookCard(
   _faceModel: string,
   score: number,
   playerName: string,
-  size: 'stories' | 'post' = 'post'
+  size: 'stories' | 'post' = 'post',
+  hideName: boolean = false
 ): Promise<HTMLCanvasElement> {
   const width = 1080;
   const height = size === 'stories' ? 1920 : 1080;
@@ -310,8 +311,9 @@ export async function generateLookCard(
 
   ctx.fillStyle = '#6b7280';
   ctx.font = '500 28px "Poppins", sans-serif';
+  const artistText = hideName ? 'The Gulab Mahal Salon • Glam Look' : `Masterpiece by ${playerName || 'Glam Artist'}`;
   ctx.fillText(
-    `Masterpiece by ${playerName || 'Glam Artist'}`,
+    artistText,
     width / 2,
     size === 'stories' ? 220 : 160
   );

@@ -46,6 +46,9 @@ export const GameOverScreen: React.FC = () => {
     }
   };
 
+  const [shareFormat, setShareFormat] = useState<'post' | 'stories'>('post');
+  const [hideName, setHideName] = useState(false);
+
   const handleShare = async () => {
     if (!gameState) return;
     setSharing(true);
@@ -55,9 +58,10 @@ export const GameOverScreen: React.FC = () => {
         userProfile.faceModel || '1',
         score,
         userProfile.displayName || 'Glam Artist',
-        'post'
+        shareFormat,
+        hideName
       );
-      await shareImage(canvas, 'My Glam Look!', 'Check out my score in Glam Blocks!');
+      await shareImage(canvas, 'My Glam Look!', 'Check out my score in Glam Blocks: The Gulab Mahal Salon!');
     } catch (err) {
       console.error(err);
     } finally {
@@ -122,6 +126,44 @@ export const GameOverScreen: React.FC = () => {
         >
           ✨ Continue (Watch Ad or 50 Gems)
         </Button>
+
+        {/* Share format and privacy toggles */}
+        <div className="flex items-center justify-between px-1 text-xs">
+          <div className="flex bg-[var(--surface-2)] p-0.5 rounded-lg border border-[var(--border)]">
+            <button
+              type="button"
+              onClick={() => setShareFormat('post')}
+              className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
+                shareFormat === 'post'
+                  ? 'bg-[var(--primary)] text-white shadow-sm'
+                  : 'text-[var(--text-muted)]'
+              }`}
+            >
+              Post (1:1)
+            </button>
+            <button
+              type="button"
+              onClick={() => setShareFormat('stories')}
+              className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
+                shareFormat === 'stories'
+                  ? 'bg-[var(--primary)] text-white shadow-sm'
+                  : 'text-[var(--text-muted)]'
+              }`}
+            >
+              Stories (9:16)
+            </button>
+          </div>
+
+          <label className="flex items-center gap-1.5 cursor-pointer text-[10px] font-semibold text-[var(--text-muted)]">
+            <input
+              type="checkbox"
+              checked={hideName}
+              onChange={(e) => setHideName(e.target.checked)}
+              className="rounded accent-[var(--primary)] w-3 h-3"
+            />
+            <span>Hide name</span>
+          </label>
+        </div>
 
         <div className="flex gap-2">
           <Button

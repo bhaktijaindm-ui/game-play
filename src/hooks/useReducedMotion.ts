@@ -4,7 +4,7 @@ const STORAGE_KEY = 'glam_reduced_motion';
 const EVENT_NAME = 'glam_reduced_motion_change';
 
 function getInitialPreference(): boolean {
-  if (typeof window === 'undefined') return false;
+  if (typeof window === 'undefined' || !window.matchMedia) return false;
 
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored !== null) {
@@ -24,19 +24,19 @@ export function useReducedMotion(): boolean {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mediaQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
 
     const updatePreference = () => {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored !== null) {
         setPrefersReducedMotion(stored === 'true');
-      } else {
+      } else if (mediaQuery) {
         setPrefersReducedMotion(mediaQuery.matches);
       }
     };
 
     const handleMediaChange = () => {
-      if (localStorage.getItem(STORAGE_KEY) === null) {
+      if (localStorage.getItem(STORAGE_KEY) === null && mediaQuery) {
         setPrefersReducedMotion(mediaQuery.matches);
       }
     };
@@ -51,12 +51,16 @@ export function useReducedMotion(): boolean {
       }
     };
 
-    mediaQuery.addEventListener('change', handleMediaChange);
+    if (mediaQuery) {
+      mediaQuery.addEventListener('change', handleMediaChange);
+    }
     window.addEventListener(EVENT_NAME, handleCustomChange);
     window.addEventListener('storage', handleStorageChange);
 
     return () => {
-      mediaQuery.removeEventListener('change', handleMediaChange);
+      if (mediaQuery) {
+        mediaQuery.removeEventListener('change', handleMediaChange);
+      }
       window.removeEventListener(EVENT_NAME, handleCustomChange);
       window.removeEventListener('storage', handleStorageChange);
     };

@@ -454,3 +454,60 @@ export const deleteUserData = onCall(async (request) => {
     purchasesDeleted: purchasesSnapshot.size,
   };
 });
+
+/**
+ * 7. syncEnergy
+ * Server-side reconciliation of energy regeneration.
+ * Computes elapsed time since last energyUpdatedAt and updates energy (1 per 12 min, max 30).
+ */
+export const syncEnergy = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError('unauthenticated', 'User must be authenticated to sync energy.');
+  }
+
+  const uid = request.auth.uid;
+  const userRef = db.collection('users').doc(uid);
+  const now = Date.now();
+
+  return await db.runTransaction(async (transaction) => {
+    const userDoc = await transaction.get(userRef);
+    if (!userDoc.exists) {
+      throw new HttpsError('not-found', 'User profile not found.');
+    }
+
+    const data = userDoc.data() || {};
+    let currentEnergy = typeof data.energy === 'number' ? data.energy : 30;
+    const maxEnergy = typeof data.maxEnergy === 'number' ? data.maxEnergy : 30;
+    
+    let lastUpdatedMs = now;
+    if (data.energyUpdatedAt && typeof data.energyUpdatedAt.toMillis === 'function') {
+      lastUpdatedMs = data.energyUpdatedAt.toMillis();
+    } else if (typeof data.energyUpdatedAt === 'number') {
+      lastUpdatedMs = data.energyUpdatedAt;
+    }
+
+    if (currentEnergy < maxEnergy) {
+      const elapsedMs = now - lastUpdatedMs;
+      const regenPeriodMs = 12 * 60 * 1000; // 12 minutes per 1 energy point
+      const pointsToAdd = Math.floor(elapsedMs / regenPeriodMs);
+
+      if (pointsToAdd > 0) {
+        currentEnergy = Math.min(maxEnergy, currentEnergy + pointsToAdd);
+        const remainderMs = elapsedMs % regenPeriodMs;
+        const newUpdatedTime = now - remainderMs;
+
+        transaction.update(userRef, {
+          energy: currentEnergy,
+          energyUpdatedAt: admin.firestore.Timestamp.fromMillis(newUpdatedTime),
+        });
+      }
+    }
+
+    return {
+      success: true,
+      energy: currentEnergy,
+      maxEnergy,
+    };
+  });
+});
+

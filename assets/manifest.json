@@ -1,0 +1,147 @@
+{
+  "project": "Glam Blocks: The Gulab Mahal Salon",
+  "version": "1.0.0",
+  "style": "2D casual cartoon illustration with smooth gradients and crisp ink lines",
+  "assets": [
+    {
+      "id": "app_icon_512",
+      "filename": "icon-512x512.png",
+      "path": "public/icon-512x512.png",
+      "dimensions": { "width": 512, "height": 512 },
+      "format": "PNG",
+      "hasTransparency": true,
+      "role": "App Store, Google Play, and PWA launch icon",
+      "screens": ["Device Home Screen", "PWA Install", "App Store"]
+    },
+    {
+      "id": "app_icon_192",
+      "filename": "icon-192x192.png",
+      "path": "public/icon-192x192.png",
+      "dimensions": { "width": 192, "height": 192 },
+      "format": "PNG",
+      "hasTransparency": true,
+      "role": "Android notification and medium home screen icon",
+      "screens": ["Device Notification", "PWA Splash"]
+    },
+    {
+      "id": "feature_graphic",
+      "filename": "feature-graphic-1024x500.png",
+      "path": "assets/promo/feature-graphic-1024x500.png",
+      "dimensions": { "width": 1024, "height": 500 },
+      "format": "PNG",
+      "hasTransparency": false,
+      "role": "Google Play Store top banner feature graphic",
+      "screens": ["Google Play Store Listing"]
+    },
+    {
+      "id": "splash_key_art",
+      "filename": "splash-key-art-1080x1920.png",
+      "path": "assets/backgrounds/splash-key-art-1080x1920.png",
+      "dimensions": { "width": 1080, "height": 1920 },
+      "format": "PNG",
+      "hasTransparency": false,
+      "role": "Game launch splash and loading background key art",
+      "screens": ["SplashScreen"]
+    },
+    {
+      "id": "salon_exterior_isometric",
+      "filename": "salon-exterior-1080x1080.png",
+      "path": "assets/environments/salon-exterior-1080x1080.png",
+      "dimensions": { "width": 1080, "height": 1080 },
+      "format": "PNG",
+      "hasTransparency": false,
+      "role": "Gulab Mahal Salon restored heritage storefront banner",
+      "screens": ["AdventureMapScreen", "RenovationScreen"]
+    },
+    {
+      "id": "salon_interior_cutaway",
+      "filename": "salon-interior-cutaway-1080x1080.png",
+      "path": "assets/environments/salon-interior-cutaway-1080x1080.png",
+      "dimensions": { "width": 1080, "height": 1080 },
+      "format": "PNG",
+      "hasTransparency": false,
+      "role": "Main home screen interactive cutaway salon backdrop",
+      "screens": ["HomeScreen"]
+    },
+    {
+      "id": "character_anaya",
+      "filename": "char-anaya-512x512.png",
+      "path": "assets/characters/char-anaya-512x512.png",
+      "dimensions": { "width": 512, "height": 512 },
+      "format": "PNG",
+      "hasTransparency": true,
+      "role": "Heroine character avatar, dialogue bust, and home mascot",
+      "screens": ["HomeScreen", "StoryDialogueOverlay", "ProfileScreen", "FestivalMatchScreen"]
+    },
+    {
+      "id": "character_zoya",
+      "filename": "char-zoya-512x512.png",
+      "path": "assets/characters/char-zoya-512x512.png",
+      "dimensions": { "width": 512, "height": 512 },
+      "format": "PNG",
+      "hasTransparency": true,
+      "role": "Nail artist best friend avatar, dialogue bust, and mini-game mascot",
+      "screens": ["HomeScreen", "StoryDialogueOverlay", "FestivalMatchScreen"]
+    },
+    {
+      "id": "character_kabir",
+      "filename": "char-kabir-512x512.png",
+      "path": "assets/characters/char-kabir-512x512.png",
+      "dimensions": { "width": 512, "height": 512 },
+      "format": "PNG",
+      "hasTransparency": true,
+      "role": "Handyman friend avatar, dialogue bust, and renovation mascot",
+      "screens": ["HomeScreen", "StoryDialogueOverlay", "RenovationScreen", "FestivalMatchScreen"]
+    },
+    {
+      "id": "character_tara_ji",
+      "filename": "char-tara-ji-512x512.png",
+      "path": "assets/characters/char-tara-ji-512x512.png",
+      "dimensions": { "width": 512, "height": 512 },
+      "format": "PNG",
+      "hasTransparency": true,
+      "role": "Retired mentor dialogue bust and Rang Book unlock guide",
+      "screens": ["StoryDialogueOverlay", "PaletteScreen"]
+    },
+    {
+      "id": "character_kajal_cat",
+      "filename": "char-kajal-cat-512x512.png",
+      "path": "assets/characters/char-kajal-cat-512x512.png",
+      "dimensions": { "width": 512, "height": 512 },
+      "format": "PNG",
+      "hasTransparency": true,
+      "role": "Salon black cat mascot with golden collar",
+      "screens": ["HomeScreen", "StoryDialogueOverlay", "DailyRewardScreen"]
+    },
+    {
+      "id": "adventure_map_overview",
+      "filename": "map-rangpur-1080x1920.png",
+      "path": "assets/environments/map-rangpur-1080x1920.png",
+      "dimensions": { "width": 1080, "height": 1920 },
+      "format": "PNG",
+      "hasTransparency": false,
+      "role": "Winding 5-region Rangpur adventure roadmap background",
+      "screens": ["AdventureMapScreen"]
+    },
+    {
+      "id": "festival_pass_mascot",
+      "filename": "pass-banner-1080x1080.png",
+      "path": "assets/events/pass-banner-1080x1080.png",
+      "dimensions": { "width": 1080, "height": 1080 },
+      "format": "PNG",
+      "hasTransparency": false,
+      "role": "Diwali & seasonal battle pass ornate hero banner",
+      "screens": ["FestivalPassScreen"]
+    },
+    {
+      "id": "renovation_vignette",
+      "filename": "renovation-before-after-1080x1080.png",
+      "path": "assets/environments/renovation-before-after-1080x1080.png",
+      "dimensions": { "width": 1080, "height": 1080 },
+      "format": "PNG",
+      "hasTransparency": false,
+      "role": "Side-by-side salon room restoration illustration vignette",
+      "screens": ["RenovationScreen"]
+    }
+  ]
+}

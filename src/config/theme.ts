@@ -1,11 +1,11 @@
 /**
- * Glam Blocks - Theme System & CSS Custom Properties
- * Provides the definitive palette tokens for:
- * 1. "Rose Quartz Morning" (Light Theme)
- * 2. "Midnight Vanity" (Dark Theme)
+ * Glam Blocks: The Gulab Mahal Salon
+ * Theme System & CSS Custom Properties
+ * 1. "Glam Day" (Default Light Theme)
+ * 2. "Glam Night" (Dark Theme)
  * 
  * Supports dynamic CSS variable injection, system preference tracking,
- * and high-DPI glassmorphism styles.
+ * and high-contrast WCAG AA compliance.
  */
 
 import type { ThemeMode } from '../types';
@@ -18,6 +18,10 @@ export interface ThemeColors {
   bgBoard: string;
   bgCellEmpty: string;
   bgCellEmptyHover: string;
+  boardFrame: string;
+  boardCheckerA: string;
+  boardCheckerB: string;
+  darkBar: string;
   textPrimary: string;
   textSecondary: string;
   textMuted: string;
@@ -40,92 +44,101 @@ export interface ThemeColors {
   success: string;
   warning: string;
   danger: string;
+  energy: string;
   info: string;
   metaThemeColor: string;
 }
 
 export const lightTheme: ThemeColors = {
-  name: 'Rose Quartz Morning',
+  name: 'Glam Day',
   bgPrimary: '#FFF5F8',
-  bgSecondary: '#FFE8F0',
+  bgSecondary: '#FFF4E4',
   bgSurface: '#FFFFFF',
   bgBoard: '#FCE4EC',
-  bgCellEmpty: '#F5D5E2',
-  bgCellEmptyHover: '#EFC1D3',
-  textPrimary: '#2B1220',
-  textSecondary: '#7A4760',
-  textMuted: '#A5738B',
-  accentPrimary: '#FF5C9E',
-  accentHover: '#E83E84',
-  accentGlow: 'rgba(255, 92, 158, 0.35)',
-  goldAccent: '#F2B84B',
-  goldGlow: 'rgba(242, 184, 75, 0.40)',
-  borderSubtle: 'rgba(255, 92, 158, 0.15)',
-  borderCard: 'rgba(235, 175, 200, 0.35)',
-  borderFocus: '#FF5C9E',
-  glassBg: 'rgba(255, 255, 255, 0.85)',
+  bgCellEmpty: '#96BAEB',
+  bgCellEmptyHover: '#A9C6F2',
+  boardFrame: '#6FADD4',
+  boardCheckerA: '#96BAEB',
+  boardCheckerB: '#A9C6F2',
+  darkBar: 'rgba(25, 18, 40, 0.72)',
+  textPrimary: '#2A1630',
+  textSecondary: '#6A3FC8',
+  textMuted: '#7A6283',
+  accentPrimary: '#E6177F',
+  accentHover: '#CC0F6F',
+  accentGlow: 'rgba(230, 23, 127, 0.35)',
+  goldAccent: '#F5B53C',
+  goldGlow: 'rgba(245, 181, 60, 0.40)',
+  borderSubtle: 'rgba(230, 23, 127, 0.15)',
+  borderCard: '#F3D3E1',
+  borderFocus: '#E6177F',
+  glassBg: 'rgba(255, 255, 255, 0.75)',
   glassBorder: 'rgba(255, 255, 255, 0.60)',
-  shadowCard: '0 8px 30px rgba(235, 92, 158, 0.12)',
-  shadowButton: '0 4px 14px rgba(255, 92, 158, 0.35)',
-  shadowGold: '0 4px 16px rgba(242, 184, 75, 0.35)',
-  trayBg: 'rgba(255, 255, 255, 0.65)',
-  trayBorder: 'rgba(255, 92, 158, 0.20)',
-  modalBackdrop: 'rgba(43, 18, 32, 0.60)',
-  success: '#2ECC71',
-  warning: '#F39C12',
-  danger: '#E74C3C',
-  info: '#3498DB',
+  shadowCard: '0 8px 24px rgba(106, 63, 200, 0.14)',
+  shadowButton: '0 4px 14px rgba(230, 23, 127, 0.35)',
+  shadowGold: '0 4px 16px rgba(245, 181, 60, 0.35)',
+  trayBg: 'rgba(255, 255, 255, 0.75)',
+  trayBorder: 'rgba(111, 173, 212, 0.40)',
+  modalBackdrop: 'rgba(25, 18, 40, 0.65)',
+  success: '#3FBF4F',
+  warning: '#F59E0B',
+  danger: '#FF4F7B',
+  energy: '#3DA9FC',
+  info: '#3DA9FC',
   metaThemeColor: '#FFF5F8',
 };
 
 export const darkTheme: ThemeColors = {
-  name: 'Midnight Vanity',
-  bgPrimary: '#17101C',
-  bgSecondary: '#24182E',
-  bgSurface: '#2F1F3D',
-  bgBoard: '#1E1326',
-  bgCellEmpty: '#2A1A36',
-  bgCellEmptyHover: '#3D254F',
-  textPrimary: '#FFF0F5',
-  textSecondary: '#D4B8C8',
-  textMuted: '#8C7285',
-  accentPrimary: '#FF7DB4',
-  accentHover: '#FF5C9E',
-  accentGlow: 'rgba(255, 125, 180, 0.45)',
-  goldAccent: '#FFD27A',
-  goldGlow: 'rgba(255, 210, 122, 0.45)',
-  borderSubtle: 'rgba(255, 125, 180, 0.20)',
-  borderCard: 'rgba(180, 147, 255, 0.25)',
-  borderFocus: '#FF7DB4',
-  glassBg: 'rgba(36, 24, 46, 0.85)',
+  name: 'Glam Night',
+  bgPrimary: '#140E26',
+  bgSecondary: '#231A45',
+  bgSurface: '#231A45',
+  bgBoard: '#1A1233',
+  bgCellEmpty: '#2C3A66',
+  bgCellEmptyHover: '#35467A',
+  boardFrame: '#3D5E86',
+  boardCheckerA: '#2C3A66',
+  boardCheckerB: '#35467A',
+  darkBar: 'rgba(14, 10, 24, 0.85)',
+  textPrimary: '#F8EBFA',
+  textSecondary: '#B28CFF',
+  textMuted: '#B7A3C2',
+  accentPrimary: '#FF4FA8',
+  accentHover: '#FF73BA',
+  accentGlow: 'rgba(255, 79, 168, 0.45)',
+  goldAccent: '#FFD166',
+  goldGlow: 'rgba(255, 209, 102, 0.45)',
+  borderSubtle: 'rgba(178, 140, 255, 0.20)',
+  borderCard: '#3D5E86',
+  borderFocus: '#FF4FA8',
+  glassBg: 'rgba(35, 26, 69, 0.75)',
   glassBorder: 'rgba(255, 255, 255, 0.12)',
-  shadowCard: '0 8px 32px rgba(0, 0, 0, 0.50)',
-  shadowButton: '0 4px 14px rgba(255, 125, 180, 0.30)',
-  shadowGold: '0 4px 16px rgba(255, 210, 122, 0.30)',
-  trayBg: 'rgba(36, 24, 46, 0.65)',
-  trayBorder: 'rgba(255, 125, 180, 0.25)',
-  modalBackdrop: 'rgba(10, 6, 12, 0.80)',
-  success: '#2ECC71',
-  warning: '#F1C40F',
-  danger: '#E74C3C',
-  info: '#3498DB',
-  metaThemeColor: '#17101C',
+  shadowCard: '0 8px 28px rgba(0, 0, 0, 0.55)',
+  shadowButton: '0 4px 14px rgba(255, 79, 168, 0.30)',
+  shadowGold: '0 4px 16px rgba(255, 209, 102, 0.30)',
+  trayBg: 'rgba(35, 26, 69, 0.70)',
+  trayBorder: 'rgba(61, 94, 134, 0.45)',
+  modalBackdrop: 'rgba(10, 6, 20, 0.85)',
+  success: '#4ADE80',
+  warning: '#FBBF24',
+  danger: '#FF658E',
+  energy: '#60A5FA',
+  info: '#60A5FA',
+  metaThemeColor: '#140E26',
 };
 
 export const theme = {
   light: lightTheme,
   dark: darkTheme,
   fonts: {
-    sans: "'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif",
-    heading: "'Playfair Display', 'Clash Display', Georgia, serif",
-    mono: "'JetBrains Mono', Consolas, monospace",
+    heading: "'Fredoka', 'Poppins', sans-serif",
+    body: "'Poppins', -apple-system, BlinkMacSystemFont, sans-serif",
+    mono: "'Fredoka', Consolas, monospace",
   },
   radii: {
-    xs: '4px',
-    sm: '8px',
-    md: '12px',
-    lg: '16px',
-    xl: '24px',
+    panel: '24px',
+    button: '18px',
+    cell: '10px',
     full: '9999px',
   },
   transitions: {
@@ -137,33 +150,25 @@ export const theme = {
 
 const THEME_STORAGE_KEY = 'glam_blocks_theme';
 
-// Track active media listener for 'system' mode cleanup
 let systemMediaListener: ((e: MediaQueryListEvent) => void) | null = null;
 
-/**
- * Returns initial theme preference by checking localStorage first,
- * then falling back to system preference.
- */
 export function getInitialTheme(): ThemeMode {
   if (typeof window === 'undefined') {
     return 'system';
   }
 
   try {
-    const saved = localStorage.getItem(THEME_STORAGE_KEY);
+    const saved = localStorage.getItem(THEME_STORAGE_KEY) || localStorage.getItem('glam_theme');
     if (saved === 'light' || saved === 'dark' || saved === 'system') {
       return saved;
     }
   } catch {
-    // localStorage unavailable (e.g. sandbox or security block)
+    // localStorage unavailable
   }
 
   return 'system';
 }
 
-/**
- * Resolves whether the active visual presentation should be dark.
- */
 export function resolveIsDark(mode: ThemeMode): boolean {
   if (mode === 'dark') return true;
   if (mode === 'light') return false;
@@ -173,9 +178,6 @@ export function resolveIsDark(mode: ThemeMode): boolean {
   return false;
 }
 
-/**
- * Applies all CSS variables for the given ThemeMode directly to document.documentElement.
- */
 export function applyTheme(mode: ThemeMode): void {
   if (typeof document === 'undefined') return;
 
@@ -183,20 +185,25 @@ export function applyTheme(mode: ThemeMode): void {
   const isDark = resolveIsDark(mode);
   const activeColors = isDark ? darkTheme : lightTheme;
 
-  // 1. Toggle dark class on root element
+  // Toggle dark class
   if (isDark) {
     root.classList.add('dark');
   } else {
     root.classList.remove('dark');
   }
 
-  // 2. Set all CSS custom properties
+  // Set CSS variables
+  root.style.setProperty('--bg', activeColors.bgPrimary);
   root.style.setProperty('--bg-primary', activeColors.bgPrimary);
   root.style.setProperty('--bg-secondary', activeColors.bgSecondary);
   root.style.setProperty('--bg-surface', activeColors.bgSurface);
   root.style.setProperty('--bg-board', activeColors.bgBoard);
   root.style.setProperty('--bg-cell-empty', activeColors.bgCellEmpty);
   root.style.setProperty('--bg-cell-empty-hover', activeColors.bgCellEmptyHover);
+  root.style.setProperty('--board-frame', activeColors.boardFrame);
+  root.style.setProperty('--board-checker-a', activeColors.boardCheckerA);
+  root.style.setProperty('--board-checker-b', activeColors.boardCheckerB);
+  root.style.setProperty('--dark-bar', activeColors.darkBar);
   root.style.setProperty('--text-primary', activeColors.textPrimary);
   root.style.setProperty('--text-secondary', activeColors.textSecondary);
   root.style.setProperty('--text-muted', activeColors.textMuted);
@@ -219,9 +226,10 @@ export function applyTheme(mode: ThemeMode): void {
   root.style.setProperty('--color-success', activeColors.success);
   root.style.setProperty('--color-warning', activeColors.warning);
   root.style.setProperty('--color-danger', activeColors.danger);
+  root.style.setProperty('--color-energy', activeColors.energy);
   root.style.setProperty('--color-info', activeColors.info);
 
-  // 3. Set meta theme-color for mobile address bars
+  // Meta theme-color
   let metaTheme = document.querySelector('meta[name="theme-color"]');
   if (!metaTheme) {
     metaTheme = document.createElement('meta');
@@ -230,23 +238,19 @@ export function applyTheme(mode: ThemeMode): void {
   }
   metaTheme.setAttribute('content', activeColors.metaThemeColor);
 
-  // 4. Persist to localStorage
+  // Persist
   try {
     localStorage.setItem(THEME_STORAGE_KEY, mode);
-  } catch {
-    // Ignore storage errors
-  }
+    localStorage.setItem('glam_theme', mode);
+  } catch {}
 
-  // 5. Handle system preference listener
+  // System listener
   if (typeof window !== 'undefined' && window.matchMedia) {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-    // Clean up existing listener if present
     if (systemMediaListener) {
       mediaQuery.removeEventListener('change', systemMediaListener);
       systemMediaListener = null;
     }
-
     if (mode === 'system') {
       systemMediaListener = () => {
         applyTheme('system');

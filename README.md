@@ -1,233 +1,183 @@
-# Glam Blocks: Beauty Puzzle 💄✨
+# Glam Blocks: The Gulab Mahal Salon 🌹✨💄
 
-> **"The Face is Your Board"** — A production-quality, mobile-first block puzzle game blending tactical tile placement with high-fashion makeup artistry.
+> **"The Face is Your Board"** — A complete mobile-first puzzle game with a story-driven salon restoration meta-game, 60 handcrafted levels, live vector makeup mechanics, seasonal pass, and adventure map.
 
+[![Live on Vercel](https://img.shields.io/badge/Live%20Demo-game--play--theta.vercel.app-brightgreen?logo=vercel)](https://game-play-theta.vercel.app/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19.0-61dafb.svg)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-v4.0-38bdf8.svg)](https://tailwindcss.com/)
 [![Vite](https://img.shields.io/badge/Vite-8.3-646cff.svg)](https://vite.dev/)
-[![Vitest](https://img.shields.io/badge/Vitest-59%20Passed-brightgreen.svg)](https://vitest.dev/)
+[![Vitest](https://img.shields.io/badge/Vitest-94%20Passed-brightgreen.svg)](https://vitest.dev/)
+[![Security Audit](https://img.shields.io/badge/Security-0%20Vulnerabilities-success.svg)](https://github.com/bhaktijaindm-ui/game-play)
 [![PWA Ready](https://img.shields.io/badge/PWA-Installable%20%26%20Offline-orange.svg)](https://web.dev/progressive-web-apps/)
 
 ---
 
 ## 📖 Table of Contents
-1. [Product Concept & Core Loop](#-product-concept--core-loop)
-2. [Key Features](#-key-features)
-3. [Tech Stack](#-tech-stack)
-4. [Project Structure](#-project-structure)
-5. [Getting Started & Local Development](#-getting-started--local-development)
+1. [Overview & Narrative](#-overview--narrative)
+2. [Unique Mechanics & Game Core](#-unique-mechanics--game-core)
+3. [Meta-Game Features](#-meta-game-features)
+4. [Tech Stack & Architecture](#-tech-stack--architecture)
+5. [Getting Started & Development](#-getting-started--development)
 6. [Testing & Quality Assurance](#-testing--quality-assurance)
-7. [Design System & Theming](#-design-system--theming)
-8. [Monetization & Regional Pricing](#-monetization--regional-pricing)
-9. [Backend, Security Rules & Cloud Functions](#-backend-security-rules--cloud-functions)
+7. [Design System & UI Tokens](#-design-system--ui-tokens)
+8. [Monetization, Regional Pricing & Ads](#-monetization-regional-pricing--ads)
+9. [Backend, Security & Privacy Compliance](#-backend-security--privacy-compliance)
 10. [Documentation Sitemap](#-documentation-sitemap)
 
 ---
 
-## 💄 Product Concept & Core Loop
+## 🌹 Overview & Narrative
 
-Players are presented with 3 random geometric block shapes on cards, drag them onto an 8x8 glass matrix board, and complete full rows or columns to clear them. 
+Set in **Rangpur**, a vibrant heritage Indian town. **Anaya Sharma** (26, warm, determined) inherits her late grandmother Nani's faded beauty salon, **"Gulab Mahal Salon"**, and Nani's legendary **"Rang Book"** (a diary of 7 secret signature looks). With the support of her community, Anaya restores the salon room by room.
 
-What makes Glam Blocks unique:
-1. **Live Makeup Canvas**: The 8x8 puzzle grid sits as a semi-transparent glass layer over an elegant vector face portrait. Rows correspond to facial zones:
-   - **Rows 1–3**: Eyes (eyeshadow, eyeliner)
-   - **Rows 4–6**: Cheeks (blush, cheekbone highlighter)
-   - **Rows 7–8**: Lips (lipstick, lip gloss)
-   When lines clear, the block's cosmetic color is applied to the corresponding zone with an animated brush sweep (600ms ease-out). Layers stack and blend, yielding a unique finished makeup look upon game completion.
-2. **Client Briefs (Level Progression)**: 30 hand-crafted client briefs plus infinite procedural scaling stages. Each client presents an occasion and 2–3 objectives (e.g., *"Clear 2 pink lines"*, *"Do a 3-line combo"*, *"Reach 2,500 points"*).
-3. **Pure Shade Multiplier**: Clearing a line of one uniform color grants `x2` score multiplier, a golden ring particle pulse, and fills one pan in the player's 12-pan Eyeshadow Palette.
-4. **Indian Occasion Collections**: Festive styling themes including *Everyday Glow*, *Haldi Day*, *Mehendi Night*, *Sangeet Sparkle*, *Bridal Red*, and *Diwali Gold*.
-5. **Daily Beauty Brief**: Seeded daily challenge identical for all players globally, featuring daily leaderboards and streak multipliers.
-6. **Shareable Look Card**: Instant Before & After image generation for Instagram Stories (1080x1920) or Feed posts (1080x1080) via Web Share API with PNG download fallback.
-7. **Inclusive Face Models**: 6 stylized models with fair, wheatish, medium, tan, deep, and dark skin tones.
+### Key Characters (100% Original IP)
+* **Anaya Sharma**: Long wavy dark-brown hair with a signature magenta streak, rose-pink salon apron over black tee, gold bangles.
+* **Zoya**: Best friend and bubbly nail artist, short curly hair, trendy mint-green jumpsuit.
+* **Kabir**: Cheerful handyman and lifelong friend, glasses, denim jacket, tool belt.
+* **Tara-ji**: Retired veteran makeup artist and mentor, elegant silk saree, silver bob.
+* **Kajal**: The salon's sleek black cat with a tiny gold collar and bell.
+* **Rhea Mehra**: Sleek bob, tailored blazer; friendly rival owner of the "Lumiere" beauty chain who becomes a partner.
+* **12 Recurring Customers**: Comic personalities ordering bespoke looks (e.g., Mrs. Kapoor, Priya, Simran).
+
+### Wholesome Story Arc
+* **4 Chapters, 12 Scenes Each (48 Scenes Total)**:
+  1. *Reopening the Doors*
+  2. *Bridal Season*
+  3. *Festival of Colors*
+  4. *The Grand Beauty Fair*
+* Dialogue cards are strictly capped at <= 3 lines, fast-paced, wholesome (strictly 13+), and skippable.
+* Unlocks 7 secret looks in Nani's Rang Book and 7 salon rooms.
 
 ---
 
-## 🛠 Tech Stack
+## 💄 Unique Mechanics & Game Core
+
+1. **The Face is Your Board**:
+   - The 8x8 glass puzzle matrix rests over an elegant stylized vector portrait.
+   - **Rows 1–3**: Eyes (eyeshadow, liner).
+   - **Rows 4–6**: Cheeks (blush, highlighter).
+   - **Rows 7–8**: Lips (lipstick, gloss).
+   - Clearing rows or columns applies soft animated brush sweeps (SVG mask, 600ms ease-out) stacking into a finished makeup look.
+2. **Customer Order Bubbles**:
+   - Every level mounts 3 customer order cards displaying portrait, name, objective (e.g. *Clear 3 Pink Lines*, *2-Line Combo*, *Score 1200*), and coin bounty with live progress.
+3. **Pure Shade Multiplier**:
+   - Lines cleared with blocks of one uniform color trigger **x2 score**, golden burst particles, and fill a pan in the 12-pan Eyeshadow Palette.
+4. **Fairness Spawning Guarantee**:
+   - Pointer drag lifted 60px above finger with real-time green/red snap ghost preview.
+   - Occupancy heuristic (>75% shifts to small shapes) and guaranteed placeable shape fallback prevent premature deadlocks.
+5. **Autosave**:
+   - Game state automatically persists after every move to resume seamlessly upon reopen.
+
+---
+
+## 🏛 Meta-Game Features
+
+* **Adventure Map (`AdventureMapScreen`)**: 5 themed regions (Salon Street, Bazaar Quarter, Palace Gardens, Heritage Fort, Royal Haveli) with 25 stops, star gates, and progress chests.
+* **Salon Renovation (`RenovationScreen`)**: 7 rooms with interactive Before/After slider reveals and permanent passive perks:
+  - Reception (+5% coins)
+  - Makeup Studio (+5% score)
+  - Nail Bar (+10% customer coins)
+  - Hair Lounge (+1 undo per game)
+  - Herbal Spa (15% faster energy regen)
+  - Rooftop Cafe (+15% combo points)
+  - Bridal Suite (+25% all rewards)
+* **Festival Match Event (`FestivalMatchScreen`)**: 6x6 match-3 swap puzzle with 3 mascots (Anaya, Zoya, Kabir) tracking collection objectives.
+* **Festival Pass (`FestivalPassScreen`)**: 30 diamond progression nodes, Free & Gold reward tracks, and seasonal event banners (Diwali, Winter, Holi, Eid).
+* **Daily Beauty Brief**: Deterministic daily puzzle seeded by calendar date, global shared challenge, and dedicated leaderboard.
+* **Shareable Look Card**: High-res canvas export for Instagram Stories (1080x1920) or Feed posts (1080x1080) with Before/After comparison and optional "Hide Name" toggle.
+
+---
+
+## 🛠 Tech Stack & Architecture
 
 - **Frontend Core**: React 19, TypeScript, Vite.
-- **Styling & Tokens**: Tailwind CSS v4 with CSS variables for light/dark themes.
-- **Motion & Interaction**: Framer Motion (respects `prefers-reduced-motion` and battery saver).
-- **Audio & Haptics**: Zero-latency synthesized Web Audio API (no external mp3/wav files) + `navigator.vibrate`.
-- **Canvas & Artwork**: Plain DOM/CSS grid with inline SVG masks (no heavy canvas game engine; 60fps on 2GB RAM phones).
-- **Backend & Cloud**: Firebase Auth (Google Sign-In, Email/Password, Guest Mode), Cloud Firestore with security rules, Cloud Functions.
-- **PWA**: `manifest.json`, Service Worker caching (`sw.js`), installable, 100% offline gameplay.
+- **Styling**: Tailwind CSS v4 with semantic CSS variable tokens.
+- **Motion**: Framer Motion with reduced-motion support.
+- **Audio & Haptics**: Synthesized Web Audio API oscillators (0 byte external audio) + `navigator.vibrate`.
+- **Backend**: Firebase Auth (Google, Email, Guest), Firestore with Security Rules, Cloud Functions (`validateScore`, `verifyPurchase`, `weeklyReset`, `claimReward`, `syncEnergy`, `deleteUserData`).
+- **PWA**: `manifest.json`, Service Worker caching (`sw.js`), 100% offline gameplay.
 
 ---
 
-## 📁 Project Structure
-
-```
-glam-blocks/
-├── public/
-│   ├── manifest.json            # PWA manifest (app name, colors, icons, shortcuts)
-│   └── sw.js                    # Service worker (offline cache & network fallback)
-├── src/
-│   ├── assets/
-│   │   └── faces/
-│   │       └── FaceModel.tsx    # 6 vector face models with layered SVG masks
-│   ├── components/              # 22 reusable atomic UI & game components
-│   │   ├── GameBoard.tsx        # 8x8 glass grid with ghost previews & cell animations
-│   │   ├── ShapeTray.tsx        # 3-shape draggable tray with 60px lift offset
-│   │   ├── MakeupBrush.tsx      # Animated SVG brush sweep
-│   │   ├── PureShadeBurst.tsx   # Celebratory pure shade particle burst
-│   │   ├── ComboMeter.tsx       # Rising combo multiplier indicator
-│   │   ├── GoalChip.tsx         # Live goal progress chip
-│   │   ├── PauseModal.tsx       # Pause menu with resume, restart, and home
-│   │   ├── StarRating.tsx       # 1-3 star rating with count-up animation
-│   │   └── ...                  # Button, IconButton, Modal, Toast, Skeleton, etc.
-│   ├── config/
-│   │   ├── pricing.config.ts    # Regional catalogue (IN, TIER_1, ROW) + Billing providers
-│   │   ├── shades.ts            # 7 primary + 6 festive beauty shade palettes
-│   │   ├── theme.ts             # Light ("Rose Quartz Morning") & Dark ("Midnight Vanity") tokens
-│   │   └── firebase.ts          # Firebase SDK client initialization
-│   ├── context/
-│   │   └── GameContext.tsx      # Unified React game state & user profile provider
-│   ├── game/                    # Pure, framework-agnostic puzzle engine
-│   │   ├── board.ts             # 8x8 matrix logic, line detection, cell checks
-│   │   ├── shapes.ts            # 18 polyomino shape definitions & rotations
-│   │   ├── scoring.ts           # Placement points, clear points, combo multipliers
-│   │   ├── spawning.ts          # Fair spawning heuristic (>75% small shapes, 30% pure)
-│   │   ├── goals.ts             # Objective tracking & star thresholds
-│   │   ├── faceMapping.ts       # Facial zone mapping & opacity accumulation
-│   │   ├── engine.ts            # Game loop: handlePlacement, undo, shuffle, bomb
-│   │   └── levels.ts            # 30 hand-crafted client briefs + procedural generator
-│   ├── hooks/                   # Custom hooks: useSound, useHaptics, useTheme, etc.
-│   ├── i18n/                    # Zero-dependency translation provider & English strings
-│   ├── screens/                 # 15 complete, mobile-first screens
-│   │   ├── SplashScreen.tsx     # 1.5s brand intro with luxury shimmer sweep
-│   │   ├── OnboardingScreen.tsx # 3 interactive swipe tutorial cards
-│   │   ├── AuthScreen.tsx       # Google Sign-In, Email/Password, Guest mode, DPDP consent
-│   │   ├── HomeScreen.tsx       # Hero today's client, play button, hardware back trap
-│   │   ├── GameScreen.tsx       # The core puzzle screen with glass board over face portrait
-│   │   ├── ClientResultScreen.tsx# Stars, coins, before/after slider, portfolio save
-│   │   ├── GameOverScreen.tsx   # Score, rewarded ad continue, 50 gems revival
-│   │   ├── PortfolioScreen.tsx  # Gallery of saved looks with export modal
-│   │   ├── PaletteScreen.tsx    # 12-pan Eyeshadow Palette progress & rewards
-│   │   ├── CollectionsScreen.tsx# 6 festive Indian collections & couture muse looks
-│   │   ├── ShopScreen.tsx       # Gem packs, Glam Pass, regional currency display
-│   │   ├── DailyRewardScreen.tsx# 7-day login streak reward calendar
-│   │   ├── LeaderboardScreen.tsx# Global rankings with pinned user rank bar
-│   │   ├── SettingsScreen.tsx   # Audio, haptics, theme, colorblind, reduced motion toggles
-│   │   └── ProfileScreen.tsx    # User stats, model selector, data management
-│   ├── services/                # Backend & platform bridges (auth, billing, ads, share, firestore)
-│   ├── types/                   # Unified strictly-typed interfaces
-│   ├── App.tsx                  # React Router setup with safe fallback loading
-│   ├── main.tsx                 # Entrypoint with PWA service worker registration
-│   └── index.css                # Tailwind directives, theme variables, glassmorphism utilities
-├── functions/                   # Firebase Cloud Functions (Node.js/TypeScript)
-│   ├── src/index.ts             # Callable functions: grantDailyReward, verifyPurchaseToken
-│   └── scripts/exportMarketingEmails.ts # Marketing consent CSV export script
-├── tests/unit/                  # Vitest automated test suite
-├── firestore.rules              # Production Cloud Firestore security rules
-├── DECISIONS.md                 # Technical decision log
-├── TESTING.md                   # QA & manual device verification guide
-├── PRIVACY_POLICY.md            # GDPR & India DPDP compliant privacy policy
-├── TERMS.md                     # Terms of Service & virtual currency rules
-└── STORE_LISTING.md             # Complete Google Play Store metadata & copy
-```
-
----
-
-## 🚀 Getting Started & Local Development
+## 🚀 Getting Started & Development
 
 ### Prerequisites
-- Node.js 18+ or 20+
+- Node.js 18+ (tested on Node 26.x on Vercel)
 - npm or pnpm
 
-### Installation
+### Setup
 ```bash
-# Clone the repository and install dependencies
-cd "glam-blocks"
+# Clone the repository
+git clone https://github.com/bhaktijaindm-ui/game-play.git
+cd game-play
+
+# Install dependencies
 npm install
-```
 
-### Environment Configuration
-Copy `.env.example` to `.env`:
-```bash
-cp .env.example .env
-```
-Fill in your Firebase credentials if integrating with a live Firebase backend. When Firebase keys are omitted or invalid, the game automatically operates in **standalone offline mode** using local mocks.
-
-### Run Development Server
-```bash
+# Run local development server
 npm run dev
-```
-Open `http://localhost:5173` in your browser. Use Mobile Emulation mode (360x800) in Chrome DevTools for the ideal portrait mobile experience.
 
-### Production Build
-```bash
+# Run full automated test suite
+npm test -- --run
+
+# Build production bundle
 npm run build
 ```
-Builds the optimized production bundle to the `dist/` directory with code splitting, CSS minification, and asset hashing.
 
 ---
 
 ## 🧪 Testing & Quality Assurance
 
+All 94 automated tests pass with 100% success rate:
 ```bash
-# Run all 59 unit and integration tests
-npm test
+npm test -- --run
 ```
-See [TESTING.md](./TESTING.md) for manual QA checklists covering low-end Android phones, viewport boundaries (320px–430px), notch safe-areas, and airplane mode testing.
+- `tests/unit/board.test.ts` (14 tests)
+- `tests/unit/scoring.test.ts` (6 tests)
+- `tests/unit/goals.test.ts` (8 tests)
+- `tests/unit/spawning.test.ts` (6 tests)
+- `tests/unit/engine.test.ts` (8 tests)
+- `src/game/__tests__/game.test.ts` (21 tests)
+- `tests/unit/story.test.ts` (6 tests)
+- `tests/component/design-system.test.tsx` (6 tests)
+- `tests/component/screens.test.tsx` (5 tests)
+- `tests/unit/handcrafted-levels.test.ts` (2 tests)
+- `tests/unit/meta-features.test.ts` (6 tests)
+- `tests/unit/pricing-and-ads.test.ts` (6 tests)
+
+Security Audit: `npm audit` reports **0 vulnerabilities**.
 
 ---
 
-## 🎨 Design System & Theming
+## 💎 Monetization, Regional Pricing & Ads
 
-Glam Blocks features two fully-specified luxury themes:
-- **Light: "Rose Quartz Morning"**: Rose gold accents, dewy surfaces (`#FFF6F9`), soft hot rose (`#E6177F`).
-- **Dark: "Midnight Vanity"**: Deep obsidian purple (`#140E19`), neon pink glow (`#FF4FA8`), radiant gold (`#FFD166`).
-
-### Typography
-- **Headings & Numbers**: `Fredoka` (600/700) with tabular figures for score animations.
-- **Body & UI**: `Poppins` (400/500/600).
-
-### Colorblind Accessibility
-Each of the 7 cosmetic shades features a distinct dual-coded icon:
-- **Rose Pink**: Lipstick 💄 (`lips`)
-- **Lavender Violet**: Sparkle ✨ (`sparkle`)
-- **Peach Blush**: Heart 💖 (`heart`)
-- **Ruby Red**: Water Drop 💧 (`drop`)
-- **Champagne Gold**: Star ⭐ (`star`)
-- **Mint Green**: Leaf 🌿 (`leaf`)
-- **Sky Blue**: Diamond 💎 (`diamond`)
+* **10 Product Catalog**: Starter Glam Bundle, 4 Gem Packs (100, 550, 1200, 3000), Remove Ads, Glam Pass Monthly, Energy Booster Pack, Royal Bridal Look Pack, Salon Grand Master Bundle.
+* **3 Regional Pricing Tiers**:
+  - `IN` (India): INR (₹)
+  - `TIER_1` (US, UK, EU, AU, CA): USD ($)
+  - `ROW` (Rest of World): USD ($)
+* **Billing Provider**: `PlayBillingProvider` (Google Play Digital Goods API for Android/TWA) + `MockBillingProvider` (3s simulated web testing).
+* **Ad Rules**: Interstitials capped strictly to every 3rd game-over; never shown in the first 3 games; never shown to pass or no-ads purchasers. Rewarded ads for Continue, Energy Refill, and Double Coins.
+* **Gem Protection**: `ConfirmSheet` confirmation modal with exact gem price and remaining balance before spending.
 
 ---
 
-## 💰 Monetization & Regional Pricing
+## 🛡 Backend, Security & Privacy Compliance
 
-Configured in `src/config/pricing.config.ts`:
-- **Tiered Catalogue**:
-  - `IN` (India): Micro-packs starting at ₹19 (50 Gems) to ₹799 (Bridal Red Vault).
-  - `TIER_1` (US, UK, EU, CA, AU): Starting at $0.99.
-  - `ROW`: Calibrated purchasing-power-parity pricing.
-- **Provider Architecture**:
-  - `PlayBillingProvider`: Native Google Play Billing / Digital Goods API bridge.
-  - `MockBillingProvider`: In-browser simulation for development and testing.
-  - `GoogleAdMobProvider` / `MockAdsProvider`: Interstitials and rewarded video ads with a 3-second interactive countdown overlay.
-
----
-
-## 🔒 Backend, Security Rules & Cloud Functions
-
-- **Cloud Firestore Security**: Rules strictly enforce that users can only read and write their own documents (`/users/{userId}`). Leaderboards are read-only for players and updated via verified cloud calls.
-- **Cloud Functions**:
-  - `grantDailyReward`: Server-side streak validation preventing client clock tampering.
-  - `verifyPurchaseToken`: Validates Google Play purchase tokens before dispensing gems.
-  - `exportMarketingEmails`: CLI script to export opted-in marketing email addresses with consent timestamps for DPDP/GDPR compliance.
+* **DPDP Act 2023 & GDPR Compliant**: Explicit opt-in marketing consent with ISO timestamps, verified data deletion ("Delete My Account & Data"), and export script `scripts/export_consenting_emails.js`.
+* **Firestore Security Rules**: Client writes to currencies (`coins`, `gems`), `energy`, `adsRemoved`, `hasGoldPass`, `unlockedLooks`, and `rooms` are forbidden.
+* **Server-Side Validation**: Cloud functions validate score thresholds, moves played, and purchase tokens to prevent cheating.
 
 ---
 
 ## 📚 Documentation Sitemap
 
-- [DECISIONS.md](./DECISIONS.md) — Rationale for Web Audio, SVG canvas, fair spawning, and regional pricing.
-- [TESTING.md](./TESTING.md) — Complete automated test report and manual device testing matrix.
-- [PRIVACY_POLICY.md](./PRIVACY_POLICY.md) — GDPR & DPDP 2023 compliant privacy policy.
-- [TERMS.md](./TERMS.md) — Terms of service, virtual items, and intellectual property.
-- [STORE_LISTING.md](./STORE_LISTING.md) — Google Play Store titles, descriptions, and screenshot captions.
-
----
-
-**Glam Blocks** © 2026 Glam Blocks Studio. All rights reserved. Original artwork & gameplay.
+* [`STORY.md`](STORY.md) — Complete 48-scene script, 7 Rang Book looks, character bibles, and comic customers.
+* [`DECISIONS.md`](DECISIONS.md) — Architecture, algorithms, performance, and game design decision records.
+* [`TESTING.md`](TESTING.md) — QA test matrix, device resolutions, touch offsets, and vitest results.
+* [`IMAGE_PROMPTS.md`](IMAGE_PROMPTS.md) — 13 production image generation prompts with mandatory STYLE ANCHOR.
+* [`PRIVACY_POLICY.md`](PRIVACY_POLICY.md) — DPDP Act 2023 & GDPR compliant privacy policy.
+* [`TERMS.md`](TERMS.md) — Casual puzzle terms of service & virtual currency guidelines.
+* [`STORE_LISTING.md`](STORE_LISTING.md) — Google Play Store description, metadata, promo copy, and keywords.
+* [`assets/manifest.json`](assets/manifest.json) — Catalog of all game assets, dimensions, transparency, and target screens.

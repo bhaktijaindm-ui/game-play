@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import type { FaceZone, ShadeId, GameState } from '../types';
-import { getLevel } from '../game/levels';
+import { getLevel, getLevelData } from '../game/levels';
 import { createNewGame, handlePlacement, handleUndo, handleShuffle, handleBomb } from '../game/engine';
 import { canPlace } from '../game/board';
+import { getDailyBriefSeed } from '../game/spawning';
 import { FaceModel } from '../assets/faces/FaceModel';
 import { GameBoard } from '../components/GameBoard';
 import { ShapeTray } from '../components/ShapeTray';
 import { MakeupBrush } from '../components/MakeupBrush';
 import { PureShadeBurst } from '../components/PureShadeBurst';
 import { ComboMeter } from '../components/ComboMeter';
-import { GoalChip } from '../components/GoalChip';
+import { CustomerOrderBubble } from '../components/CustomerOrderBubble';
 import { PauseModal } from '../components/PauseModal';
 import { IconButton } from '../components/IconButton';
 import { useSound } from '../hooks/useSound';
@@ -25,12 +26,21 @@ export const GameScreen: React.FC = () => {
   const { playPop, playSparkle, playChime, playTaDa } = useSound();
   const { lightTap, mediumTap, successBuzz } = useHaptics();
 
+  const location = useLocation();
+  const isDaily = (location.state as { mode?: string } | undefined)?.mode === 'daily';
+
   // Load client from current level or default level 1
   const clientLevel = userProfile.level || 1;
   const currentClient = getLevel(clientLevel);
+  const levelData = getLevelData(clientLevel);
 
   // Initialize or resume game state
   const [gameState, setGameState] = useState<GameState>(() => {
+    if (isDaily) {
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const dailySeed = getDailyBriefSeed(todayStr);
+      return createNewGame(currentClient, dailySeed);
+    }
     const saved = storageService.loadGameState();
     if (saved && !saved.isGameOver) {
       return saved;
@@ -224,51 +234,76 @@ export const GameScreen: React.FC = () => {
   return (
     <div className="relative min-h-screen min-h-[100dvh] w-full max-w-[480px] mx-auto flex flex-col justify-between overflow-hidden bg-[var(--bg,#fff6f9)] dark:bg-[var(--bg,#140e19)] text-[var(--text)] select-none">
       {/* Top HUD */}
-      <header className="px-4 pt-3 pb-2 flex items-center justify-between border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-md z-20">
-        <IconButton
-          aria-label="Pause game"
-          onClick={() => setIsPaused(true)}
-          className="w-10 h-10"
-        >
-          <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
-            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-          </svg>
-        </IconButton>
+      <header className="px-3 pt-2.5 pb-2 flex items-center justify-between border-b border-[var(--border)] bg-[rgba(25,18,40,0.85)] text-white backdrop-blur-md z-20">
+        <div className="flex items-center gap-2">
+          <IconButton
+            aria-label="Pause game"
+            onClick={() => setIsPaused(true)}
+            className="w-9 h-9"
+          >
+            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+            </svg>
+          </IconButton>
+
+          <div className="px-2.5 py-1 rounded-full bg-[#6A3FC8] text-white font-heading font-bold text-xs game-stroke-sm border border-[#F5B53C] shadow">
+            {isDaily ? '📅 DAILY BRIEF' : `LV ${clientLevel}`}
+          </div>
+        </div>
 
         {/* Live Score Counter */}
         <div className="flex flex-col items-center">
-          <span className="text-[10px] font-bold tracking-widest uppercase text-[var(--text-muted)]">Score</span>
+          <span className="text-[9px] font-bold tracking-widest uppercase text-white/70">Score</span>
           <motion.span
             key={gameState.score}
             initial={{ scale: 1.15 }}
             animate={{ scale: 1 }}
-            className="text-2xl font-black tabular-nums leading-tight text-[var(--primary)]"
+            className="text-xl font-heading font-black tabular-nums leading-tight text-[#FF8FB8] game-stroke-sm"
           >
             {gameState.score.toLocaleString()}
           </motion.span>
         </div>
 
-        {/* Coins & Best Score */}
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-1 rounded-full text-xs font-black border border-amber-500/20">
+        {/* Coins */}
+        <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1 bg-amber-500/20 text-[#F5B53C] px-2.5 py-1 rounded-full text-xs font-bold border border-amber-500/30">
             <span>🪙</span>
-            <span>{userProfile.coins}</span>
+            <span className="font-heading font-bold tabular-nums">{userProfile.coins}</span>
           </div>
         </div>
       </header>
 
-      {/* Goal Chips Bar */}
-      <div className="px-4 py-2 flex items-center gap-2 overflow-x-auto no-scrollbar z-10">
-        {gameState.goals?.map((goal, idx) => (
-          <GoalChip
-            key={goal.id || `goal_${goal.type}_${idx}`}
-            type={goal.type}
-            target={goal.target}
-            current={goal.current}
-            completed={goal.completed}
-            shade={goal.shade}
-          />
-        ))}
+      {/* 3 Customer Order Bubbles Bar */}
+      <div className="px-3 py-1.5 flex items-center gap-2 overflow-x-auto no-scrollbar z-10">
+        {levelData.customers.map((cust, idx) => {
+          const matchingGoal = gameState.goals?.[idx];
+          const avatarIcon =
+            cust.customerId === 'mrs_kapoor' ? '👵🏽' :
+            cust.customerId === 'priya' ? '👩🏽‍🎓' :
+            cust.customerId === 'simran' ? '💃🏽' :
+            cust.customerId === 'meera' ? '💼' :
+            cust.customerId === 'uncle_dev' ? '👨🏽‍🦳' :
+            cust.customerId === 'diya' ? '📱' :
+            cust.customerId === 'shanti' ? '🧓🏽' :
+            cust.customerId === 'rohit' ? '🤵🏽' :
+            cust.customerId === 'fatima' ? '🎨' :
+            cust.customerId === 'aisha' ? '🏃🏽‍♀️' :
+            cust.customerId === 'dr_neha' ? '🩺' : '👧🏽';
+
+          return (
+            <CustomerOrderBubble
+              key={cust.id}
+              id={cust.id}
+              customerName={cust.customerName}
+              avatarIcon={avatarIcon}
+              description={cust.description}
+              rewardCoins={cust.rewardCoins}
+              current={matchingGoal ? matchingGoal.current : 0}
+              target={matchingGoal ? matchingGoal.target : cust.target}
+              completed={matchingGoal ? matchingGoal.completed : false}
+            />
+          );
+        })}
       </div>
 
       {/* Combo Meter */}
@@ -311,8 +346,8 @@ export const GameScreen: React.FC = () => {
           </div>
         )}
 
-        {/* 8x8 Glass Matrix Board (over top) */}
-        <div className="relative z-10 w-full max-w-[340px] aspect-square">
+        {/* 8x8 Glass Matrix Board (over top) in blue-teal frame */}
+        <div className="relative z-10 w-full max-w-[340px] aspect-square p-2 rounded-[24px] bg-[#6FADD4] dark:bg-[#3D5E86] border-2 border-white/50 shadow-xl">
           <GameBoard
             board={gameState.board}
             ghostShape={ghostCells}

@@ -6,3 +6,4 @@ export * from './goals';
 export * from './faceMapping';
 export * from './engine';
 export * from './levels';
+export * from './story';

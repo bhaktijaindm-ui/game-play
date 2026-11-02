@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IconButton } from '../components/IconButton';
 import { Button } from '../components/Button';
+import { DailyBriefCard } from '../components/DailyBriefCard';
 import { useGame } from '../context/GameContext';
 import { useSound } from '../hooks/useSound';
 import { useHaptics } from '../hooks/useHaptics';
@@ -133,6 +134,14 @@ export const DailyRewardScreen: React.FC = () => {
               );
             })}
           </div>
+        </div>
+
+        {/* Daily Beauty Brief Card */}
+        <div className="w-full max-w-[360px]">
+          <DailyBriefCard
+            streakCount={currentStreak}
+            onPlay={() => navigate('/game', { state: { mode: 'daily' } })}
+          />
         </div>
       </div>
 

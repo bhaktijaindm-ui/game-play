@@ -14,7 +14,7 @@ service cloud.firestore {
         && !request.resource.data.displayName.matches('.*[<>"\'/].*');
       allow update: if request.auth != null && request.auth.uid == userId
         && !request.resource.data.diff(resource.data).affectedKeys()
-          .hasAny(['coins', 'gems', 'adsRemoved', 'glamPassUntil', 'unlockedLooks', 'purchases']);
+          .hasAny(['coins', 'gems', 'energy', 'adsRemoved', 'glamPassUntil', 'hasGoldPass', 'unlockedLooks', 'unlockedRangPages', 'rooms', 'purchases']);
     }
     
     // Scores: creatable by signed-in owner with valid schema, read-only for leaderboard
@@ -32,6 +32,12 @@ service cloud.firestore {
     
     // Daily Brief: read-only for clients
     match /dailyBrief/{date} {
+      allow read: if request.auth != null;
+      allow write: if false; // server only
+    }
+
+    // Timed & Seasonal Events: read-only for clients
+    match /events/{eventId} {
       allow read: if request.auth != null;
       allow write: if false; // server only
     }

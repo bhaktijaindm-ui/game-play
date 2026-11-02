@@ -131,6 +131,57 @@ export const PRODUCTS: Record<string, Product> = {
       ROW: { amount: 12.99, currency: 'USD', currencySymbol: '$', formatted: '$12.99/yr' },
     },
   },
+  energy_refill_pack: {
+    id: 'energy_refill_pack',
+    name: 'Energy Booster Pack',
+    description: 'Instant full 30 Energy refill + 3 Golden Energy Vouchers',
+    type: 'one_time',
+    badge: 'POPULAR',
+    reward: {
+      coins: 500,
+    },
+    prices: {
+      IN: { amount: 49, currency: 'INR', currencySymbol: '₹', formatted: '₹49' },
+      TIER_1: { amount: 0.99, currency: 'USD', currencySymbol: '$', formatted: '$0.99' },
+      ROW: { amount: 0.79, currency: 'USD', currencySymbol: '$', formatted: '$0.79' },
+    },
+  },
+  bridal_look_pack: {
+    id: 'bridal_look_pack',
+    name: 'Royal Bridal Look Pack',
+    description: 'Exclusive Banarasi Bride Look, 200 Gems, and 2,500 Salon Coins',
+    type: 'one_time',
+    badge: 'LIMITED',
+    reward: {
+      gems: 200,
+      coins: 2500,
+      exclusiveLookId: 'look_banarasi_bride',
+    },
+    prices: {
+      IN: { amount: 149, currency: 'INR', currencySymbol: '₹', formatted: '₹149' },
+      TIER_1: { amount: 2.99, currency: 'USD', currencySymbol: '$', formatted: '$2.99' },
+      ROW: { amount: 1.99, currency: 'USD', currencySymbol: '$', formatted: '$1.99' },
+    },
+  },
+  salon_master_bundle: {
+    id: 'salon_master_bundle',
+    name: 'Salon Grand Master Bundle',
+    description: '2,500 Gems, 15,000 Coins, 3 Signature Looks, and Permanent Ad Removal',
+    type: 'one_time',
+    badge: 'ULTIMATE',
+    popular: true,
+    reward: {
+      gems: 2500,
+      coins: 15000,
+      adsRemoved: true,
+      exclusiveLookId: 'look_gulab_mahal_royale',
+    },
+    prices: {
+      IN: { amount: 499, currency: 'INR', currencySymbol: '₹', formatted: '₹499' },
+      TIER_1: { amount: 9.99, currency: 'USD', currencySymbol: '$', formatted: '$9.99' },
+      ROW: { amount: 7.99, currency: 'USD', currencySymbol: '$', formatted: '$7.99' },
+    },
+  },
 };
 
 export const PRODUCT_LIST: Product[] = Object.values(PRODUCTS);

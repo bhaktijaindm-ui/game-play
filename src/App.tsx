@@ -21,6 +21,10 @@ const DailyRewardScreen = lazy(() => import('./screens/DailyRewardScreen'));
 const LeaderboardScreen = lazy(() => import('./screens/LeaderboardScreen'));
 const SettingsScreen = lazy(() => import('./screens/SettingsScreen'));
 const ProfileScreen = lazy(() => import('./screens/ProfileScreen'));
+const AdventureMapScreen = lazy(() => import('./screens/AdventureMapScreen'));
+const RenovationScreen = lazy(() => import('./screens/RenovationScreen'));
+const FestivalPassScreen = lazy(() => import('./screens/FestivalPassScreen'));
+const FestivalMatchScreen = lazy(() => import('./screens/FestivalMatchScreen'));
 
 function LoadingFallback() {
   return (
@@ -43,6 +47,18 @@ function HomeRoute() {
     switch (screen) {
       case 'home':
         navigate('/');
+        break;
+      case 'map':
+        navigate('/map');
+        break;
+      case 'renovation':
+        navigate('/renovation');
+        break;
+      case 'pass':
+        navigate('/pass');
+        break;
+      case 'festivalMatch':
+        navigate('/festival-match');
         break;
       case 'collections':
         navigate('/collections');
@@ -101,6 +117,7 @@ function SplashRoute() {
           navigate('/');
         }
       }}
+      onSignIn={() => navigate('/auth')}
     />
   );
 }
@@ -132,37 +149,49 @@ function AuthRoute() {
 }
 
 export function App() {
+  const navigate = useNavigate();
+
+  return (
+    <div className="min-h-screen min-h-[100dvh] w-full bg-[var(--bg,#fff6f9)] dark:bg-[var(--bg,#140e19)] flex justify-center text-[var(--text)]">
+      <OfflineBanner />
+      <div className="w-full max-w-[480px] shadow-2xl relative min-h-screen min-h-[100dvh] flex flex-col">
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
+            <Route path="/" element={<HomeRoute />} />
+            <Route path="/splash" element={<SplashRoute />} />
+            <Route path="/onboarding" element={<OnboardingRoute />} />
+            <Route path="/auth" element={<AuthRoute />} />
+            <Route path="/game" element={<GameScreen />} />
+            <Route path="/map" element={<AdventureMapScreen onNavigate={(s) => navigate(`/${s === 'home' ? '' : s}`)} />} />
+            <Route path="/renovation" element={<RenovationScreen onNavigate={(s) => navigate(`/${s === 'home' ? '' : s}`)} />} />
+            <Route path="/pass" element={<FestivalPassScreen onNavigate={(s) => navigate(`/${s === 'home' ? '' : s}`)} />} />
+            <Route path="/festival-match" element={<FestivalMatchScreen onNavigate={(s) => navigate(`/${s === 'home' ? '' : s}`)} />} />
+            <Route path="/result" element={<ClientResultScreen />} />
+            <Route path="/game-over" element={<GameOverScreen />} />
+            <Route path="/portfolio" element={<PortfolioScreen />} />
+            <Route path="/palette" element={<PaletteScreen />} />
+            <Route path="/collections" element={<CollectionsScreen />} />
+            <Route path="/shop" element={<ShopScreen />} />
+            <Route path="/daily-reward" element={<DailyRewardScreen />} />
+            <Route path="/leaderboard" element={<LeaderboardScreen />} />
+            <Route path="/settings" element={<SettingsScreen />} />
+            <Route path="/profile" element={<ProfileScreen />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
+      </div>
+    </div>
+  );
+}
+
+export function AppRoot() {
   return (
     <GameProvider>
       <BrowserRouter>
-        <div className="min-h-screen min-h-[100dvh] w-full bg-[var(--bg,#fff6f9)] dark:bg-[var(--bg,#140e19)] flex justify-center text-[var(--text)]">
-          <OfflineBanner />
-          <div className="w-full max-w-[480px] shadow-2xl relative min-h-screen min-h-[100dvh] flex flex-col">
-            <Suspense fallback={<LoadingFallback />}>
-              <Routes>
-                <Route path="/" element={<HomeRoute />} />
-                <Route path="/splash" element={<SplashRoute />} />
-                <Route path="/onboarding" element={<OnboardingRoute />} />
-                <Route path="/auth" element={<AuthRoute />} />
-                <Route path="/game" element={<GameScreen />} />
-                <Route path="/result" element={<ClientResultScreen />} />
-                <Route path="/game-over" element={<GameOverScreen />} />
-                <Route path="/portfolio" element={<PortfolioScreen />} />
-                <Route path="/palette" element={<PaletteScreen />} />
-                <Route path="/collections" element={<CollectionsScreen />} />
-                <Route path="/shop" element={<ShopScreen />} />
-                <Route path="/daily-reward" element={<DailyRewardScreen />} />
-                <Route path="/leaderboard" element={<LeaderboardScreen />} />
-                <Route path="/settings" element={<SettingsScreen />} />
-                <Route path="/profile" element={<ProfileScreen />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </Suspense>
-          </div>
-        </div>
+        <App />
       </BrowserRouter>
     </GameProvider>
   );
 }
 
-export default App;
+export default AppRoot;

@@ -49,7 +49,10 @@ export const ClientResultScreen: React.FC = () => {
     });
   }, []);
 
-  const handleShare = async (size: 'post' | 'stories') => {
+  const [shareFormat, setShareFormat] = useState<'post' | 'stories'>('post');
+  const [hideName, setHideName] = useState(false);
+
+  const handleShare = async () => {
     if (!gameState) return;
     setSharing(true);
     try {
@@ -58,9 +61,10 @@ export const ClientResultScreen: React.FC = () => {
         userProfile.faceModel || '1',
         gameState.score,
         userProfile.displayName || 'Glam Artist',
-        size
+        shareFormat,
+        hideName
       );
-      await shareImage(canvas, 'My Glam Look!', 'Check out this makeup look I created in Glam Blocks!');
+      await shareImage(canvas, 'My Glam Look!', 'Check out this makeup look I created in Glam Blocks: The Gulab Mahal Salon!');
     } catch (err) {
       console.error('Share failed:', err);
     } finally {
@@ -164,12 +168,50 @@ export const ClientResultScreen: React.FC = () => {
 
       {/* Action Buttons */}
       <footer className="flex flex-col gap-2.5 pt-2 pb-4">
+        {/* Share format and privacy toggles */}
+        <div className="flex items-center justify-between px-1 text-xs">
+          <div className="flex bg-[var(--surface-2)] p-0.5 rounded-lg border border-[var(--border)]">
+            <button
+              type="button"
+              onClick={() => setShareFormat('post')}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all ${
+                shareFormat === 'post'
+                  ? 'bg-[var(--primary)] text-white shadow-sm'
+                  : 'text-[var(--text-muted)]'
+              }`}
+            >
+              Post (1:1)
+            </button>
+            <button
+              type="button"
+              onClick={() => setShareFormat('stories')}
+              className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all ${
+                shareFormat === 'stories'
+                  ? 'bg-[var(--primary)] text-white shadow-sm'
+                  : 'text-[var(--text-muted)]'
+              }`}
+            >
+              Stories (9:16)
+            </button>
+          </div>
+
+          <label className="flex items-center gap-1.5 cursor-pointer text-[11px] font-semibold text-[var(--text-muted)]">
+            <input
+              type="checkbox"
+              checked={hideName}
+              onChange={(e) => setHideName(e.target.checked)}
+              className="rounded accent-[var(--primary)] w-3.5 h-3.5"
+            />
+            <span>Hide name</span>
+          </label>
+        </div>
+
         <Button
           variant="primary"
           size="lg"
           fullWidth
           loading={sharing}
-          onClick={() => handleShare('post')}
+          onClick={handleShare}
         >
           ✨ Share Look Card
         </Button>

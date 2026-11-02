@@ -33,6 +33,8 @@ export const SettingsScreen: React.FC = () => {
 
   const [colorBlind, setColorBlind] = useState(userProfile.colorBlind || false);
   const [musicEnabled, setMusicEnabled] = useState(userProfile.musicEnabled !== false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(userProfile.notificationsEnabled || false);
+  const [marketingConsent, setMarketingConsent] = useState(userProfile.marketingConsent || false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -41,6 +43,25 @@ export const SettingsScreen: React.FC = () => {
     setColorBlind(next);
     updateProfile({ colorBlind: next });
     localStorage.setItem('glam_colorblind_mode', next ? 'true' : 'false');
+  };
+
+  const handleNotificationsToggle = async () => {
+    const next = !notificationsEnabled;
+    setNotificationsEnabled(next);
+    updateProfile({ notificationsEnabled: next });
+    if (next && typeof Notification !== 'undefined' && Notification.permission !== 'granted') {
+      try {
+        await Notification.requestPermission();
+      } catch {
+        // Ignored if user dismisses
+      }
+    }
+  };
+
+  const handleMarketingToggle = () => {
+    const next = !marketingConsent;
+    setMarketingConsent(next);
+    updateProfile({ marketingConsent: next });
   };
 
   const handleMusicToggle = () => {
@@ -206,6 +227,34 @@ export const SettingsScreen: React.FC = () => {
                   </button>
                 );
               })}
+            </div>
+          </div>
+        </div>
+
+        {/* NOTIFICATIONS & PRIVACY CONSENT */}
+        <div className="space-y-2">
+          <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">
+            Notifications & Communications
+          </span>
+          <div className="bg-[var(--surface)] rounded-2xl border border-[var(--border)] p-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-sm font-bold text-[var(--text)]">Daily Brief & Energy Alerts</div>
+                <div className="text-[10px] text-[var(--text-muted)]">
+                  Reminders when energy refills and for daily beauty challenges
+                </div>
+              </div>
+              <Toggle checked={notificationsEnabled} onChange={handleNotificationsToggle} />
+            </div>
+
+            <div className="flex items-center justify-between border-t border-[var(--border)] pt-3">
+              <div>
+                <div className="text-sm font-bold text-[var(--text)]">Festival & Event News</div>
+                <div className="text-[10px] text-[var(--text-muted)]">
+                  Receive updates about seasonal festivals and bridal events
+                </div>
+              </div>
+              <Toggle checked={marketingConsent} onChange={handleMarketingToggle} />
             </div>
           </div>
         </div>
